@@ -1,0 +1,338 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pycbg.preprocessing.Materials &mdash; pycbg  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pycbg.preprocessing.Simulation" href="pycbg.preprocessing.Simulation.html" />
+    <link rel="prev" title="pycbg.preprocessing.EntitySets" href="pycbg.preprocessing.EntitySets.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pycbg
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pycbg.preprocessing.Mesh.html">pycbg.preprocessing.Mesh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pycbg.preprocessing.Particles.html">pycbg.preprocessing.Particles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pycbg.preprocessing.EntitySets.html">pycbg.preprocessing.EntitySets</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">pycbg.preprocessing.Materials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pycbg.preprocessing.Simulation.html">pycbg.preprocessing.Simulation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pycbg</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>pycbg.preprocessing.Materials</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/stubs/pycbg.preprocessing.Materials.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pycbg-preprocessing-materials">
+<h1>pycbg.preprocessing.Materials<a class="headerlink" href="#pycbg-preprocessing-materials" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="pycbg.preprocessing.Materials">
+<em class="property">class </em><code class="sig-prename descclassname">pycbg.preprocessing.</code><code class="sig-name descname">Materials</code><a class="headerlink" href="#pycbg.preprocessing.Materials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create materials for particle sets.</p>
+<dl class="py attribute">
+<dt id="pycbg.preprocessing.Materials.materials">
+<code class="sig-name descname">materials</code><a class="headerlink" href="#pycbg.preprocessing.Materials.materials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Each element is a dictionnary containing a material’s parameters. The index of a material is his id.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list of dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pycbg.preprocessing.Materials.psets_ids">
+<code class="sig-name descname">psets_ids</code><a class="headerlink" href="#pycbg.preprocessing.Materials.psets_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>The element i of this list is the id of the particle set made of the material defined in <code class="docutils literal notranslate"><span class="pre">materials[i]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>list of ints</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<p>Due to (probably) a bug in CB-Geo, materials should be created in the same order than the corresponding particle sets (so particle sets and materials have the same id).</p>
+<p class="rubric">Examples</p>
+<p>Creating two materials for two particle sets :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mesh</span> <span class="o">=</span> <span class="n">Mesh</span><span class="p">((</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">particles</span> <span class="o">=</span> <span class="n">Particles</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">entity_sets</span> <span class="o">=</span> <span class="n">EntitySets</span><span class="p">(</span><span class="n">mesh</span><span class="p">,</span> <span class="n">particles</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lower_particles</span> <span class="o">=</span> <span class="n">entity_sets</span><span class="o">.</span><span class="n">create_set</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">:</span> <span class="n">x</span><span class="o">&lt;.</span><span class="mi">5</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s2">&quot;particle&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">upper_particles</span> <span class="o">=</span> <span class="n">entity_sets</span><span class="o">.</span><span class="n">create_set</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">:</span> <span class="n">x</span><span class="o">&gt;=.</span><span class="mi">5</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s2">&quot;particle&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">materials</span> <span class="o">=</span> <span class="n">Materials</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">materials</span><span class="o">.</span><span class="n">create_MohrCoulomb3D</span><span class="p">(</span><span class="n">pset_id</span><span class="o">=</span><span class="n">lower_particles</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="mi">750</span><span class="p">,</span>
+<span class="gp">... </span>                                                        <span class="n">youngs_modulus</span><span class="o">=</span><span class="mf">5.26e7</span><span class="p">,</span>
+<span class="gp">... </span>                                                        <span class="n">poisson_ratio</span><span class="o">=.</span><span class="mi">3</span><span class="p">,</span>
+<span class="gp">... </span>                                                        <span class="n">friction</span><span class="o">=</span><span class="mf">36.</span><span class="p">,</span>
+<span class="gp">... </span>                                                        <span class="n">dilation</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+<span class="gp">... </span>                                                        <span class="n">cohesion</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
+<span class="gp">... </span>                                                        <span class="n">tension_cutoff</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span>
+<span class="gp">... </span>                                                        <span class="n">softening</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">materials</span><span class="o">.</span><span class="n">create_Newtonian3D</span><span class="p">(</span><span class="n">pset_id</span><span class="o">=</span><span class="n">upper_particles</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="mf">1.225</span><span class="p">,</span>
+<span class="gp">... </span>                                                      <span class="n">bulk_modulus</span><span class="o">=</span><span class="mf">1.42e5</span><span class="p">,</span>
+<span class="gp">... </span>                                                      <span class="n">dynamic_viscosity</span><span class="o">=</span><span class="mf">1.81e3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">materials</span><span class="o">.</span><span class="n">pset_ids</span>
+<span class="go">[0, 1]</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="pycbg.preprocessing.Materials.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Materials.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.__init__" title="pycbg.preprocessing.Materials.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a></p></td>
+<td><p>Initialize self.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.create_MohrCoulomb3D" title="pycbg.preprocessing.Materials.create_MohrCoulomb3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_MohrCoulomb3D</span></code></a></p></td>
+<td><p>Create MohrCoulomb3D material, as specified by CB-Geo documentation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.create_Newtonian3D" title="pycbg.preprocessing.Materials.create_Newtonian3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_Newtonian3D</span></code></a></p></td>
+<td><p>Create Newtonian3D material, as specified by CB-Geo documentation.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="pycbg.preprocessing.Materials.create_MohrCoulomb3D">
+<code class="sig-name descname">create_MohrCoulomb3D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pset_id</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">density</span><span class="o">=</span><span class="default_value">1000.0</span></em>, <em class="sig-param"><span class="n">youngs_modulus</span><span class="o">=</span><span class="default_value">50000000.0</span></em>, <em class="sig-param"><span class="n">poisson_ratio</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">friction</span><span class="o">=</span><span class="default_value">36.0</span></em>, <em class="sig-param"><span class="n">dilation</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">cohesion</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">tension_cutoff</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">softening</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">peak_pdstrain</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">residual_pdstrain</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">residual_friction</span><span class="o">=</span><span class="default_value">13.0</span></em>, <em class="sig-param"><span class="n">residual_dilation</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">residual_cohesion</span><span class="o">=</span><span class="default_value">0.0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Materials.create_MohrCoulomb3D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create MohrCoulomb3D material, as specified by CB-Geo documentation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pset_id</strong> (<em>int</em>) – Particle set id that will be made off this material</p></li>
+<li><p><strong>density</strong> (<em>float</em><em>, </em><em>optional</em>) – Density of the material (<span class="math notranslate nohighlight">\(kg/m^3\)</span>). Default is 1.225 <span class="math notranslate nohighlight">\(kg/m^3\)</span>.</p></li>
+<li><p><strong>young_modulus</strong> (<em>float</em><em>, </em><em>optional</em>) – Young’s modulus of the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 50 <span class="math notranslate nohighlight">\(GPa\)</span>.</p></li>
+<li><p><strong>poisson_ratio</strong> (<em>float</em><em>, </em><em>otpional</em>) – Poisson’s ratio of the material. Default is 0.3 .</p></li>
+<li><p><strong>friction</strong> (<em>float</em><em>, </em><em>optional</em>) – Friction angle of the material (<span class="math notranslate nohighlight">\(^\circ\)</span>). Default is 36 <span class="math notranslate nohighlight">\(^\circ\)</span>.</p></li>
+<li><p><strong>dilation</strong> (<em>float</em><em>, </em><em>optional</em>) – Dilation angle of the material (<span class="math notranslate nohighlight">\(^\circ\)</span>). Default is 0 <span class="math notranslate nohighlight">\(^\circ\)</span>.</p></li>
+<li><p><strong>cohesion</strong> (<em>float</em><em>, </em><em>optional</em>) – Cohesion in the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 0 <span class="math notranslate nohighlight">\(Pa\)</span>.</p></li>
+<li><p><strong>tension_cutoff</strong> (<em>float</em><em>, </em><em>optional</em>) – Tension strength of the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 0 <span class="math notranslate nohighlight">\(Pa\)</span>.</p></li>
+<li><p><strong>softening</strong> (<em>bool</em><em>, </em><em>optional</em>) – Enable softening option. If <cite>True</cite>, one has to set <cite>peak_pdstrain</cite>, <cite>residual_pdstrain</cite>, <cite>residual_friction</cite>, <cite>residual_dilation</cite> and <cite>residual_cohesion</cite>. Default is <cite>False</cite>.</p></li>
+<li><p><strong>peak_pdstrain</strong> (<em>float</em><em>, </em><em>optional</em>) – Start point of strain softening. Default is 0.</p></li>
+<li><p><strong>residual_pdstrain</strong> (<em>float</em><em>, </em><em>optional</em>) – End point of strain softening. Default is 0.</p></li>
+<li><p><strong>residual_friction</strong> (<em>float</em><em>, </em><em>optional</em>) – Residual friction angle (<span class="math notranslate nohighlight">\(^\circ\)</span>). Default is 13 <span class="math notranslate nohighlight">\(^\circ\)</span>.</p></li>
+<li><p><strong>residual_dilation</strong> (<em>float</em><em>, </em><em>optional</em>) – Residual dilation angle (<span class="math notranslate nohighlight">\(^\circ\)</span>). Default is 0 <span class="math notranslate nohighlight">\(^\circ\)</span>.</p></li>
+<li><p><strong>residual_cohesion</strong> (<em>float</em><em>, </em><em>optional</em>) – Residual cohesion (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 0 <span class="math notranslate nohighlight">\(Pa\)</span>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pycbg.preprocessing.Materials.create_Newtonian3D">
+<code class="sig-name descname">create_Newtonian3D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pset_id</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">density</span><span class="o">=</span><span class="default_value">1.225</span></em>, <em class="sig-param"><span class="n">bulk_modulus</span><span class="o">=</span><span class="default_value">142000.0</span></em>, <em class="sig-param"><span class="n">dynamic_viscosity</span><span class="o">=</span><span class="default_value">1.81e-05</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Materials.create_Newtonian3D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create Newtonian3D material, as specified by CB-Geo documentation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pset_id</strong> (<em>int</em>) – Particle set id that will be made off this material</p></li>
+<li><p><strong>density</strong> (<em>float</em><em>, </em><em>optional</em>) – Density of the material (<span class="math notranslate nohighlight">\(kg/m^3\)</span>). Default is 1.225 <span class="math notranslate nohighlight">\(kg/m^3\)</span>.</p></li>
+<li><p><strong>bulk_modulus</strong> (<em>float</em><em>, </em><em>optional</em>) – Bulk modulus of the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 142 <span class="math notranslate nohighlight">\(kPa\)</span>.</p></li>
+<li><p><strong>dynamic_viscosity</strong> (<em>float</em><em>, </em><em>otpional</em>) – Dynamic viscosity of the material (<span class="math notranslate nohighlight">\(Pa.s\)</span>). Default is 18.1 <span class="math notranslate nohighlight">\(\mu Pa.s\)</span></p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Defaults correspond to air’s properties.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pycbg.preprocessing.Simulation.html" class="btn btn-neutral float-right" title="pycbg.preprocessing.Simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="pycbg.preprocessing.EntitySets.html" class="btn btn-neutral float-left" title="pycbg.preprocessing.EntitySets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Sacha Duverger
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,520 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pycbg.preprocessing.Simulation &mdash; pycbg  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="pycbg.preprocessing.Materials" href="pycbg.preprocessing.Materials.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pycbg
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pycbg.preprocessing.Mesh.html">pycbg.preprocessing.Mesh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pycbg.preprocessing.Particles.html">pycbg.preprocessing.Particles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pycbg.preprocessing.EntitySets.html">pycbg.preprocessing.EntitySets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pycbg.preprocessing.Materials.html">pycbg.preprocessing.Materials</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">pycbg.preprocessing.Simulation</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pycbg</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>pycbg.preprocessing.Simulation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/stubs/pycbg.preprocessing.Simulation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="pycbg-preprocessing-simulation">
+<h1>pycbg.preprocessing.Simulation<a class="headerlink" href="#pycbg-preprocessing-simulation" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="pycbg.preprocessing.Simulation">
+<em class="property">class </em><code class="sig-prename descclassname">pycbg.preprocessing.</code><code class="sig-name descname">Simulation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">'Sim_title'</span></em>, <em class="sig-param"><span class="n">directory</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a simulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> (<em>str</em><em>, </em><em>optional</em>) – Simulation title. Default is ‘Sim_title’.</p></li>
+<li><p><strong>directory</strong> (<em>str</em><em>, </em><em>optional</em>) – Path to the simulation’s directory. Mesh, particles and entity sets files will be saved in this directory. The result folder is also set to be created by CB-Geo in this directory. Default is <cite>title</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt id="pycbg.preprocessing.Simulation.mesh">
+<code class="sig-name descname">mesh</code><a class="headerlink" href="#pycbg.preprocessing.Simulation.mesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulation’s mesh. Created using the <cite>create_mesh</cite> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="pycbg.preprocessing.Mesh.html#pycbg.preprocessing.Mesh" title="pycbg.preprocessing.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pycbg.preprocessing.Simulation.particles">
+<code class="sig-name descname">particles</code><a class="headerlink" href="#pycbg.preprocessing.Simulation.particles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulation’s particles. Created using the <cite>create_particles</cite> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="pycbg.preprocessing.Particles.html#pycbg.preprocessing.Particles" title="pycbg.preprocessing.Particles"><code class="xref py py-class docutils literal notranslate"><span class="pre">Particles</span></code></a> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pycbg.preprocessing.Simulation.entity_sets">
+<code class="sig-name descname">entity_sets</code><a class="headerlink" href="#pycbg.preprocessing.Simulation.entity_sets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulation’s entity sets. Created using the <cite>init_entity_sets</cite> method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="pycbg.preprocessing.EntitySets.html#pycbg.preprocessing.EntitySets" title="pycbg.preprocessing.EntitySets"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntitySets</span></code></a> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pycbg.preprocessing.Simulation.materials">
+<code class="sig-name descname">materials</code><a class="headerlink" href="#pycbg.preprocessing.Simulation.materials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulation’s materials. Created upon creating the <cite>Simulation</cite> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="pycbg.preprocessing.Materials.html#pycbg.preprocessing.Materials" title="pycbg.preprocessing.Materials"><code class="xref py py-class docutils literal notranslate"><span class="pre">Materials</span></code></a> object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pycbg.preprocessing.Simulation.input_filename">
+<code class="sig-name descname">input_filename</code><a class="headerlink" href="#pycbg.preprocessing.Simulation.input_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to the input file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pycbg.preprocessing.Simulation.title">
+<code class="sig-name descname">title</code><a class="headerlink" href="#pycbg.preprocessing.Simulation.title" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simulation title.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pycbg.preprocessing.Simulation.directory">
+<code class="sig-name descname">directory</code><a class="headerlink" href="#pycbg.preprocessing.Simulation.directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Path to the simulation’s directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<p><cite>Mesh</cite>, <cite>Particles</cite>, <cite>EntitySets</cite> and <a class="reference internal" href="pycbg.preprocessing.Materials.html#pycbg.preprocessing.Materials" title="pycbg.preprocessing.Materials"><code class="xref py py-class docutils literal notranslate"><span class="pre">Materials</span></code></a> objects are created from the <cite>Simulation</cite> object.</p>
+<p class="rubric">Examples</p>
+<p>Simulating under gravity a column made of two materials :</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span> <span class="o">=</span> <span class="n">Simulation</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">create_mesh</span><span class="p">(</span><span class="n">dimensions</span><span class="o">=</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span><span class="mf">1.</span><span class="p">,</span><span class="mf">10.</span><span class="p">),</span> <span class="n">ncells</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">create_particles</span><span class="p">(</span><span class="n">npart_perdim_percell</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">init_entity_sets</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">lower_particles</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">entity_sets</span><span class="o">.</span><span class="n">create_set</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">:</span> <span class="n">z</span><span class="o">&lt;</span><span class="mi">10</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s2">&quot;particle&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">upper_particles</span> <span class="o">=</span> <span class="n">sim</span><span class="o">.</span><span class="n">entity_sets</span><span class="o">.</span><span class="n">create_set</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">:</span> <span class="n">z</span><span class="o">&gt;=</span><span class="mi">10</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s2">&quot;particle&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">materials</span><span class="o">.</span><span class="n">create_MohrCoulomb3D</span><span class="p">(</span><span class="n">pset_id</span><span class="o">=</span><span class="n">lower_particles</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">materials</span><span class="o">.</span><span class="n">create_Newtonian3D</span><span class="p">(</span><span class="n">pset_id</span><span class="o">=</span><span class="n">upper_particles</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">walls</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">walls</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">sim</span><span class="o">.</span><span class="n">entity_sets</span><span class="o">.</span><span class="n">create_set</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">:</span> <span class="n">x</span><span class="o">==</span><span class="n">lim</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s2">&quot;node&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">lim</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">l0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">walls</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">sim</span><span class="o">.</span><span class="n">entity_sets</span><span class="o">.</span><span class="n">create_set</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">:</span> <span class="n">y</span><span class="o">==</span><span class="n">lim</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s2">&quot;node&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">lim</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">l1</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">walls</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">sim</span><span class="o">.</span><span class="n">entity_sets</span><span class="o">.</span><span class="n">create_set</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">:</span> <span class="n">z</span><span class="o">==</span><span class="n">lim</span><span class="p">,</span> <span class="n">typ</span><span class="o">=</span><span class="s2">&quot;node&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">lim</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">sim</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">l2</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">direction</span><span class="p">,</span> <span class="n">sets</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">walls</span><span class="p">):</span> <span class="n">_</span> <span class="o">=</span> <span class="p">[</span><span class="n">sim</span><span class="o">.</span><span class="n">add_velocity_condition</span><span class="p">(</span><span class="n">direction</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="n">es</span><span class="p">)</span> <span class="k">for</span> <span class="n">es</span> <span class="ow">in</span> <span class="n">sets</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">set_gravity</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="o">-</span><span class="mf">9.81</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">set_analysis_parameters</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">nsteps</span><span class="o">=</span><span class="mf">1.5e8</span><span class="p">,</span> <span class="n">output_step_interval</span><span class="o">=</span><span class="mf">7.5e6</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sim</span><span class="o">.</span><span class="n">write_input_file</span><span class="p">()</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt id="pycbg.preprocessing.Simulation.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">'Sim_title'</span></em>, <em class="sig-param"><span class="n">directory</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.__init__" title="pycbg.preprocessing.Simulation.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a></p></td>
+<td><p>Initialize self.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.add_friction_condition" title="pycbg.preprocessing.Simulation.add_friction_condition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_friction_condition</span></code></a></p></td>
+<td><p>Add a friction condition on a node set.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.add_math_function" title="pycbg.preprocessing.Simulation.add_math_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_math_function</span></code></a></p></td>
+<td><p>Add a math function to the simulation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.add_nodal_force" title="pycbg.preprocessing.Simulation.add_nodal_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_nodal_force</span></code></a></p></td>
+<td><p>Add a force on all the node in a node set.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.add_velocity_condition" title="pycbg.preprocessing.Simulation.add_velocity_condition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_velocity_condition</span></code></a></p></td>
+<td><p>Add a velocity condition on a node or particle set.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.create_mesh" title="pycbg.preprocessing.Simulation.create_mesh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_mesh</span></code></a></p></td>
+<td><p>Create the simulation’s mesh.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.create_particles" title="pycbg.preprocessing.Simulation.create_particles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_particles</span></code></a></p></td>
+<td><p>Create the simultation’s particles.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.init_entity_sets" title="pycbg.preprocessing.Simulation.init_entity_sets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_entity_sets</span></code></a></p></td>
+<td><p>Create the simulation’s <a class="reference internal" href="pycbg.preprocessing.EntitySets.html#pycbg.preprocessing.EntitySets" title="pycbg.preprocessing.EntitySets"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntitySets</span></code></a> object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.set_analysis_parameters" title="pycbg.preprocessing.Simulation.set_analysis_parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_analysis_parameters</span></code></a></p></td>
+<td><p>Set the analysis parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.set_gravity" title="pycbg.preprocessing.Simulation.set_gravity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_gravity</span></code></a></p></td>
+<td><p>Set the value of gravity.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.write_input_file" title="pycbg.preprocessing.Simulation.write_input_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_input_file</span></code></a></p></td>
+<td><p>Write the input file.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="pycbg.preprocessing.Simulation.add_friction_condition">
+<code class="sig-name descname">add_friction_condition</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dir</span></em>, <em class="sig-param"><span class="n">sgn_n</span></em>, <em class="sig-param"><span class="n">frict_value</span></em>, <em class="sig-param"><span class="n">node_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.add_friction_condition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a friction condition on a node set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dir</strong> (<em>{0</em><em>, </em><em>1</em><em>, </em><em>2}</em>) – Axis of the normal vector to the plane where friction is acting.</p></li>
+<li><p><strong>sgn_n</strong> (<em>{-1</em><em>, </em><em>1}</em>) – Sign of the normal vector to the plane where friction is acting.</p></li>
+<li><p><strong>vel_value</strong> (<em>float</em>) – Imposed friction coefficient’s value.</p></li>
+<li><p><strong>entity_set</strong> (<em>int</em>) – Id of the entity set on which the velocity is imposed.</p></li>
+<li><p><strong>typ</strong> (<em>{&quot;node&quot;</em><em>, </em><em>&quot;particle&quot;}</em><em>, </em><em>optional</em>) – Type of set on which the velocity is imposed. Default is “particle”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pycbg.preprocessing.Simulation.add_math_function">
+<code class="sig-name descname">add_math_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">function_wrt_time</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.add_math_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a math function to the simulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>function_wrt_time</strong> (<em>function</em>) – Function that take the time <cite>t</cite> as input and returns the value of the math function.</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Should be called after analysis parameters are set (since the time values are computed from the time step and number of steps).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Id of the math function just appended.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pycbg.preprocessing.Simulation.add_nodal_force">
+<code class="sig-name descname">add_nodal_force</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dir</span></em>, <em class="sig-param"><span class="n">force</span></em>, <em class="sig-param"><span class="n">node_set</span></em>, <em class="sig-param"><span class="n">math_function_id</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.add_nodal_force" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a force on all the node in a node set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dir</strong> (<em>{0</em><em>, </em><em>1</em><em>, </em><em>2}</em>) – Axis on which the force is imposed.</p></li>
+<li><p><strong>force</strong> (<em>float</em>) – Imposed force’s value (<span class="math notranslate nohighlight">\(N\)</span>).</p></li>
+<li><p><strong>node_set</strong> (<em>int</em>) – Id of the node set on which the force is imposed.</p></li>
+<li><p><strong>math_function_id</strong> (<em>int</em><em>, </em><em>optional</em>) – Id of the math function to use. Default value is  None` (the load is then static).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pycbg.preprocessing.Simulation.add_velocity_condition">
+<code class="sig-name descname">add_velocity_condition</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dir</span></em>, <em class="sig-param"><span class="n">vel_value</span></em>, <em class="sig-param"><span class="n">entity_set</span></em>, <em class="sig-param"><span class="n">typ</span><span class="o">=</span><span class="default_value">'node'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.add_velocity_condition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a velocity condition on a node or particle set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dir</strong> (<em>{0</em><em>, </em><em>1</em><em>, </em><em>2}</em>) – Axis on which the velocity is imposed.</p></li>
+<li><p><strong>vel_value</strong> (<em>float</em>) – Imposed velocity’s value (<span class="math notranslate nohighlight">\(m.s^{-1}\)</span>).</p></li>
+<li><p><strong>entity_set</strong> (<em>int</em>) – Id of the entity set on which the velocity is imposed.</p></li>
+<li><p><strong>typ</strong> (<em>{&quot;node&quot;</em><em>, </em><em>&quot;particle&quot;}</em><em>, </em><em>optional</em>) – Type of set on which the velocity is imposed. Default is “particle”.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pycbg.preprocessing.Simulation.create_mesh">
+<code class="sig-name descname">create_mesh</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.create_mesh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the simulation’s mesh.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dimensions</strong> (<em>tuple of floats</em>) – Dimensions of the mesh. Its length should be 3, with <cite>dimensions[n]</cite> the dimension of the mesh on the axis <cite>n</cite>.</p></li>
+<li><p><strong>ncells</strong> (<em>tuple of ints</em>) – Number of cells in each direction. Its length should be 3, with <cite>ncells[n]</cite> the number of cells on the axis <cite>n</cite>.</p></li>
+<li><p><strong>check_duplicates</strong> (<em>bool</em><em>, </em><em>optional</em>) – See CB-Geo documentation for informations on this parameter. Default is <cite>True</cite>.</p></li>
+<li><p><strong>cell_type</strong> (<em>{'ED3H8'</em><em>, </em><em>'ED3H20'</em><em>, </em><em>'ED3H64'}</em><em>, </em><em>optional</em>) – Type of cell. Only 3D Hexahedrons are supported. The number of nodes can be 8, 20 or 64. Default is ‘ED3H8’.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pycbg.preprocessing.Simulation.create_particles">
+<code class="sig-name descname">create_particles</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.create_particles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the simultation’s particles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>npart_perdim_percell</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of particles for each dimensions in one cell. All cells will contain <code class="docutils literal notranslate"><span class="pre">npart_perdim_percell**3</span></code> equally spaced particles. Note that particles are equally spaced within a cell, not between cells. Default is 1 .</p></li>
+<li><p><strong>check_duplicates</strong> (<em>bool</em><em>, </em><em>optional</em>) – See CB-Geo documentation for informations on this parameter. Default is <cite>True</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pycbg.preprocessing.Simulation.init_entity_sets">
+<code class="sig-name descname">init_entity_sets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.init_entity_sets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the simulation’s <a class="reference internal" href="pycbg.preprocessing.EntitySets.html#pycbg.preprocessing.EntitySets" title="pycbg.preprocessing.EntitySets"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntitySets</span></code></a> object.</p>
+<p>Has to be called after mesh and particles creation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pycbg.preprocessing.Simulation.set_analysis_parameters">
+<code class="sig-name descname">set_analysis_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">'MPMExplicit3D'</span></em>, <em class="sig-param"><span class="n">mpm_scheme</span><span class="o">=</span><span class="default_value">'usl'</span></em>, <em class="sig-param"><span class="n">damping</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">locate_particles</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dt</span><span class="o">=</span><span class="default_value">1e-05</span></em>, <em class="sig-param"><span class="n">nsteps</span><span class="o">=</span><span class="default_value">2000</span></em>, <em class="sig-param"><span class="n">output_step_interval</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.set_analysis_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the analysis parameters. Has to be called before
+<cite>write_input_file</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> (<em>{'MPMExplicit2D'</em><em>, </em><em>'MPMExplicit3D'}</em><em>, </em><em>optional</em>) – Analysis type. Default is ‘MPMExplicit3D’.</p></li>
+<li><p><strong>mpm_scheme</strong> (<em>{'usf'</em><em>, </em><em>'usl'</em><em>, </em><em>'musl'}</em><em>, </em><em>optional</em>) – MPM scheme for the stress update. The scheme can be “Update Stress First” (‘usf’), “Update Stress Last” (‘usl’) or “Modified Update Stress Last” (‘musl’).</p></li>
+<li><p><strong>damping</strong> (<em>float</em><em>, </em><em>optional</em>) – Cundall’s damping. Should verify : <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">damping</span> <span class="pre">&lt;</span> <span class="pre">1</span></code>. Default is 0.05 .</p></li>
+<li><p><strong>locate_particles</strong> (<em>bool</em><em>, </em><em>optional</em>) – Stops the simulation when particles go outside the mesh if <cite>True</cite>. Default is <cite>False</cite>.</p></li>
+<li><p><strong>dt</strong> (<em>float</em><em>, </em><em>optional</em>) – Time step (<span class="math notranslate nohighlight">\(s\)</span>). Default is <cite>1e-5</cite> <span class="math notranslate nohighlight">\(s\)</span>.</p></li>
+<li><p><strong>nsteps</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of steps to be performed. Default is 2000.</p></li>
+<li><p><strong>output_step_interval</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of steps between two data points. Default is 100.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pycbg.preprocessing.Simulation.set_gravity">
+<code class="sig-name descname">set_gravity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gravity</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.set_gravity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the value of gravity. If this method isn’t called, gravity is
+<cite>[0,0,0]</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gravity</strong> (<em>list of floats</em>) – Gravity’s value on each axis (<span class="math notranslate nohighlight">\(m/s^2\)</span>).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pycbg.preprocessing.Simulation.write_input_file">
+<code class="sig-name descname">write_input_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.write_input_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the input file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="pycbg.preprocessing.Materials.html" class="btn btn-neutral float-left" title="pycbg.preprocessing.Materials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Sacha Duverger
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,282 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to pycbg’s documentation! &mdash; pycbg  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pycbg.preprocessing.Mesh" href="stubs/pycbg.preprocessing.Mesh.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home" alt="Documentation Home"> pycbg
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="stubs/pycbg.preprocessing.Mesh.html">pycbg.preprocessing.Mesh</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stubs/pycbg.preprocessing.Particles.html">pycbg.preprocessing.Particles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stubs/pycbg.preprocessing.EntitySets.html">pycbg.preprocessing.EntitySets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stubs/pycbg.preprocessing.Materials.html">pycbg.preprocessing.Materials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="stubs/pycbg.preprocessing.Simulation.html">pycbg.preprocessing.Simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="stubs/pycbg.postprocessing.ResultsReader.html">pycbg.postprocessing.ResultsReader</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">pycbg</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Welcome to pycbg’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-pycbg-s-documentation">
+<h1>Welcome to pycbg’s documentation!<a class="headerlink" href="#welcome-to-pycbg-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This module helps configuring MPM simulations for <a class="reference external" href="https://github.com/cb-geo/mpm">CB-Geo MPM</a>: a simple python script can generate the input files required by CB-Geo (see <a class="reference internal" href="#preprocessing"><span class="std std-ref">Preprocessing</span></a>). The results of the simulation can also be imported in python using pycbg (see <a class="reference internal" href="#postprocessing"><span class="std std-ref">Postprocessing</span></a>). This documentation should be used alongside <a class="reference external" href="https://mpm.cb-geo.com/#/">CB-Geo’s documentation</a>.</p>
+</div>
+<hr class="docutils" />
+<div class="section" id="preprocessing">
+<h1>Preprocessing<a class="headerlink" href="#preprocessing" title="Permalink to this headline">¶</a></h1>
+<p>Preprocessing a MPM simulation for CB-Geo consist in creating several input files :</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>a mesh file, where the positions of all nodes and their interconnections are described. Pycbg saves it under the name <cite>mesh.msh</cite>. Can be created using the <a class="reference internal" href="stubs/pycbg.preprocessing.Mesh.html#pycbg.preprocessing.Mesh" title="pycbg.preprocessing.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> object.</p></li>
+<li><p>a particles file, where the initial positions of all material points are specified. Pycbg saves it under the name <cite>particles.txt</cite>. Can be created using the <a class="reference internal" href="stubs/pycbg.preprocessing.Particles.html#pycbg.preprocessing.Particles" title="pycbg.preprocessing.Particles"><code class="xref py py-class docutils literal notranslate"><span class="pre">Particles</span></code></a> object.</p></li>
+<li><p>an entity sets file (if entity sets are defined), where all entity sets are defined using entities’ ids. An entity can be a node, a particle or a cell. Pycbg saves it under the name <cite>entity_sets.txt</cite>. Can be created using the <a class="reference internal" href="stubs/pycbg.preprocessing.EntitySets.html#pycbg.preprocessing.EntitySets" title="pycbg.preprocessing.EntitySets"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntitySets</span></code></a> object.</p></li>
+</ul>
+</div></blockquote>
+<p>The <a class="reference internal" href="stubs/pycbg.preprocessing.Simulation.html#pycbg.preprocessing.Simulation" title="pycbg.preprocessing.Simulation"><code class="xref py py-class docutils literal notranslate"><span class="pre">Simulation</span></code></a> object creates <a class="reference internal" href="stubs/pycbg.preprocessing.Mesh.html#pycbg.preprocessing.Mesh" title="pycbg.preprocessing.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a>, <a class="reference internal" href="stubs/pycbg.preprocessing.Particles.html#pycbg.preprocessing.Particles" title="pycbg.preprocessing.Particles"><code class="xref py py-class docutils literal notranslate"><span class="pre">Particles</span></code></a>, <a class="reference internal" href="stubs/pycbg.preprocessing.Materials.html#pycbg.preprocessing.Materials" title="pycbg.preprocessing.Materials"><code class="xref py py-class docutils literal notranslate"><span class="pre">Materials</span></code></a> and <a class="reference internal" href="stubs/pycbg.preprocessing.EntitySets.html#pycbg.preprocessing.EntitySets" title="pycbg.preprocessing.EntitySets"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntitySets</span></code></a> objects and should be enough to prepare a simulation.</p>
+<div class="section" id="classes-overview">
+<h2>Classes overview<a class="headerlink" href="#classes-overview" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/pycbg.preprocessing.Mesh.html#pycbg.preprocessing.Mesh" title="pycbg.preprocessing.Mesh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Mesh</span></code></a></p></td>
+<td><p>Create and write to a file a mesh using gmsh.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/pycbg.preprocessing.Particles.html#pycbg.preprocessing.Particles" title="pycbg.preprocessing.Particles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Particles</span></code></a></p></td>
+<td><p>Create and write to a file particles from a <a class="reference internal" href="stubs/pycbg.preprocessing.Mesh.html#pycbg.preprocessing.Mesh" title="pycbg.preprocessing.Mesh"><code class="xref py py-class docutils literal notranslate"><span class="pre">Mesh</span></code></a> object.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/pycbg.preprocessing.EntitySets.html#pycbg.preprocessing.EntitySets" title="pycbg.preprocessing.EntitySets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EntitySets</span></code></a></p></td>
+<td><p>Create and write to a file entity sets for nodes and particles.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="stubs/pycbg.preprocessing.Materials.html#pycbg.preprocessing.Materials" title="pycbg.preprocessing.Materials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Materials</span></code></a></p></td>
+<td><p>Create materials for particle sets.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/pycbg.preprocessing.Simulation.html#pycbg.preprocessing.Simulation" title="pycbg.preprocessing.Simulation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Simulation</span></code></a></p></td>
+<td><p>Create a simulation.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<hr class="docutils" />
+<div class="section" id="postprocessing">
+<h1>Postprocessing<a class="headerlink" href="#postprocessing" title="Permalink to this headline">¶</a></h1>
+<p><strong>TODO</strong>: <em>explain postprocessing here</em></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="stubs/pycbg.postprocessing.ResultsReader.html#pycbg.postprocessing.ResultsReader" title="pycbg.postprocessing.ResultsReader"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ResultsReader</span></code></a></p></td>
+<td><p>Load the result of a simulation.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<hr class="docutils" />
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="stubs/pycbg.preprocessing.Mesh.html" class="btn btn-neutral float-right" title="pycbg.preprocessing.Mesh" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Sacha Duverger
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

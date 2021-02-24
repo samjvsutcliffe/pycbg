@@ -90,6 +90,9 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">pycbg.preprocessing.Materials</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pycbg.preprocessing.Simulation.html">pycbg.preprocessing.Simulation</a></li>
 </ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pycbg.postprocessing.ResultsReader.html">pycbg.postprocessing.ResultsReader</a></li>
+</ul>
 
             
           
@@ -223,14 +226,33 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.__init__" title="pycbg.preprocessing.Materials.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a></p></td>
 <td><p>Initialize self.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.create_MohrCoulomb3D" title="pycbg.preprocessing.Materials.create_MohrCoulomb3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_MohrCoulomb3D</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.create_LinearElastic3D" title="pycbg.preprocessing.Materials.create_LinearElastic3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_LinearElastic3D</span></code></a></p></td>
+<td><p>Create LinearElastic3D material.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.create_MohrCoulomb3D" title="pycbg.preprocessing.Materials.create_MohrCoulomb3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_MohrCoulomb3D</span></code></a></p></td>
 <td><p>Create MohrCoulomb3D material, as specified by CB-Geo documentation.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.create_Newtonian3D" title="pycbg.preprocessing.Materials.create_Newtonian3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_Newtonian3D</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.create_Newtonian3D" title="pycbg.preprocessing.Materials.create_Newtonian3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_Newtonian3D</span></code></a></p></td>
 <td><p>Create Newtonian3D material, as specified by CB-Geo documentation.</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="py method">
+<dt id="pycbg.preprocessing.Materials.create_LinearElastic3D">
+<code class="sig-name descname">create_LinearElastic3D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pset_id</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">density</span><span class="o">=</span><span class="default_value">1000.0</span></em>, <em class="sig-param"><span class="n">youngs_modulus</span><span class="o">=</span><span class="default_value">50000000.0</span></em>, <em class="sig-param"><span class="n">poisson_ratio</span><span class="o">=</span><span class="default_value">0.3</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Materials.create_LinearElastic3D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create LinearElastic3D material.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pset_id</strong> (<em>int</em>) – Particle set id that will be made off this material</p></li>
+<li><p><strong>density</strong> (<em>float</em><em>, </em><em>optional</em>) – Density of the material (<span class="math notranslate nohighlight">\(kg/m^3\)</span>). Default is 1.225 <span class="math notranslate nohighlight">\(kg/m^3\)</span>.</p></li>
+<li><p><strong>young_modulus</strong> (<em>float</em><em>, </em><em>optional</em>) – Young’s modulus of the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 50 <span class="math notranslate nohighlight">\(GPa\)</span>.</p></li>
+<li><p><strong>poisson_ratio</strong> (<em>float</em><em>, </em><em>otpional</em>) – Poisson’s ratio of the material. Default is 0.3 .</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="pycbg.preprocessing.Materials.create_MohrCoulomb3D">
 <code class="sig-name descname">create_MohrCoulomb3D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pset_id</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">density</span><span class="o">=</span><span class="default_value">1000.0</span></em>, <em class="sig-param"><span class="n">youngs_modulus</span><span class="o">=</span><span class="default_value">50000000.0</span></em>, <em class="sig-param"><span class="n">poisson_ratio</span><span class="o">=</span><span class="default_value">0.3</span></em>, <em class="sig-param"><span class="n">friction</span><span class="o">=</span><span class="default_value">36.0</span></em>, <em class="sig-param"><span class="n">dilation</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">cohesion</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">tension_cutoff</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">softening</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">peak_pdstrain</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">residual_pdstrain</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">residual_friction</span><span class="o">=</span><span class="default_value">13.0</span></em>, <em class="sig-param"><span class="n">residual_dilation</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">residual_cohesion</span><span class="o">=</span><span class="default_value">0.0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Materials.create_MohrCoulomb3D" title="Permalink to this definition">¶</a></dt>

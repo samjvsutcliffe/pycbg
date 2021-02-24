@@ -192,7 +192,7 @@
 <dl class="py attribute">
 <dt id="pycbg.postprocessing.ResultsReader.pstresses">
 <code class="sig-name descname">pstresses</code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.pstresses" title="Permalink to this definition">¶</a></dt>
-<dd><p>Particles’ principal stresses for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of <code class="docutils literal notranslate"><span class="pre">pstresses[i]</span></code> is <code class="docutils literal notranslate"><span class="pre">(npart,3)</span></code>.</p>
+<dd><p>Particles’ stresses for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of <code class="docutils literal notranslate"><span class="pre">pstresses[i]</span></code> is <code class="docutils literal notranslate"><span class="pre">(npart,6)</span></code>. The columns represent the directions <cite>xx</cite>, <cite>yy</cite>, <cite>zz</cite>, <cite>xy</cite>, <cite>yz</cite> and <cite>xz</cite> respectively.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>list of numpy arrays</p>
@@ -203,7 +203,7 @@
 <dl class="py attribute">
 <dt id="pycbg.postprocessing.ResultsReader.pstrains">
 <code class="sig-name descname">pstrains</code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.pstrains" title="Permalink to this definition">¶</a></dt>
-<dd><p>Particles’ principal strains for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of <code class="docutils literal notranslate"><span class="pre">pstrains[i]</span></code> is <code class="docutils literal notranslate"><span class="pre">(npart,3)</span></code>.</p>
+<dd><p>Particles’ strains for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of <code class="docutils literal notranslate"><span class="pre">pstrains[i]</span></code> is <code class="docutils literal notranslate"><span class="pre">(npart,6)</span></code>. The columns represent the directions <cite>xx</cite>, <cite>yy</cite>, <cite>zz</cite>, <cite>xy</cite>, <cite>yz</cite> and <cite>xz</cite> respectively.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>list of numpy arrays</p>

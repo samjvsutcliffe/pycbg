@@ -37,6 +37,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="pycbg.postprocessing.ResultsReader" href="pycbg.postprocessing.ResultsReader.html" />
     <link rel="prev" title="pycbg.preprocessing.Materials" href="pycbg.preprocessing.Materials.html" /> 
 </head>
 
@@ -88,6 +89,9 @@
 <li class="toctree-l1"><a class="reference internal" href="pycbg.preprocessing.EntitySets.html">pycbg.preprocessing.EntitySets</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pycbg.preprocessing.Materials.html">pycbg.preprocessing.Materials</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">pycbg.preprocessing.Simulation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pycbg.postprocessing.ResultsReader.html">pycbg.postprocessing.ResultsReader</a></li>
 </ul>
 
             
@@ -212,6 +216,17 @@
 </dd></dl>
 
 <dl class="py attribute">
+<dt id="pycbg.preprocessing.Simulation.init_stresses">
+<code class="sig-name descname">init_stresses</code><a class="headerlink" href="#pycbg.preprocessing.Simulation.init_stresses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initial stresses for each particle. Noting <cite>npart</cite> the number of particles, its shape is <code class="docutils literal notranslate"><span class="pre">(npart,</span> <span class="pre">3)</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
 <dt id="pycbg.preprocessing.Simulation.input_filename">
 <code class="sig-name descname">input_filename</code><a class="headerlink" href="#pycbg.preprocessing.Simulation.input_filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to the input file.</p>
@@ -309,7 +324,10 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.set_gravity" title="pycbg.preprocessing.Simulation.set_gravity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_gravity</span></code></a></p></td>
 <td><p>Set the value of gravity.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.write_input_file" title="pycbg.preprocessing.Simulation.write_input_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_input_file</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.set_initial_particles_stresses" title="pycbg.preprocessing.Simulation.set_initial_particles_stresses"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_initial_particles_stresses</span></code></a></p></td>
+<td><p>Set the initial stresses for each particle.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.write_input_file" title="pycbg.preprocessing.Simulation.write_input_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_input_file</span></code></a></p></td>
 <td><p>Write the input file.</p></td>
 </tr>
 </tbody>
@@ -362,7 +380,7 @@
 <li><p><strong>dir</strong> (<em>{0</em><em>, </em><em>1</em><em>, </em><em>2}</em>) – Axis on which the force is imposed.</p></li>
 <li><p><strong>force</strong> (<em>float</em>) – Imposed force’s value (<span class="math notranslate nohighlight">\(N\)</span>).</p></li>
 <li><p><strong>node_set</strong> (<em>int</em>) – Id of the node set on which the force is imposed.</p></li>
-<li><p><strong>math_function_id</strong> (<em>int</em><em>, </em><em>optional</em>) – Id of the math function to use. Default value is  None` (the load is then static).</p></li>
+<li><p><strong>math_function_id</strong> (<em>int</em><em>, </em><em>optional</em>) – Id of the math function to use. Default value is <cite>None</cite> (the load is then static).</p></li>
 </ul>
 </dd>
 </dl>
@@ -454,6 +472,17 @@
 </dd></dl>
 
 <dl class="py method">
+<dt id="pycbg.preprocessing.Simulation.set_initial_particles_stresses">
+<code class="sig-name descname">set_initial_particles_stresses</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">init_stresses</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.set_initial_particles_stresses" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the initial stresses for each particle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>init_stresses</strong> (<em>numpy array</em>) – Initial stresses for each particle. Noting <cite>npart</cite> the number of particles, it should have the shape <code class="docutils literal notranslate"><span class="pre">(npart,</span> <span class="pre">3)</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pycbg.preprocessing.Simulation.write_input_file">
 <code class="sig-name descname">write_input_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.write_input_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the input file.</p>
@@ -470,6 +499,8 @@
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="pycbg.postprocessing.ResultsReader.html" class="btn btn-neutral float-right" title="pycbg.postprocessing.ResultsReader" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="pycbg.preprocessing.Materials.html" class="btn btn-neutral float-left" title="pycbg.preprocessing.Materials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

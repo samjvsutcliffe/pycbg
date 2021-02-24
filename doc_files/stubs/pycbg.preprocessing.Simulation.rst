@@ -25,6 +25,7 @@
       ~Simulation.init_entity_sets
       ~Simulation.set_analysis_parameters
       ~Simulation.set_gravity
+      ~Simulation.set_initial_particles_stresses
       ~Simulation.write_input_file
    
    

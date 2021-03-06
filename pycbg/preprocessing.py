@@ -734,7 +734,7 @@ class Simulation():
         """
         self.__gravity = gravity
 
-    def set_analysis_parameters(self, type="MPMExplicit3D", mpm_scheme="usl", damping=0.05, locate_particles=False, dt=1e-05, nsteps=2000, output_step_interval=100):
+    def set_analysis_parameters(self, type="MPMExplicit3D", mpm_scheme="usl", damping=0.05, locate_particles=False, dt=1e-05, velocity_update=False, nsteps=2000, output_step_interval=100):
         """Set the analysis parameters. Has to be called before
         `write_input_file`.
 
@@ -750,6 +750,8 @@ class Simulation():
             Stops the simulation when particles go outside the mesh if `True`. Default is `False`.
         dt : float, optional
             Time step (:math:`s`). Default is `1e-5` :math:`s`.
+        velocity_update : bool, optional
+            How to compute velocity. If `True` nodal velocity is directly interpolated from particles, if `False` nodal velocity is computed from the acceleration interpolated from particles. Default is `False`.
         nsteps : int, optional
             Number of steps to be performed. Default is 2000.
         output_step_interval : int, optional
@@ -760,6 +762,7 @@ class Simulation():
                            "locate_particles": locate_particles,
                            "dt": dt,
                            "damping": {"type": "Cundall", "damping_factor": damping},
+                           "velocity_update": velocity_update,
                            "nsteps": int(nsteps),
                            "uuid": self.title}
         self.post_processing = {"path": self.directory + "results/",

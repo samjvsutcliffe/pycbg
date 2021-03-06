@@ -2,4 +2,5 @@ setup.py
 pycbg.egg-info/PKG-INFO
 pycbg.egg-info/SOURCES.txt
 pycbg.egg-info/dependency_links.txt
+pycbg.egg-info/requires.txt
 pycbg.egg-info/top_level.txt

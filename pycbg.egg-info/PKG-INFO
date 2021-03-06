@@ -2,7 +2,7 @@ Metadata-Version: 1.0
 Name: pycbg
 Version: 1.0.0
 Summary: Python interface to generate CB-Geo mpm input files
-Home-page: UNKNOWN
+Home-page: git_repos@axp20009:~/pycbg.git
 Author: Sacha Duverger
 Author-email: UNKNOWN
 License: UNKNOWN

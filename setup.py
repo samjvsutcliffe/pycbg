@@ -10,10 +10,12 @@ setup(
         'numpy',
         'gmsh',
         'pandas',
-        'matplotlib'
+        'matplotlib',
+        'sphinx>=3.3.1',
+        'sphinx_rtd_theme'
     ],
-    extras_require={
-        'documentation': ['sphinx>=3.3.1', 'sphinx_rtd_theme']
-    },
+    # extras_require={
+    #     'documentation': ['sphinx>=3.3.1', 'sphinx_rtd_theme']
+    # },
     packages=find_packages(include=['pycbg/*'])
 )

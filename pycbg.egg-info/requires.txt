@@ -2,3 +2,7 @@ numpy
 gmsh
 pandas
 matplotlib
+
+[documentation]
+sphinx>=3.3.1
+sphinx_rtd_theme

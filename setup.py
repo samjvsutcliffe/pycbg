@@ -12,6 +12,7 @@ setuptools.setup(
     author_email='sacha.duverger@inrae.fr',
     url='git_repos@axp20009:~/pycbg.git',
     long_description=long_description,
+    long_description_content_type='text/markdown',
     licence='MIT',
     install_requires=[
         'numpy',

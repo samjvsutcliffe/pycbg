@@ -1,11 +1,16 @@
-from setuptools import setup, find_packages
+import setuptools
+from version import *
 
-setup(
+with open("README.md", "r", encoding="utf-8") as fh:
+    long_description = fh.read()
+
+setuptools.setup(
     name='pycbg',
-    version='1.0.0',
+    version=get_git_version(),
     description='Python interface to generate CB-Geo mpm input files',
     author='Sacha Duverger',
     url='git_repos@axp20009:~/pycbg.git',
+    long_description=long_description,
     install_requires=[
         'numpy',
         'gmsh',
@@ -17,5 +22,5 @@ setup(
     # extras_require={
     #     'documentation': ['sphinx>=3.3.1', 'sphinx_rtd_theme']
     # },
-    packages=find_packages(include=['pycbg/*'])
+    packages=setuptools.find_packages(include=['pycbg/*'])
 )

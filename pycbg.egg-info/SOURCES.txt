@@ -1,4 +1,8 @@
+MANIFEST.in
+README.md
+RELEASE-VERSION
 setup.py
+version.py
 pycbg.egg-info/PKG-INFO
 pycbg.egg-info/SOURCES.txt
 pycbg.egg-info/dependency_links.txt

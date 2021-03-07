@@ -80,7 +80,7 @@ def write_release_version(version):
     f.write("%s\n" % version)
     f.close()
 
-def get_git_version(abbrev=7):
+def get_git_version_raw(abbrev=7):
     # Read in the version that's currently in RELEASE-VERSION.
 
     release_version = read_release_version()
@@ -112,6 +112,17 @@ def get_git_version(abbrev=7):
 
     return version
 
+def get_git_version(abbrev=7):
+    raw_version = get_git_version_raw(abbrev)
+
+    # Formating version number as major.minor.micro
+    split_version = raw_version[1:].split('.')
+    major = split_version[0]
+    minor = split_version[1]
+    if '-' in split_version[2]: micro = split_version[2].split('-')[0]
+    else: micro = split_version[2]
+
+    return '{:}.{:}.{:}'.format(major, minor, micro)
 
 if __name__ == "__main__":
     print(get_git_version())

@@ -601,12 +601,12 @@ class Simulation():
         self.mesh.write_file()
 
     def create_particles(self, *args, **kwargs):
-        """Create the simultation's particles.
+        """Create the simulation's particles.
 
         Parameters
         ----------
         npart_perdim_percell : int, optional
-            Number of particles for each dimensions in one cell. All cells will contain ``npart_perdim_percell**3`` equally spaced particles. Note that particles are equally spaced within a cell, not between cells. Default is 1 .
+            Number of particles for each dimension in one cell. All cells will contain ``npart_perdim_percell**3`` equally spaced particles. Note that particles are equally spaced within a cell, not between cells. Default is 1 .
         check_duplicates : bool, optional
             See CB-Geo documentation for informations on this parameter. Default is `True`.
         """

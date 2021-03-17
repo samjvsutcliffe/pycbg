@@ -440,9 +440,9 @@ class Materials():
         pset_id : int
             Particle set id that will be made off this material
         density : float, optional
-            Density of the material (:math:`kg/m^3`). Default is 1.225 :math:`kg/m^3`.
+            Density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
         young_modulus : float, optional
-            Young's modulus of the material (:math:`Pa`). Default is 50 :math:`GPa`.
+            Young's modulus of the material (:math:`Pa`). Default is 50 :math:`MPa`.
         poisson_ratio : float, otpional
             Poisson's ratio of the material. Default is 0.3 .
         friction : float, optional
@@ -493,9 +493,9 @@ class Materials():
         pset_id : int
             Particle set id that will be made off this material
         density : float, optional
-            Density of the material (:math:`kg/m^3`). Default is 1.225 :math:`kg/m^3`.
+            Density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
         young_modulus : float, optional
-            Young's modulus of the material (:math:`Pa`). Default is 50 :math:`GPa`.
+            Young's modulus of the material (:math:`Pa`). Default is 50 :math:`MPa`.
         poisson_ratio : float, otpional
             Poisson's ratio of the material. Default is 0.3 .
         """

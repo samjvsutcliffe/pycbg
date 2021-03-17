@@ -88,7 +88,7 @@ class ResultsReader():
             self.ppressures.append(df['pressure'].values)
             self.pmaterials.append(df['material_id'].values)
             self.pvolumes.append(df['volume'].values)
-            self.pmasses.append(df['volume'].values)
+            self.pmasses.append(df['mass'].values)
     
 __ind_sgmts = [[0,1], [1,2], [2,3], [3,0],
                [4,5], [5,6], [6,7], [7,4],

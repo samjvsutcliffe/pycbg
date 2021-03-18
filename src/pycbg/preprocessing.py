@@ -792,7 +792,7 @@ class Simulation():
         """
         self.__gravity = gravity
 
-    def set_analysis_parameters(self, type="MPMExplicit3D", mpm_scheme="usl", damping=0.05, locate_particles=False, dt=1e-05, velocity_update=False, nsteps=2000, output_step_interval=100):
+    def set_analysis_parameters(self, type="MPMExplicit3D", mpm_scheme="usl", damping=0.05, locate_particles=False, dt=1e-05, velocity_update='flip', nsteps=2000, output_step_interval=100):
         """Set the analysis parameters. Has to be called before
         `write_input_file`.
 
@@ -808,8 +808,8 @@ class Simulation():
             Stops the simulation when particles go outside the mesh if `True`. Default is `False`.
         dt : float, optional
             Time step (:math:`s`). Default is `1e-5` :math:`s`.
-        velocity_update : bool, optional
-            How to compute velocity. If `True` nodal velocity is directly interpolated from particles, if `False` nodal velocity is computed from the acceleration interpolated from particles. Default is `False`.
+        velocity_update : {'pic', 'flip', 'apic'}, optional
+            How to compute particle's velocity. If `'pic'` nodal velocity is directly interpolated to particles. If `'flip'` nodal velocity is computed from the acceleration interpolated to particles. If `'apic'`, momentum is interpolated according to *Jiang, Chenfanfu, et al., 2015*. Default is `'flip'`.
         nsteps : int, optional
             Number of steps to be performed. Default is 2000.
         output_step_interval : int, optional

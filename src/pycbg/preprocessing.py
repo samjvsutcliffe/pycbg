@@ -792,7 +792,7 @@ class Simulation():
         """
         self.__gravity = gravity
 
-    def set_analysis_parameters(self, type="MPMExplicit3D", mpm_scheme="usl", damping=0.05, locate_particles=False, dt=1e-05, velocity_update='flip', nsteps=2000, output_step_interval=100):
+    def set_analysis_parameters(self, type="MPMExplicit3D", mpm_scheme="usl", damping=0.05, locate_particles=False, dt=1e-05, velocity_update='flip', nsteps=2000, verbosity=1000, output_step_interval=100):
         """Set the analysis parameters. Has to be called before
         `write_input_file`.
 
@@ -812,6 +812,8 @@ class Simulation():
             How to compute particle's velocity. If `'pic'` nodal velocity is directly interpolated to particles. If `'flip'` nodal velocity is computed from the acceleration interpolated to particles. If `'apic'`, momentum is interpolated according to *Jiang, Chenfanfu, et al., 2015*. Default is `'flip'`.
         nsteps : int, optional
             Number of steps to be performed. Default is 2000.
+        verbosity : int, optional
+            Number of lines to be printed in the console. Default is 1000.
         output_step_interval : int, optional
             Number of steps between two data points. Default is 100.
         """
@@ -822,6 +824,7 @@ class Simulation():
                            "damping": {"type": "Cundall", "damping_factor": damping},
                            "velocity_update": velocity_update,
                            "nsteps": int(nsteps),
+                           "verbosity": int(verbosity),
                            "uuid": self.title}
         self.post_processing = {"path": self.directory + "results/",
                                 "output_steps": int(output_step_interval)}

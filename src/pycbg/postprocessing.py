@@ -64,12 +64,12 @@ class ResultsReader():
     
     def __extract_data(self):
         files = os.listdir(self.data_dir)
-        files = [f for f in files if f[-3:]=='.h5']
+        files = [f for f in files if f[-4:]=='.csv']
 
         raw_data, steps = [], []
         for f in files: 
-            raw_data.append(pd.read_hdf(self.data_dir + f, 'table'))
-            steps.append(int(f[9:-3]))
+            raw_data.append(pd.read_csv(self.data_dir + f, sep="\t", header=0))
+            steps.append(int(f[9:-4]))
 
         sort_ind = np.argsort(steps)
         self.raw_data, self.steps = [], []

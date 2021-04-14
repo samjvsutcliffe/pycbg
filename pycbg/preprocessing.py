@@ -439,19 +439,19 @@ class Materials():
         ----------
         pset_id : int
             Particle set id that will be made off this material
-        density : float, optional
+        density : float
             Density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
-        young_modulus : float, optional
+        young_modulus : float
             Young's modulus of the material (:math:`Pa`). Default is 50 :math:`MPa`.
-        poisson_ratio : float, otpional
+        poisson_ratio : float
             Poisson's ratio of the material. Default is 0.3 .
-        friction : float, optional
+        friction : float
             Friction angle of the material (:math:`^\circ`). Default is 36 :math:`^\circ`.
-        dilation : float, optional
+        dilation : float
             Dilation angle of the material (:math:`^\circ`). Default is 0 :math:`^\circ`.
-        cohesion : float, optional
+        cohesion : float
             Cohesion in the material (:math:`Pa`). Default is 0 :math:`Pa`.
-        tension_cutoff : float, optional
+        tension_cutoff : float
             Tension strength of the material (:math:`Pa`). Default is 0 :math:`Pa`.
         softening : bool, optional
             Enable softening option. If `True`, one has to set `peak_pdstrain`, `residual_pdstrain`, `residual_friction`, `residual_dilation` and `residual_cohesion`. Default is `False`.
@@ -492,11 +492,11 @@ class Materials():
         ----------
         pset_id : int
             Particle set id that will be made off this material
-        density : float, optional
+        density : float
             Density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
-        young_modulus : float, optional
+        young_modulus : float
             Young's modulus of the material (:math:`Pa`). Default is 50 :math:`MPa`.
-        poisson_ratio : float, otpional
+        poisson_ratio : float
             Poisson's ratio of the material. Default is 0.3 .
         """
         self.pset_ids.append(pset_id)

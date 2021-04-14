@@ -94,9 +94,10 @@ __ind_sgmts = [[0,1], [1,2], [2,3], [3,0],
                [4,5], [5,6], [6,7], [7,4],
                [0,4], [1,5], [2,6], [3,7]]
 
-def plot_mesh(mesh):
-    fig = plt.figure(1, figsize=(15,10))
-    ax = fig.add_subplot(111, projection='3d')
+def plot_mesh(mesh, fig=None, ax=None):
+    if fig is None and ax is None: 
+        fig = plt.figure(1, figsize=(15,10))
+        ax = fig.add_subplot(111, projection='3d')
 
     added_segments = []
     for cell in mesh.cells:

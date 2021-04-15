@@ -712,8 +712,7 @@ class Simulation():
                                                                    "friction": frict_value})
     
     def add_math_function(self, times, values):
-        """Add a math function to the simulation. The function can only be
-        piecewise-linear.
+        """Add a math function to the simulation. The function can only be piecewise-linear.
 
         Parameters
         ----------

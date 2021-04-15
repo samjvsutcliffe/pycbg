@@ -665,27 +665,23 @@ class Simulation():
                                                                    "sign_n": sgn_n,
                                                                    "velocity": frict_value})
     
-    def add_math_function(self, function_wrt_time):
-        """Add a math function to the simulation.
+    def add_math_function(self, times, values):
+        """Add a math function to the simulation. The function can only be piecewise-linear.
 
         Parameters
         ----------
-        function_wrt_time : function
-            Function that take the time `t` as input and returns the value of the math function.
-
-        Notes
-        -----
-        Should be called after analysis parameters are set (since the time values are computed from the time step and number of steps).
+        times : list of floats
+            Contains the times at which the values of the math function are given. The first element should always be `0.` and the last should always be `nsteps*dt`.
+        values : list of floats
+            Contains the values of the math function for each time given in `times`.
 
         Returns
         -------
         int
             Id of the math function just appended. 
         """
-        ft_values = [function_wrt_time(t) for t in (self.__analysis["dt"] * i for i in np.array(range(self.__analysis["nsteps"])))]
         fct_id = len(self.math_functions)
-        
-        self.math_functions.append({"id":fct_id, "type": 'Linear', "xvalues": str(list(self.__times)), "fxvalues": str(ft_values)})
+        self.math_functions.append({"id":fct_id, "type": 'Linear', "xvalues": str(times), "fxvalues": str(values)})
 
         return fct_id
 

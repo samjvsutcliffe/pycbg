@@ -580,6 +580,7 @@ class Simulation():
                                       "particles_velocity_constraints": []}
         self.__gravity = [0,0,0]
         self.__nodal_forces = []
+        self.__particle_traction = []
         self.__init_stress_filename = self.directory + "particles_stresses.txt"
 
     def create_mesh(self, *args, **kwargs):
@@ -685,8 +686,8 @@ class Simulation():
 
         return fct_id
 
-    def add_nodal_force(self, dir, force, node_set, math_function_id=None):
-        """Add a force on all the node in a node set.
+    def add_force(self, dir, force, entity_set, typ="node", math_function_id=None):
+        """Add a force on all the element in a entity set.
 
         Parameters
         ----------
@@ -694,15 +695,24 @@ class Simulation():
             Axis on which the force is imposed.
         force : float
             Imposed force's value (:math:`N`).
-        node_set : int
-            Id of the node set on which the force is imposed.
+        entity_set : int
+            Id of the entity set on which the velocity is imposed.
+        typ : {"node", "particle"}, optional
+            Type of set on which the velocity is imposed. Default is "particle".
         math_function_id : int, optional
             Id of the math function to use. Default value is `None` (the load is then static).
         """
-        self.__nodal_forces.append({"nset_id": node_set,
-                                    "dir": dir,
-                                    "force": force})
-        if math_function_id != None: self.__nodal_forces[-1]["math_function_id"] = math_function_id
+        if typ=="node":
+            self.__nodal_forces.append({"nset_id": entity_set,
+                                        "dir": dir,
+                                        "force": force})
+            if math_function_id != None: self.__nodal_forces[-1]["math_function_id"] = math_function_id
+        elif typ=="particle":
+            self.__particle_traction.append({"pset_id": entity_set,
+                                             "dir": dir,
+                                             "traction": force})
+            if math_function_id != None: self.__particle_traction[-1]["math_function_id"] = math_function_id
+
     
     def set_initial_particles_stresses(self, init_stresses):
         """Set the initial stresses for each particle.
@@ -794,6 +804,7 @@ class Simulation():
 
         external_loading_conditions_dic = {"gravity": self.__gravity}
         if len(self.__nodal_forces) != 0: external_loading_conditions_dic["concentrated_nodal_forces"] = self.__nodal_forces
+        if len(self.__particle_traction) != 0: external_loading_conditions_dic["particle_surface_traction"] = self.__particle_traction
     
         dic = {"title": self.title,
                "mesh": mesh_dic,

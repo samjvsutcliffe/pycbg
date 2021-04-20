@@ -720,13 +720,13 @@ class Simulation():
         Parameters
         ----------
         init_stresses : numpy array
-            Initial stresses for each particle. Noting `npart` the number of particles, it should have the shape ``(npart, 3)``.
+            Initial stresses for each particle. Noting `npart` the number of particles, it should have the shape ``(npart, 6)``.
         """
         self.init_stresses = init_stresses
 
         psfile = open(self.__init_stress_filename, "w") 
         psfile.write("{:d}\n".format(len(self.particles.particles)))   
-        for ps in init_stresses: psfile.write("{:e}\t{:e}\t{:e}\n".format(*ps)) 
+        for ps in init_stresses: psfile.write("{:e}\t{:e}\t{:e}\t{:e}\t{:e}\t{:e}\n".format(*ps)) 
 
     
     def set_gravity(self, gravity): 

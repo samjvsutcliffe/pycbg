@@ -765,7 +765,7 @@ class Simulation():
         output_step_interval : int, optional
             Number of steps between two data points. Default is 100.
         """
-        self.__analysis = {"type": type,
+        self.analysis = {"type": type,
                            "mpm_scheme": mpm_scheme,
                            "locate_particles": locate_particles,
                            "dt": dt,
@@ -812,7 +812,7 @@ class Simulation():
                "materials": self.materials.materials,
                "material_sets": material_sets_list,
                "external_loading_conditions": external_loading_conditions_dic,
-               "analysis": self.__analysis,
+               "analysis": self.analysis,
                "post_processing": self.post_processing}
         
         if len(self.math_functions) != 0: dic["math_functions"] = self.math_functions

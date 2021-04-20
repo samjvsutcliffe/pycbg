@@ -16,9 +16,9 @@
       :nosignatures:
    
       ~Simulation.__init__
+      ~Simulation.add_force
       ~Simulation.add_friction_condition
       ~Simulation.add_math_function
-      ~Simulation.add_nodal_force
       ~Simulation.add_velocity_condition
       ~Simulation.create_mesh
       ~Simulation.create_particles

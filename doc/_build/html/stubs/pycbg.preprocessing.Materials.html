@@ -245,9 +245,9 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pset_id</strong> (<em>int</em>) – Particle set id that will be made off this material</p></li>
-<li><p><strong>density</strong> (<em>float</em><em>, </em><em>optional</em>) – Density of the material (<span class="math notranslate nohighlight">\(kg/m^3\)</span>). Default is 1.225 <span class="math notranslate nohighlight">\(kg/m^3\)</span>.</p></li>
-<li><p><strong>young_modulus</strong> (<em>float</em><em>, </em><em>optional</em>) – Young’s modulus of the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 50 <span class="math notranslate nohighlight">\(GPa\)</span>.</p></li>
-<li><p><strong>poisson_ratio</strong> (<em>float</em><em>, </em><em>otpional</em>) – Poisson’s ratio of the material. Default is 0.3 .</p></li>
+<li><p><strong>density</strong> (<em>float</em>) – Density of the material (<span class="math notranslate nohighlight">\(kg/m^3\)</span>). Default is 1000 <span class="math notranslate nohighlight">\(kg/m^3\)</span>.</p></li>
+<li><p><strong>young_modulus</strong> (<em>float</em>) – Young’s modulus of the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 50 <span class="math notranslate nohighlight">\(MPa\)</span>.</p></li>
+<li><p><strong>poisson_ratio</strong> (<em>float</em>) – Poisson’s ratio of the material. Default is 0.3 .</p></li>
 </ul>
 </dd>
 </dl>
@@ -261,13 +261,13 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>pset_id</strong> (<em>int</em>) – Particle set id that will be made off this material</p></li>
-<li><p><strong>density</strong> (<em>float</em><em>, </em><em>optional</em>) – Density of the material (<span class="math notranslate nohighlight">\(kg/m^3\)</span>). Default is 1.225 <span class="math notranslate nohighlight">\(kg/m^3\)</span>.</p></li>
-<li><p><strong>young_modulus</strong> (<em>float</em><em>, </em><em>optional</em>) – Young’s modulus of the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 50 <span class="math notranslate nohighlight">\(GPa\)</span>.</p></li>
-<li><p><strong>poisson_ratio</strong> (<em>float</em><em>, </em><em>otpional</em>) – Poisson’s ratio of the material. Default is 0.3 .</p></li>
-<li><p><strong>friction</strong> (<em>float</em><em>, </em><em>optional</em>) – Friction angle of the material (<span class="math notranslate nohighlight">\(^\circ\)</span>). Default is 36 <span class="math notranslate nohighlight">\(^\circ\)</span>.</p></li>
-<li><p><strong>dilation</strong> (<em>float</em><em>, </em><em>optional</em>) – Dilation angle of the material (<span class="math notranslate nohighlight">\(^\circ\)</span>). Default is 0 <span class="math notranslate nohighlight">\(^\circ\)</span>.</p></li>
-<li><p><strong>cohesion</strong> (<em>float</em><em>, </em><em>optional</em>) – Cohesion in the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 0 <span class="math notranslate nohighlight">\(Pa\)</span>.</p></li>
-<li><p><strong>tension_cutoff</strong> (<em>float</em><em>, </em><em>optional</em>) – Tension strength of the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 0 <span class="math notranslate nohighlight">\(Pa\)</span>.</p></li>
+<li><p><strong>density</strong> (<em>float</em>) – Density of the material (<span class="math notranslate nohighlight">\(kg/m^3\)</span>). Default is 1000 <span class="math notranslate nohighlight">\(kg/m^3\)</span>.</p></li>
+<li><p><strong>young_modulus</strong> (<em>float</em>) – Young’s modulus of the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 50 <span class="math notranslate nohighlight">\(MPa\)</span>.</p></li>
+<li><p><strong>poisson_ratio</strong> (<em>float</em>) – Poisson’s ratio of the material. Default is 0.3 .</p></li>
+<li><p><strong>friction</strong> (<em>float</em>) – Friction angle of the material (<span class="math notranslate nohighlight">\(^\circ\)</span>). Default is 36 <span class="math notranslate nohighlight">\(^\circ\)</span>.</p></li>
+<li><p><strong>dilation</strong> (<em>float</em>) – Dilation angle of the material (<span class="math notranslate nohighlight">\(^\circ\)</span>). Default is 0 <span class="math notranslate nohighlight">\(^\circ\)</span>.</p></li>
+<li><p><strong>cohesion</strong> (<em>float</em>) – Cohesion in the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 0 <span class="math notranslate nohighlight">\(Pa\)</span>.</p></li>
+<li><p><strong>tension_cutoff</strong> (<em>float</em>) – Tension strength of the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 0 <span class="math notranslate nohighlight">\(Pa\)</span>.</p></li>
 <li><p><strong>softening</strong> (<em>bool</em><em>, </em><em>optional</em>) – Enable softening option. If <cite>True</cite>, one has to set <cite>peak_pdstrain</cite>, <cite>residual_pdstrain</cite>, <cite>residual_friction</cite>, <cite>residual_dilation</cite> and <cite>residual_cohesion</cite>. Default is <cite>False</cite>.</p></li>
 <li><p><strong>peak_pdstrain</strong> (<em>float</em><em>, </em><em>optional</em>) – Start point of strain softening. Default is 0.</p></li>
 <li><p><strong>residual_pdstrain</strong> (<em>float</em><em>, </em><em>optional</em>) – End point of strain softening. Default is 0.</p></li>

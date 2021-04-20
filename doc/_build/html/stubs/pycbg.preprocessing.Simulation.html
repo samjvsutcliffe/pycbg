@@ -297,14 +297,14 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.__init__" title="pycbg.preprocessing.Simulation.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a></p></td>
 <td><p>Initialize self.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.add_friction_condition" title="pycbg.preprocessing.Simulation.add_friction_condition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_friction_condition</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.add_force" title="pycbg.preprocessing.Simulation.add_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_force</span></code></a></p></td>
+<td><p>Add a force on all the element in a entity set.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.add_friction_condition" title="pycbg.preprocessing.Simulation.add_friction_condition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_friction_condition</span></code></a></p></td>
 <td><p>Add a friction condition on a node set.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.add_math_function" title="pycbg.preprocessing.Simulation.add_math_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_math_function</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.add_math_function" title="pycbg.preprocessing.Simulation.add_math_function"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_math_function</span></code></a></p></td>
 <td><p>Add a math function to the simulation.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.add_nodal_force" title="pycbg.preprocessing.Simulation.add_nodal_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_nodal_force</span></code></a></p></td>
-<td><p>Add a force on all the node in a node set.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.add_velocity_condition" title="pycbg.preprocessing.Simulation.add_velocity_condition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_velocity_condition</span></code></a></p></td>
 <td><p>Add a velocity condition on a node or particle set.</p></td>
@@ -313,7 +313,7 @@
 <td><p>Create the simulation’s mesh.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.create_particles" title="pycbg.preprocessing.Simulation.create_particles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_particles</span></code></a></p></td>
-<td><p>Create the simultation’s particles.</p></td>
+<td><p>Create the simulation’s particles.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Simulation.init_entity_sets" title="pycbg.preprocessing.Simulation.init_entity_sets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">init_entity_sets</span></code></a></p></td>
 <td><p>Create the simulation’s <a class="reference internal" href="pycbg.preprocessing.EntitySets.html#pycbg.preprocessing.EntitySets" title="pycbg.preprocessing.EntitySets"><code class="xref py py-class docutils literal notranslate"><span class="pre">EntitySets</span></code></a> object.</p></td>
@@ -333,6 +333,23 @@
 </tbody>
 </table>
 <dl class="py method">
+<dt id="pycbg.preprocessing.Simulation.add_force">
+<code class="sig-name descname">add_force</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dir</span></em>, <em class="sig-param"><span class="n">force</span></em>, <em class="sig-param"><span class="n">entity_set</span></em>, <em class="sig-param"><span class="n">typ</span><span class="o">=</span><span class="default_value">'node'</span></em>, <em class="sig-param"><span class="n">math_function_id</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.add_force" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a force on all the element in a entity set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dir</strong> (<em>{0</em><em>, </em><em>1</em><em>, </em><em>2}</em>) – Axis on which the force is imposed.</p></li>
+<li><p><strong>force</strong> (<em>float</em>) – Imposed force’s value (<span class="math notranslate nohighlight">\(N\)</span>).</p></li>
+<li><p><strong>entity_set</strong> (<em>int</em>) – Id of the entity set on which the velocity is imposed.</p></li>
+<li><p><strong>typ</strong> (<em>{&quot;node&quot;</em><em>, </em><em>&quot;particle&quot;}</em><em>, </em><em>optional</em>) – Type of set on which the velocity is imposed. Default is “particle”.</p></li>
+<li><p><strong>math_function_id</strong> (<em>int</em><em>, </em><em>optional</em>) – Id of the math function to use. Default value is <cite>None</cite> (the load is then static).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pycbg.preprocessing.Simulation.add_friction_condition">
 <code class="sig-name descname">add_friction_condition</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dir</span></em>, <em class="sig-param"><span class="n">sgn_n</span></em>, <em class="sig-param"><span class="n">frict_value</span></em>, <em class="sig-param"><span class="n">node_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.add_friction_condition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a friction condition on a node set.</p>
@@ -351,37 +368,20 @@
 
 <dl class="py method">
 <dt id="pycbg.preprocessing.Simulation.add_math_function">
-<code class="sig-name descname">add_math_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">function_wrt_time</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.add_math_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a math function to the simulation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>function_wrt_time</strong> (<em>function</em>) – Function that take the time <cite>t</cite> as input and returns the value of the math function.</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>Should be called after analysis parameters are set (since the time values are computed from the time step and number of steps).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Id of the math function just appended.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="pycbg.preprocessing.Simulation.add_nodal_force">
-<code class="sig-name descname">add_nodal_force</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dir</span></em>, <em class="sig-param"><span class="n">force</span></em>, <em class="sig-param"><span class="n">node_set</span></em>, <em class="sig-param"><span class="n">math_function_id</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.add_nodal_force" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a force on all the node in a node set.</p>
+<code class="sig-name descname">add_math_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">times</span></em>, <em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.add_math_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a math function to the simulation. The function can only be piecewise-linear.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dir</strong> (<em>{0</em><em>, </em><em>1</em><em>, </em><em>2}</em>) – Axis on which the force is imposed.</p></li>
-<li><p><strong>force</strong> (<em>float</em>) – Imposed force’s value (<span class="math notranslate nohighlight">\(N\)</span>).</p></li>
-<li><p><strong>node_set</strong> (<em>int</em>) – Id of the node set on which the force is imposed.</p></li>
-<li><p><strong>math_function_id</strong> (<em>int</em><em>, </em><em>optional</em>) – Id of the math function to use. Default value is <cite>None</cite> (the load is then static).</p></li>
+<li><p><strong>times</strong> (<em>list of floats</em>) – Contains the times at which the values of the math function are given. The first element should always be <cite>0.</cite> and the last should always be <cite>nsteps*dt</cite>.</p></li>
+<li><p><strong>values</strong> (<em>list of floats</em>) – Contains the values of the math function for each time given in <cite>times</cite>.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Id of the math function just appended.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -421,11 +421,11 @@
 <dl class="py method">
 <dt id="pycbg.preprocessing.Simulation.create_particles">
 <code class="sig-name descname">create_particles</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.create_particles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create the simultation’s particles.</p>
+<dd><p>Create the simulation’s particles.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>npart_perdim_percell</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of particles for each dimensions in one cell. All cells will contain <code class="docutils literal notranslate"><span class="pre">npart_perdim_percell**3</span></code> equally spaced particles. Note that particles are equally spaced within a cell, not between cells. Default is 1 .</p></li>
+<li><p><strong>npart_perdim_percell</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of particles for each dimension in one cell. All cells will contain <code class="docutils literal notranslate"><span class="pre">npart_perdim_percell**3</span></code> equally spaced particles. Note that particles are equally spaced within a cell, not between cells. Default is 1 .</p></li>
 <li><p><strong>check_duplicates</strong> (<em>bool</em><em>, </em><em>optional</em>) – See CB-Geo documentation for informations on this parameter. Default is <cite>True</cite>.</p></li>
 </ul>
 </dd>
@@ -441,7 +441,7 @@
 
 <dl class="py method">
 <dt id="pycbg.preprocessing.Simulation.set_analysis_parameters">
-<code class="sig-name descname">set_analysis_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">'MPMExplicit3D'</span></em>, <em class="sig-param"><span class="n">mpm_scheme</span><span class="o">=</span><span class="default_value">'usl'</span></em>, <em class="sig-param"><span class="n">damping</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">locate_particles</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dt</span><span class="o">=</span><span class="default_value">1e-05</span></em>, <em class="sig-param"><span class="n">velocity_update</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">nsteps</span><span class="o">=</span><span class="default_value">2000</span></em>, <em class="sig-param"><span class="n">output_step_interval</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.set_analysis_parameters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_analysis_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">type</span><span class="o">=</span><span class="default_value">'MPMExplicit3D'</span></em>, <em class="sig-param"><span class="n">mpm_scheme</span><span class="o">=</span><span class="default_value">'usl'</span></em>, <em class="sig-param"><span class="n">damping</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">locate_particles</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dt</span><span class="o">=</span><span class="default_value">1e-05</span></em>, <em class="sig-param"><span class="n">velocity_update</span><span class="o">=</span><span class="default_value">'flip'</span></em>, <em class="sig-param"><span class="n">nsteps</span><span class="o">=</span><span class="default_value">2000</span></em>, <em class="sig-param"><span class="n">verbosity</span><span class="o">=</span><span class="default_value">1000</span></em>, <em class="sig-param"><span class="n">output_step_interval</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Simulation.set_analysis_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the analysis parameters. Has to be called before
 <cite>write_input_file</cite>.</p>
 <dl class="field-list simple">
@@ -452,8 +452,9 @@
 <li><p><strong>damping</strong> (<em>float</em><em>, </em><em>optional</em>) – Cundall’s damping. Should verify : <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">damping</span> <span class="pre">&lt;</span> <span class="pre">1</span></code>. Default is 0.05 .</p></li>
 <li><p><strong>locate_particles</strong> (<em>bool</em><em>, </em><em>optional</em>) – Stops the simulation when particles go outside the mesh if <cite>True</cite>. Default is <cite>False</cite>.</p></li>
 <li><p><strong>dt</strong> (<em>float</em><em>, </em><em>optional</em>) – Time step (<span class="math notranslate nohighlight">\(s\)</span>). Default is <cite>1e-5</cite> <span class="math notranslate nohighlight">\(s\)</span>.</p></li>
-<li><p><strong>velocity_update</strong> (<em>bool</em><em>, </em><em>optional</em>) – How to compute velocity. If <cite>True</cite> nodal velocity is directly interpolated from particles, if <cite>False</cite> nodal velocity is computed from the acceleration interpolated from particles. Default is <cite>False</cite>.</p></li>
+<li><p><strong>velocity_update</strong> (<em>{'pic'</em><em>, </em><em>'flip'</em><em>, </em><em>'flipX'</em><em>, </em><em>'apic'}</em><em>, </em><em>optional</em>) – How to compute particle’s velocity. If <cite>‘pic’</cite> nodal velocity is directly interpolated to particles. If <cite>‘flip’</cite> nodal velocity is computed from the acceleration interpolated to particles. If <cite>‘flipX’</cite>, the nodal velocity will be a proportion between the <cite>‘flip’</cite> velocity and the <cite>‘pic’</cite> velocity: <cite>X*velocity(‘flip’) + (1-X)*velocity(‘pic’)</cite>. If <cite>‘apic’</cite>, momentum is interpolated according to <em>Jiang, Chenfanfu, et al., 2015</em>. Default is <cite>‘flip’</cite>.</p></li>
 <li><p><strong>nsteps</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of steps to be performed. Default is 2000.</p></li>
+<li><p><strong>verbosity</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of lines to be printed in the console. Default is 1000.</p></li>
 <li><p><strong>output_step_interval</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of steps between two data points. Default is 100.</p></li>
 </ul>
 </dd>

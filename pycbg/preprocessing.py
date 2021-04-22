@@ -1,4 +1,5 @@
 import gmsh, os, json, pickle, csv, runpy, sys
+import multiprocessing
 import numpy as np
 import itertools as it  
 import __main__ as main
@@ -830,7 +831,7 @@ class Simulation():
         save_name = self.directory + self.title + ".Simulation"
         with open(save_name, 'wb') as fil : pickle.dump(self, fil)
 
-def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores="max"):
+def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores="max", ncores_perjob="max"):
     """Setup a serie of simulations. The simulations are based on the script
     which path is `script_path` but additional variables are defined, each
     simulation can have different values for these variables (defined in
@@ -852,8 +853,15 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
         Path to the batch's directory. The directory of each simulation will be inside. Default is `''`.
     cbgeo_executable : str, optional
         Path to a cbgeo executable. It will be used to generate a bash script that launches the batch. Default is `None`.
-    ncores : int or "max", otpional
+    ncores : int or "max", optional
+        Number of core to use for the batch. It will only affect the bash script that launches the batch. Default is `'max'`.
+    ncores_perjob : int or "max", optional
         Number of core to use with each simulation. It will only affect the bash script that launches the batch. Default is `'max'`.
+
+    Notes
+    -----
+     - If `ncores` and `ncores_perjob` ar set to `max`, all CPUs will be used for each simulation. Simulations will then be executed one at a time.
+     - Be careful if you don't execute the pycbg script on the same machine used to run the simulation: the maximum number of cpu will be the one of the first machine.
     """
     if directory == '' : directory = '/'
     if directory[-1] != '/' : directory += '/'
@@ -873,7 +881,17 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
     for key in params.keys(): header += "\t" + key
     table_file.write(header + "\n")
 
-    if set_executable: batch_launcher_file = open(directory + "start_batch.sh", "w")
+    if set_executable: 
+        if ncores == 'max': ncores = multiprocessing.cpu_count()
+        if ncores_perjob == 'max': ncores_perjob = multiprocessing.cpu_count()
+        if ncores_perjob > ncores: ncores = ncores_perjob
+        cores_str = " -p {:d}".format(ncores_perjob)
+        n_simultaneous_sim = ncores//ncores_perjob
+
+        batch_launcher_file = open(directory + "start_batch.sh", "w")
+        batch_launcher_file.write("#!/bin/bash\n\n")
+        batch_launcher_file.write("""n_sim_slot_available="{:d}"\n\n""".format(n_simultaneous_sim))
+
     
     for sim_id, param_set in enumerate(param_sets):
         sim_title = "sim{:d}".format(sim_id)
@@ -898,10 +916,10 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
         table_file.write(param_line + "\n")
 
         if set_executable: 
-            if ncores!="max": cores_str = " -p {:d}".format(ncores)
-            else : cores_str = ""
-            batch_launcher_file.write("""{:}{:} -f "$(pwd)/" -i {:}input_file.json >> {:}cbgeo.log\n""".format(cbgeo_executable, cores_str, sim_dir, sim_dir))
-    
+            batch_launcher_file.write("""until [ "$n_sim_slot_available" -gt "0" ] \ndo\n\tsleep 0.1\ndone\n""")
+            batch_launcher_file.write("n_sim_slot_available=$((--n_sim_slot_available))\n")
+            batch_launcher_file.write("""( {:}{:} -f "$(pwd)/" -i {:}input_file.json >> {:}cbgeo.log; n_sim_slot_available=$((++n_sim_slot_available)) ) &\n""".format(cbgeo_executable, cores_str, sim_dir, sim_dir))
+
     table_file.close()
     if set_executable: batch_launcher_file.close()
     sys.exit()

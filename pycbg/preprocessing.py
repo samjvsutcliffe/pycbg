@@ -830,7 +830,7 @@ class Simulation():
         save_name = self.directory + self.title + ".Simulation"
         with open(save_name, 'wb') as fil : pickle.dump(self, fil)
 
-def setup_batch(params, directory='', cbgeo_executable=None, ncores="max"):
+def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores="max"):
     if directory == '' : directory = '/'
     if directory[-1] != '/' : directory += '/'
     if not os.path.isdir(directory): os.mkdir(directory)
@@ -842,10 +842,7 @@ def setup_batch(params, directory='', cbgeo_executable=None, ncores="max"):
         all_combinations = it.product(*params.values())
         param_sets = [{key:val for key, val in zip(params.keys(), val_set)} for val_set in all_combinations]
 
-    with open(os.path.basename(main.__file__), 'r') as fil: script = fil.readlines()
-    for i, line in enumerate(script):
-        if "setup_batch(" in line: insert_line = i
-    
+    with open(script_path, 'r') as fil: script = fil.readlines()
     
     table_file = open(directory + "parameters_sets.table", "w")
     header = "sim_id"
@@ -855,18 +852,22 @@ def setup_batch(params, directory='', cbgeo_executable=None, ncores="max"):
     if set_executable: batch_launcher_file = open(directory + "start_batch.sh", "w")
     
     for sim_id, param_set in enumerate(param_sets):
-        sim_dir = directory + "sim{:d}/".format(sim_id)
+        sim_title = "sim{:d}".format(sim_id)
+        sim_dir = directory + sim_title + "/"
         if not os.path.isdir(sim_dir): os.mkdir(sim_dir)
 
-        affectation_lines = [key + " = " + str(val) + "\n" for key, val in param_set.items()]
-        affectation_lines += ["sim_dir = '{:}'\n".format(sim_dir)]
-        out_script = script[:insert_line] + affectation_lines + script[insert_line+1:]
+        affectation_lines = ["# Batch parameters:\n"]
+        affectation_lines += [key + " = " + str(val) + "\n" for key, val in param_set.items()]
+        affectation_lines += ["sim_title = '{:}'\n".format(sim_title)]
+        affectation_lines += ["sim_dir = '{:}'\n\n".format(sim_dir)]
+        affectation_lines += ["# Base script:\n"]
+
+        out_script = affectation_lines + script
 
         out_script_path = sim_dir + "pycbg_script.py"
         with open(out_script_path, "w") as fil: 
             for line in out_script: fil.write(line)
         runpy.run_path(out_script_path)
-        #exec(open(out_script_path).read(), globals(), locals())
         
         param_line = str(sim_id)
         for val in param_set.values(): param_line += "\t" + str(val)

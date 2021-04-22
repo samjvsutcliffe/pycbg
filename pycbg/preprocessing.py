@@ -838,7 +838,12 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
     which path is `script_path` but additional variables are defined, each
     simulation can have different values for these variables (defined in
     `params`). One should be careful that those additional parameters do not
-    get overwritten in the script.
+    get overwritten in the script. Two additional variables will always be
+    insert into the script :
+
+     - `sim_dir`, the `str` that contains the path of the simulation's directory
+     - `sim_title`, the `str` that contains the title of the simulation
+    These two parameters should be used by the base script.
 
     Parameters
     ----------

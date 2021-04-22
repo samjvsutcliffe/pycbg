@@ -146,7 +146,8 @@ class Mesh():
         
 
 class Particles():
-    """Create and write to a file particles from a :class:`~pycbg.preprocessing.Mesh` object.
+    """Create and write to a file particles from a
+    :class:`~pycbg.preprocessing.Mesh` object.
 
     Parameters
     ----------
@@ -617,7 +618,8 @@ class Simulation():
         self.particles.write_file()
 
     def init_entity_sets(self): 
-        """Create the simulation's :class:`~pycbg.preprocessing.EntitySets` object.
+        """Create the simulation's :class:`~pycbg.preprocessing.EntitySets`
+        object.
 
         Has to be called after mesh and particles creation.
         """
@@ -667,7 +669,8 @@ class Simulation():
                                                                    "velocity": frict_value})
     
     def add_math_function(self, times, values):
-        """Add a math function to the simulation. The function can only be piecewise-linear.
+        """Add a math function to the simulation. The function can only be
+        piecewise-linear.
 
         Parameters
         ----------
@@ -679,7 +682,7 @@ class Simulation():
         Returns
         -------
         int
-            Id of the math function just appended. 
+            Id of the math function just appended.
         """
         fct_id = len(self.math_functions)
         self.math_functions.append({"id":fct_id, "type": 'Linear', "xvalues": str(times), "fxvalues": str(values)})
@@ -831,6 +834,25 @@ class Simulation():
         with open(save_name, 'wb') as fil : pickle.dump(self, fil)
 
 def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores="max"):
+    """Setup a serie of simulations. The simulations are based on the script
+    which path is `script_path` but additional variables are defined, each
+    simulation can have different values for these variables (defined in
+    `params`). One should be careful that those additional parameters do not
+    get overwritten in the script.
+
+    Parameters
+    ----------
+    script_path : str
+        Path of the base script.
+    params : list of dict, dict
+        Batch's parameters, it contains the different values for the additional parameters. If it is a list of dict each element should be the dictionary containing a parameter set, the keys being the names of the variables. If it is a dict all keys should be the variables' names and their values should be lists, a list of parameter sets containing all the combinations between the parameters will then be used.
+    directory : str, optional
+        Path to the batch's directory. The directory of each simulation will be inside. Default is `''`.
+    cbgeo_executable : str, optional
+        Path to a cbgeo executable. It will be used to generate a bash script that launches the batch. Default is `None`.
+    ncores : int or "max", otpional
+        Number of core to use with each simulation. It will only affect the bash script that launches the batch. Default is `'max'`.
+    """
     if directory == '' : directory = '/'
     if directory[-1] != '/' : directory += '/'
     if not os.path.isdir(directory): os.mkdir(directory)

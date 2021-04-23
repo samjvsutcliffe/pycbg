@@ -536,6 +536,8 @@ class Simulation():
         Simulation title.
     directory : str
         Path to the simulation's directory.
+    custom_params : dict
+        Dictionary containing user-defined parameters. It will be saved in the :class:`~pycbg.preprocessing.Simulation` object when the input file is written. Its element should be appended using the `add_custom_parameters` method.
 
     Notes
     -----
@@ -576,6 +578,7 @@ class Simulation():
         self.entity_sets = None
         self.init_stresses = None
 
+        self.custom_params = {}
 
         self.__boundary_conditions = {"velocity_constraints": [],
                                       "friction_constraints": [],
@@ -836,6 +839,17 @@ class Simulation():
 
         save_name = self.directory + self.title + ".Simulation"
         with open(save_name, 'wb') as fil : pickle.dump(self, fil)
+    
+    def add_custom_parameters(self, dic):
+        """Add `dict` content in `custom_params`.
+
+        Parameters
+        ----------
+        dic : dict
+            Dictionary containing the parameters to be appended in `custom_params`.
+        """
+        for key, val in dic.items(): self.custom_params[key] = val
+
 
 def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores="max", ncores_perjob="max"):
     """Setup a serie of simulations. The simulations are based on the script

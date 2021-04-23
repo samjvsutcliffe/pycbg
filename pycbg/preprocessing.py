@@ -626,7 +626,7 @@ class Simulation():
         """
         self.entity_sets = EntitySets(mesh=self.mesh, particles=self.particles, directory=self.directory)
 
-    def add_velocity_condition(self, dir, vel_value, entity_set, typ="node"):
+    def add_velocity_condition(self, dir, vel_value, entity_set, typ="node", math_function_id=None):
         """Add a velocity condition on a node or particle set.
 
         Parameters
@@ -639,6 +639,8 @@ class Simulation():
             Id of the entity set on which the velocity is imposed.
         typ : {"node", "particle"}, optional
             Type of set on which the velocity is imposed. Default is "particle".
+        math_function_id : int, optional
+            Id of the math function to use. Default value is `None` (the velocity is then constant).
         """
         if typ=="particle": list_name, key_name = "particles_velocity_constraints", "pset_id"
         elif typ=="node": list_name, key_name = "velocity_constraints", "nset_id"
@@ -647,6 +649,7 @@ class Simulation():
         self.__boundary_conditions[list_name].append({key_name: entity_set,
                                                       "dir": dir,
                                                       "velocity": vel_value})
+        if math_function_id != None: self.__boundary_conditions[list_name][-1]["math_function_id"] = math_function_id
         
     def add_friction_condition(self, dir, sgn_n, frict_value, node_set):
         """Add a friction condition on a node set.

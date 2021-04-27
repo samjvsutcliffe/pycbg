@@ -403,7 +403,7 @@ class Materials():
         Parameters
         ----------
         pset_id : int
-            Particle set id that will be made off this material
+            Particle set id that will be made of this material
         density : float, optional
             Density of the material (:math:`kg/m^3`). Default is 1.225 :math:`kg/m^3`.
         bulk_modulus : float, optional
@@ -440,7 +440,7 @@ class Materials():
         Parameters
         ----------
         pset_id : int
-            Particle set id that will be made off this material
+            Particle set id that will be made of this material
         density : float
             Density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
         young_modulus : float
@@ -493,7 +493,7 @@ class Materials():
         Parameters
         ----------
         pset_id : int
-            Particle set id that will be made off this material
+            Particle set id that will be made of this material
         density : float
             Density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
         young_modulus : float
@@ -507,6 +507,30 @@ class Materials():
                                "density": density,
                                "youngs_modulus": youngs_modulus,
                                "poisson_ratio": poisson_ratio})
+
+    def create_CustomLaw3D(self, pset_id=0, n_state_vars=0,
+                                            script_path="custom_law.py",
+                                            function_name="custom_law",
+                                            ):
+        """Create CustomLaw3D material. The behaviour of the material is computed using a user-defined python script.
+
+        Parameters
+        ----------
+        pset_id : int
+            Particle set id that will be made of this material.
+        n_state_vars : int
+            Number of state variable that this model use. Default is 0.
+        script_path : str
+            Path to the user-defined script that compute the material's behaviour. Default is 'custom_law.py'.
+        function_name : str
+            Name of the function in `script_path` that compute the stress increment from the strain increment. It should take as input `6 + n_state_vars` arguments. The first 6 are the components of the engineering strain increment (in the directions `xx`, `yy`, `zz`, `xy`, `yz` and `xz` respectively), the others are the state variables. The order of the state variables in the function parameter gives their numbering in the output files (`'svars_0'`, `'svars_1'`, ...).
+        """
+        self.pset_ids.append(pset_id)
+        self.materials.append({"id": len(self.materials),
+                               "type": "CustomLaw3D",
+                               "n_state_vars": n_state_vars,
+                               "script_path": script_path,
+                               "function_name": function_name})
 
 class Simulation():
     """Create a simulation.

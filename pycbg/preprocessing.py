@@ -508,7 +508,8 @@ class Materials():
                                "youngs_modulus": youngs_modulus,
                                "poisson_ratio": poisson_ratio})
 
-    def create_CustomLaw3D(self, pset_id=0, n_state_vars=0,
+    def create_CustomLaw3D(self, pset_id=0, density=1e3,
+                                            n_state_vars=0,
                                             script_path="custom_law.py",
                                             function_name="custom_law",
                                             ):
@@ -528,6 +529,7 @@ class Materials():
         self.pset_ids.append(pset_id)
         self.materials.append({"id": len(self.materials),
                                "type": "CustomLaw3D",
+                               "density": density,
                                "n_state_vars": n_state_vars,
                                "script_path": script_path,
                                "function_name": function_name})

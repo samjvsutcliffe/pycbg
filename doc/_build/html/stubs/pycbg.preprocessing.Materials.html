@@ -226,17 +226,37 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.__init__" title="pycbg.preprocessing.Materials.__init__"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__init__</span></code></a></p></td>
 <td><p>Initialize self.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.create_LinearElastic3D" title="pycbg.preprocessing.Materials.create_LinearElastic3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_LinearElastic3D</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.create_CustomLaw3D" title="pycbg.preprocessing.Materials.create_CustomLaw3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_CustomLaw3D</span></code></a></p></td>
+<td><p>Create CustomLaw3D material.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.create_LinearElastic3D" title="pycbg.preprocessing.Materials.create_LinearElastic3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_LinearElastic3D</span></code></a></p></td>
 <td><p>Create LinearElastic3D material.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.create_MohrCoulomb3D" title="pycbg.preprocessing.Materials.create_MohrCoulomb3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_MohrCoulomb3D</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.create_MohrCoulomb3D" title="pycbg.preprocessing.Materials.create_MohrCoulomb3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_MohrCoulomb3D</span></code></a></p></td>
 <td><p>Create MohrCoulomb3D material, as specified by CB-Geo documentation.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.create_Newtonian3D" title="pycbg.preprocessing.Materials.create_Newtonian3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_Newtonian3D</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#pycbg.preprocessing.Materials.create_Newtonian3D" title="pycbg.preprocessing.Materials.create_Newtonian3D"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_Newtonian3D</span></code></a></p></td>
 <td><p>Create Newtonian3D material, as specified by CB-Geo documentation.</p></td>
 </tr>
 </tbody>
 </table>
+<dl class="py method">
+<dt id="pycbg.preprocessing.Materials.create_CustomLaw3D">
+<code class="sig-name descname">create_CustomLaw3D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pset_id</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">density</span><span class="o">=</span><span class="default_value">1000.0</span></em>, <em class="sig-param"><span class="n">n_state_vars</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">script_path</span><span class="o">=</span><span class="default_value">'custom_law'</span></em>, <em class="sig-param"><span class="n">function_name</span><span class="o">=</span><span class="default_value">'custom_law'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Materials.create_CustomLaw3D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create CustomLaw3D material. The behaviour of the material is
+computed using a user-defined python script.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pset_id</strong> (<em>int</em>) – Particle set id that will be made of this material.</p></li>
+<li><p><strong>n_state_vars</strong> (<em>int</em>) – Number of state variable that this model use. Default is 0.</p></li>
+<li><p><strong>script_path</strong> (<em>str</em>) – Path to the user-defined script that compute the material’s behaviour. Note that the exentsion <cite>.py</cite> shouldn’t be specified. Default is ‘custom_law’.</p></li>
+<li><p><strong>function_name</strong> (<em>str</em>) – Name of the function in <cite>script_path</cite> that compute the stress increment from the strain increment. It should take as input <cite>6 + n_state_vars</cite> arguments. The first 6 are the components of the engineering strain increment (in the directions <cite>xx</cite>, <cite>yy</cite>, <cite>zz</cite>, <cite>xy</cite>, <cite>yz</cite> and <cite>xz</cite> respectively), the others are the state variables. The order of the state variables in the function parameter gives their numbering in the output files (<cite>‘svars_0’</cite>, <cite>‘svars_1’</cite>, …).</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt id="pycbg.preprocessing.Materials.create_LinearElastic3D">
 <code class="sig-name descname">create_LinearElastic3D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pset_id</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">density</span><span class="o">=</span><span class="default_value">1000.0</span></em>, <em class="sig-param"><span class="n">youngs_modulus</span><span class="o">=</span><span class="default_value">50000000.0</span></em>, <em class="sig-param"><span class="n">poisson_ratio</span><span class="o">=</span><span class="default_value">0.3</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Materials.create_LinearElastic3D" title="Permalink to this definition">¶</a></dt>
@@ -244,7 +264,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pset_id</strong> (<em>int</em>) – Particle set id that will be made off this material</p></li>
+<li><p><strong>pset_id</strong> (<em>int</em>) – Particle set id that will be made of this material</p></li>
 <li><p><strong>density</strong> (<em>float</em>) – Density of the material (<span class="math notranslate nohighlight">\(kg/m^3\)</span>). Default is 1000 <span class="math notranslate nohighlight">\(kg/m^3\)</span>.</p></li>
 <li><p><strong>young_modulus</strong> (<em>float</em>) – Young’s modulus of the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 50 <span class="math notranslate nohighlight">\(MPa\)</span>.</p></li>
 <li><p><strong>poisson_ratio</strong> (<em>float</em>) – Poisson’s ratio of the material. Default is 0.3 .</p></li>
@@ -260,7 +280,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pset_id</strong> (<em>int</em>) – Particle set id that will be made off this material</p></li>
+<li><p><strong>pset_id</strong> (<em>int</em>) – Particle set id that will be made of this material</p></li>
 <li><p><strong>density</strong> (<em>float</em>) – Density of the material (<span class="math notranslate nohighlight">\(kg/m^3\)</span>). Default is 1000 <span class="math notranslate nohighlight">\(kg/m^3\)</span>.</p></li>
 <li><p><strong>young_modulus</strong> (<em>float</em>) – Young’s modulus of the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 50 <span class="math notranslate nohighlight">\(MPa\)</span>.</p></li>
 <li><p><strong>poisson_ratio</strong> (<em>float</em>) – Poisson’s ratio of the material. Default is 0.3 .</p></li>
@@ -286,7 +306,7 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pset_id</strong> (<em>int</em>) – Particle set id that will be made off this material</p></li>
+<li><p><strong>pset_id</strong> (<em>int</em>) – Particle set id that will be made of this material</p></li>
 <li><p><strong>density</strong> (<em>float</em><em>, </em><em>optional</em>) – Density of the material (<span class="math notranslate nohighlight">\(kg/m^3\)</span>). Default is 1.225 <span class="math notranslate nohighlight">\(kg/m^3\)</span>.</p></li>
 <li><p><strong>bulk_modulus</strong> (<em>float</em><em>, </em><em>optional</em>) – Bulk modulus of the material (<span class="math notranslate nohighlight">\(Pa\)</span>). Default is 142 <span class="math notranslate nohighlight">\(kPa\)</span>.</p></li>
 <li><p><strong>dynamic_viscosity</strong> (<em>float</em><em>, </em><em>otpional</em>) – Dynamic viscosity of the material (<span class="math notranslate nohighlight">\(Pa.s\)</span>). Default is 18.1 <span class="math notranslate nohighlight">\(\mu Pa.s\)</span></p></li>

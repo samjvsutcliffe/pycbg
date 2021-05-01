@@ -477,8 +477,8 @@ class Materials():
 
         Parameters
         ----------
-        pset_id : int
-            Particle set id that will be made off this material
+        pset_id : int or list of ints
+            Particle set id that will be made of this material
         density : float
             Density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
         young_modulus : float
@@ -530,8 +530,8 @@ class Materials():
 
         Parameters
         ----------
-        pset_id : int
-            Particle set id that will be made off this material
+        pset_id : int or list of ints
+            Particle set id that will be made of this material
         density : float
             Density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
         young_modulus : float

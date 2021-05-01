@@ -360,8 +360,8 @@ class Materials():
     ----------
     materials : list of dict
         Each element is a dictionnary containing a material's parameters. The index of a material is his id.
-    psets_ids : list of ints
-        The element i of this list is the id of the particle set made of the material defined in ``materials[i]``.
+    pset_ids : list of (ints or list of ints)
+        The element i of this list is the id (or list of ids) of the particle set made of the material defined in ``materials[i]``.
     
     Notes
     -----
@@ -402,8 +402,8 @@ class Materials():
 
         Parameters
         ----------
-        pset_id : int
-            Particle set id that will be made off this material
+        pset_id : int or list of ints
+            Particle set ids that will be made of this material
         density : float, optional
             Density of the material (:math:`kg/m^3`). Default is 1.225 :math:`kg/m^3`.
         bulk_modulus : float, optional
@@ -439,8 +439,8 @@ class Materials():
 
         Parameters
         ----------
-        pset_id : int
-            Particle set id that will be made off this material
+        pset_id : int or list of ints
+            Particle set id that will be made of this material
         density : float
             Density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
         young_modulus : float
@@ -492,8 +492,8 @@ class Materials():
 
         Parameters
         ----------
-        pset_id : int
-            Particle set id that will be made off this material
+        pset_id : int or list of ints
+            Particle set id that will be made of this material
         density : float
             Density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
         young_modulus : float
@@ -804,7 +804,11 @@ class Simulation():
                                          "material_id": 0,
                                          "type": self.particles._type}}]
 
-        material_sets_list = [{"material_id": m_id, "pset_id": ps_id} for m_id, ps_id in enumerate(self.materials.pset_ids)]
+        material_sets_list = [] 
+        for m_id, ps_id in enumerate(self.materials.pset_ids):
+            if type(ps_id)==list: 
+                for ps_id_p in ps_id: material_sets_list.append({"material_id": m_id, "pset_id": ps_id_p})
+            else: material_sets_list.append({"material_id": m_id, "pset_id": ps_id})
 
         external_loading_conditions_dic = {"gravity": self.__gravity}
         if len(self.__nodal_forces) != 0: external_loading_conditions_dic["concentrated_nodal_forces"] = self.__nodal_forces

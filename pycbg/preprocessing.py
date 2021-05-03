@@ -335,7 +335,7 @@ class EntitySets():
         for i, p in enumerate(points): 
             if condition_function(*p): ids.append(i)
         set_list.append(ids)
-        return len(set_list)-1
+        return len(set_list)-1 if typ=="node" else len(set_list)
     
     def write_file(self):
         """Write the entity sets file formatted for CB-Geo."""
@@ -343,7 +343,9 @@ class EntitySets():
         for typ, sets_tmp in zip(("particle_sets", "node_sets"), (self.psets, self.nsets)):
             if len(sets_tmp)==0: continue
             sets = []
-            for i, current_set in enumerate(sets_tmp): sets.append({"id":i, "set":str(current_set)})
+            for i, current_set in enumerate(sets_tmp): 
+                set_id = i if typ=="node_sets" else i+1
+                sets.append({"id":set_id, "set":str(current_set)})
             main_dic[typ] = sets
         with open(self.filename, 'w') as fil: json.dump(main_dic, fil, sort_keys=False, indent=4)
         ## Read and rewrite the file, to erase the double quotes around the list in "set" lines (definitely ugly)

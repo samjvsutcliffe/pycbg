@@ -511,7 +511,7 @@ class Materials():
                                "poisson_ratio": poisson_ratio})
 
     def create_CustomLaw3D(self, pset_id=0, density=1e3,
-                                            n_state_vars=0,
+                                            init_state_variables=[],
                                             script_path="custom_law",
                                             function_name="custom_law",
                                             ):
@@ -522,20 +522,22 @@ class Materials():
         ----------
         pset_id : int or list of ints
             Particle set id that will be made of this material.
-        n_state_vars : int
-            Number of state variable that this model use. Default is 0.
+        init_state_variables : list of floats
+            Contains the initial values of the states variables. The order in which they are given is their numbering among states variables : the first one is named "svars_0", the second is named "svars_1", ... Default is an empty list, for no state variables.
         script_path : str
             Path to the user-defined script that compute the material's behaviour. Note that the exentsion `.py` shouldn't be specified. Default is 'custom_law'.
         function_name : str
             Name of the function in `script_path` that compute the stress increment from the strain increment. It should take as input `6 + n_state_vars` arguments. The first 6 are the components of the engineering strain increment (in the directions `xx`, `yy`, `zz`, `xy`, `yz` and `xz` respectively), the others are the state variables. The order of the state variables in the function parameter gives their numbering in the output files (`'svars_0'`, `'svars_1'`, ...).
         """
         self.pset_ids.append(pset_id)
-        self.materials.append({"id": len(self.materials),
-                               "type": "CustomLaw3D",
-                               "density": density,
-                               "n_state_vars": n_state_vars,
-                               "script_path": script_path,
-                               "function_name": function_name})
+        material_dict = {"id": len(self.materials),
+                         "type": "CustomLaw3D",
+                         "density": density,
+                         "script_path": script_path,
+                         "function_name": function_name}
+        for i, init_val in enumerate(init_state_variables): material_dict["svars_"+str(i)] = init_val
+        self.materials.append(material_dict) 
+
 
 class Simulation():
     """Create a simulation.

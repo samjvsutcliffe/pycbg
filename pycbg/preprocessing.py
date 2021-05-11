@@ -943,7 +943,7 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
 
         batch_launcher_file = open(directory + "start_batch.sh", "w")
         batch_launcher_file.write("#!/bin/bash\n\n")
-        batch_launcher_file.write("""n_sim_slot_available="{:d}"\n\n""".format(n_simultaneous_sim))
+        batch_launcher_file.write("""n_sim_slot_available="{:d}"\necho "n_sim_slot_available=$n_sim_slot_available" > /tmp/n_sim_slot_available.sh\n\n""".format(n_simultaneous_sim))
 
     
     for sim_id, param_set in enumerate(param_sets):
@@ -951,7 +951,7 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
         sim_dir = directory + sim_title + "/"
         if not os.path.isdir(sim_dir): os.mkdir(sim_dir)
 
-        affectation_lines = ["# Batch parameters:\n"]
+        affectation_lines  = ["# Batch parameters:\n"]
         affectation_lines += [key + " = " + str(val) + "\n" for key, val in param_set.items()]
         affectation_lines += ["sim_title = '{:}'\n".format(sim_title)]
         affectation_lines += ["sim_dir = '{:}'\n\n".format(sim_dir)]
@@ -969,9 +969,9 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
         table_file.write(param_line + "\n")
 
         if set_executable: 
-            batch_launcher_file.write("""until [ "$n_sim_slot_available" -gt "0" ] \ndo\n\tsleep 0.1\ndone\n""")
-            batch_launcher_file.write("n_sim_slot_available=$((--n_sim_slot_available))\n")
-            batch_launcher_file.write("""( {:}{:} -f "$(pwd)/" -i {:}input_file.json >> {:}cbgeo.log; n_sim_slot_available=$((++n_sim_slot_available)) ) &\n""".format(cbgeo_executable, cores_str, sim_dir, sim_dir))
+            batch_launcher_file.write("""until [ "$n_sim_slot_available" -gt "0" ] \ndo\n\tsleep 0.1\n\t. /tmp/n_sim_slot_available.sh\ndone\n""")
+            batch_launcher_file.write("""n_sim_slot_available=$((--n_sim_slot_available)); echo "n_sim_slot_available=$n_sim_slot_available" > /tmp/n_sim_slot_available.sh \n""")
+            batch_launcher_file.write("""( {:}{:} -f "$(pwd)/" -i {:}input_file.json >> {:}cbgeo.log; . /tmp/n_sim_slot_available.sh; n_sim_slot_available=$((++n_sim_slot_available)); echo "n_sim_slot_available=$n_sim_slot_available" > /tmp/n_sim_slot_available.sh ) &\n""".format(cbgeo_executable, cores_str, sim_dir, sim_dir))
 
     table_file.close()
     if set_executable: batch_launcher_file.close()

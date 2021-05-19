@@ -560,7 +560,9 @@ class Simulation():
     materials : :class:`~pycbg.preprocessing.Materials` object
         Simulation's materials. Created upon creating the `Simulation` object. 
     init_stresses : numpy array
-        Initial stresses for each particle. Noting `npart` the number of particles, its shape is ``(npart, 3)``.
+        Initial stresses for each particle. Noting `npart` the number of particles, its shape is ``(npart, 6)``.
+    init_velocities : numpy array
+        Initial velocities for each particle. Noting `npart` the number of particles, its shape is ``(npart, 3)``.
     input_filename : str
         Path to the input file.
     title : str
@@ -608,6 +610,7 @@ class Simulation():
         self.math_functions = []
         self.entity_sets = None
         self.init_stresses = None
+        self.init_velocities = None
 
         self.custom_params = {}
 
@@ -618,6 +621,7 @@ class Simulation():
         self.__nodal_forces = []
         self.__particle_traction = []
         self.__init_stress_filename = self.directory + "particles_stresses.txt"
+        self.__init_velocity_filename = self.directory + "particles_velocities.txt"
 
     def create_mesh(self, *args, **kwargs):
         """Create the simulation's mesh.
@@ -769,6 +773,20 @@ class Simulation():
         psfile.write("{:d}\n".format(len(self.particles.particles)))   
         for ps in init_stresses: psfile.write("{:e}\t{:e}\t{:e}\t{:e}\t{:e}\t{:e}\n".format(*ps)) 
 
+    def set_initial_particles_velocities(self, init_velocities):
+        """Set the initial velocities for each particle.
+
+        Parameters
+        ----------
+        init_velocities : numpy array
+            Initial velocities for each particle. Noting `npart` the number of particles, it should have the shape ``(npart, 3)``.
+        """
+        self.init_velocities = init_velocities
+
+        psfile = open(self.__init_velocity_filename, "w") 
+        psfile.write("{:d}\n".format(len(self.particles.particles)))   
+        for ps in init_velocities: psfile.write("{:e}\t{:e}\t{:e}\n".format(*ps)) 
+
     
     def set_gravity(self, gravity): 
         """Set the value of gravity. If this method isn't called, gravity is
@@ -832,6 +850,8 @@ class Simulation():
             mesh_dic["entity_sets"] = self.entity_sets.filename
         if self.init_stresses is not None: 
             mesh_dic["particles_stresses"] = self.__init_stress_filename
+        if self.init_velocities is not None: 
+            mesh_dic["particles_velocities"] = self.__init_velocity_filename
         
         particles_list = [{"generator": {"check_duplicates": self.particles.check_duplicates,
                                          "location": self.particles.filename,

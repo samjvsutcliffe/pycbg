@@ -3,9 +3,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>pycbg.preprocessing.Mesh &mdash; pycbg  documentation</title>
   
@@ -16,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,8 +33,6 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -52,7 +54,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pycbg
+            <a href="../index.html" class="icon icon-home"> pycbg
           
 
           
@@ -132,6 +134,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -143,7 +147,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/stubs/pycbg.preprocessing.Mesh.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -157,11 +161,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="pycbg-preprocessing-mesh">
+  <section id="pycbg-preprocessing-mesh">
 <h1>pycbg.preprocessing.Mesh<a class="headerlink" href="#pycbg-preprocessing-mesh" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="pycbg.preprocessing.Mesh">
-<em class="property">class </em><code class="sig-prename descclassname">pycbg.preprocessing.</code><code class="sig-name descname">Mesh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dimensions</span></em>, <em class="sig-param"><span class="n">ncells</span></em>, <em class="sig-param"><span class="n">directory</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">check_duplicates</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">cell_type</span><span class="o">=</span><span class="default_value">'ED3H8'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Mesh" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pycbg.preprocessing.</span></code><code class="sig-name descname"><span class="pre">Mesh</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncells</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_duplicates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ED3H8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Mesh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and write to a file a mesh using gmsh.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -176,7 +180,7 @@
 </dl>
 <dl class="py attribute">
 <dt id="pycbg.preprocessing.Mesh.nodes">
-<code class="sig-name descname">nodes</code><a class="headerlink" href="#pycbg.preprocessing.Mesh.nodes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">nodes</span></code><a class="headerlink" href="#pycbg.preprocessing.Mesh.nodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Positions of all nodes in the mesh. The id of a node is the index of its line in this array. Noting <cite>nnodes</cite> the number of nodes, the shape of <cite>nodes</cite> is <code class="docutils literal notranslate"><span class="pre">(nnodes,3)</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -187,7 +191,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.preprocessing.Mesh.cells">
-<code class="sig-name descname">cells</code><a class="headerlink" href="#pycbg.preprocessing.Mesh.cells" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">cells</span></code><a class="headerlink" href="#pycbg.preprocessing.Mesh.cells" title="Permalink to this definition">¶</a></dt>
 <dd><p>Connections between cells and nodes. Each line corresponds to a cell, its index is the cell’s id. The columns correspond to the ids of the nodes composing a cell. Noting <cite>nnode_pcell</cite> the number of nodes per cell (8, 20 or 64), the shape of <cite>cells</cite> is <code class="docutils literal notranslate"><span class="pre">(ncells,nnode_pcell)</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -198,7 +202,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.preprocessing.Mesh.filename">
-<code class="sig-name descname">filename</code><a class="headerlink" href="#pycbg.preprocessing.Mesh.filename" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">filename</span></code><a class="headerlink" href="#pycbg.preprocessing.Mesh.filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Path to the mesh file from the current working directory.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -209,7 +213,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.preprocessing.Mesh.dimensions">
-<code class="sig-name descname">dimensions</code><a class="headerlink" href="#pycbg.preprocessing.Mesh.dimensions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">dimensions</span></code><a class="headerlink" href="#pycbg.preprocessing.Mesh.dimensions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dimensions of the mesh.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -220,7 +224,7 @@
 
 <dl class="py attribute">
 <dt>
-<code class="sig-name descname">l0, l1, l2</code></dt>
+<code class="sig-name descname"><span class="pre">l0,</span> <span class="pre">l1,</span> <span class="pre">l2</span></code></dt>
 <dd><p>Dimensions of the mesh (<code class="docutils literal notranslate"><span class="pre">self.l0,</span> <span class="pre">self.l1,</span> <span class="pre">self.l2</span> <span class="pre">=</span> <span class="pre">self.dimensions</span></code>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -231,7 +235,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.preprocessing.Mesh.ncells">
-<code class="sig-name descname">ncells</code><a class="headerlink" href="#pycbg.preprocessing.Mesh.ncells" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ncells</span></code><a class="headerlink" href="#pycbg.preprocessing.Mesh.ncells" title="Permalink to this definition">¶</a></dt>
 <dd><p>Number of cells in each direction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -242,7 +246,7 @@
 
 <dl class="py attribute">
 <dt>
-<code class="sig-name descname">nc1, nc2, nc3</code></dt>
+<code class="sig-name descname"><span class="pre">nc1,</span> <span class="pre">nc2,</span> <span class="pre">nc3</span></code></dt>
 <dd><p>Number of cells in each direction (<code class="docutils literal notranslate"><span class="pre">self.nc0,</span> <span class="pre">self.nc1,</span> <span class="pre">self.nc2</span> <span class="pre">=</span> <span class="pre">self.ncells</span></code>).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -253,7 +257,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.preprocessing.Mesh.directory">
-<code class="sig-name descname">directory</code><a class="headerlink" href="#pycbg.preprocessing.Mesh.directory" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">directory</span></code><a class="headerlink" href="#pycbg.preprocessing.Mesh.directory" title="Permalink to this definition">¶</a></dt>
 <dd><p>Directory in which the mesh file will be saved.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -264,7 +268,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.preprocessing.Mesh.check_duplicates">
-<code class="sig-name descname">check_duplicates</code><a class="headerlink" href="#pycbg.preprocessing.Mesh.check_duplicates" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">check_duplicates</span></code><a class="headerlink" href="#pycbg.preprocessing.Mesh.check_duplicates" title="Permalink to this definition">¶</a></dt>
 <dd><p>See CB-Geo documentation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -275,7 +279,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.preprocessing.Mesh.cell_type">
-<code class="sig-name descname">cell_type</code><a class="headerlink" href="#pycbg.preprocessing.Mesh.cell_type" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">cell_type</span></code><a class="headerlink" href="#pycbg.preprocessing.Mesh.cell_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Type of cell.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -300,7 +304,7 @@
 </div>
 <dl class="py method">
 <dt id="pycbg.preprocessing.Mesh.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dimensions</span></em>, <em class="sig-param"><span class="n">ncells</span></em>, <em class="sig-param"><span class="n">directory</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">check_duplicates</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">cell_type</span><span class="o">=</span><span class="default_value">'ED3H8'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Mesh.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncells</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directory</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_duplicates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cell_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ED3H8'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Mesh.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -327,7 +331,7 @@
 </table>
 <dl class="py method">
 <dt id="pycbg.preprocessing.Mesh.create_mesh">
-<code class="sig-name descname">create_mesh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Mesh.create_mesh" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">create_mesh</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Mesh.create_mesh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the mesh in gmsh.</p>
 <p class="rubric">Notes</p>
 <ul class="simple">
@@ -339,7 +343,7 @@
 
 <dl class="py method">
 <dt id="pycbg.preprocessing.Mesh.set_parameters">
-<code class="sig-name descname">set_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dimensions</span></em>, <em class="sig-param"><span class="n">ncells</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Mesh.set_parameters" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">set_parameters</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dimensions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ncells</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Mesh.set_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the dimensions and number of cells of the mesh.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -353,50 +357,42 @@
 
 <dl class="py method">
 <dt id="pycbg.preprocessing.Mesh.write_file">
-<code class="sig-name descname">write_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Mesh.write_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">write_file</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.preprocessing.Mesh.write_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write the mesh file formated for CB-Geo.</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="pycbg.preprocessing.Particles.html" class="btn btn-neutral float-right" title="pycbg.preprocessing.Particles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to pycbg’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="pycbg.preprocessing.Particles.html" class="btn btn-neutral float-right" title="pycbg.preprocessing.Particles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../index.html" class="btn btn-neutral float-left" title="Welcome to pycbg’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Sacha Duverger
+        &#169; Copyright 2020, Sacha Duverger.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

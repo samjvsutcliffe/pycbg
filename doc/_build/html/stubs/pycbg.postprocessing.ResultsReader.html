@@ -3,9 +3,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>pycbg.postprocessing.ResultsReader &mdash; pycbg  documentation</title>
   
@@ -16,7 +17,10 @@
 
   
   
+
   
+  
+
   
 
   
@@ -29,8 +33,6 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -51,7 +53,7 @@
           
 
           
-            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> pycbg
+            <a href="../index.html" class="icon icon-home"> pycbg
           
 
           
@@ -131,6 +133,8 @@
 
 
 
+
+
 <div role="navigation" aria-label="breadcrumbs navigation">
 
   <ul class="wy-breadcrumbs">
@@ -142,7 +146,7 @@
     
       <li class="wy-breadcrumbs-aside">
         
-            
+          
             <a href="../_sources/stubs/pycbg.postprocessing.ResultsReader.rst.txt" rel="nofollow"> View page source</a>
           
         
@@ -156,11 +160,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="pycbg-postprocessing-resultsreader">
+  <section id="pycbg-postprocessing-resultsreader">
 <h1>pycbg.postprocessing.ResultsReader<a class="headerlink" href="#pycbg-postprocessing-resultsreader" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="pycbg.postprocessing.ResultsReader">
-<em class="property">class </em><code class="sig-prename descclassname">pycbg.postprocessing.</code><code class="sig-name descname">ResultsReader</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">directory</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.postprocessing.ResultsReader" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pycbg.postprocessing.</span></code><code class="sig-name descname"><span class="pre">ResultsReader</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.postprocessing.ResultsReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the result of a simulation. Can also load the <a class="reference internal" href="pycbg.preprocessing.Simulation.html#pycbg.preprocessing.Simulation" title="pycbg.preprocessing.Simulation"><code class="xref py py-func docutils literal notranslate"><span class="pre">Simulation()</span></code></a> object used during preprocessing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -169,7 +173,7 @@
 </dl>
 <dl class="py attribute">
 <dt id="pycbg.postprocessing.ResultsReader.ppositions">
-<code class="sig-name descname">ppositions</code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.ppositions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ppositions</span></code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.ppositions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Particles’ positions for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of <code class="docutils literal notranslate"><span class="pre">ppositions[i]</span></code> is <code class="docutils literal notranslate"><span class="pre">(npart,3)</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -180,7 +184,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.postprocessing.ResultsReader.pvelocities">
-<code class="sig-name descname">pvelocities</code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.pvelocities" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pvelocities</span></code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.pvelocities" title="Permalink to this definition">¶</a></dt>
 <dd><p>Particles’ velocities for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of <code class="docutils literal notranslate"><span class="pre">pvelocities[i]</span></code> is <code class="docutils literal notranslate"><span class="pre">(npart,3)</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -191,7 +195,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.postprocessing.ResultsReader.pstresses">
-<code class="sig-name descname">pstresses</code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.pstresses" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pstresses</span></code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.pstresses" title="Permalink to this definition">¶</a></dt>
 <dd><p>Particles’ stresses for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of <code class="docutils literal notranslate"><span class="pre">pstresses[i]</span></code> is <code class="docutils literal notranslate"><span class="pre">(npart,6)</span></code>. The columns represent the directions <cite>xx</cite>, <cite>yy</cite>, <cite>zz</cite>, <cite>xy</cite>, <cite>yz</cite> and <cite>xz</cite> respectively.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -202,7 +206,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.postprocessing.ResultsReader.pstrains">
-<code class="sig-name descname">pstrains</code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.pstrains" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pstrains</span></code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.pstrains" title="Permalink to this definition">¶</a></dt>
 <dd><p>Particles’ strains for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of <code class="docutils literal notranslate"><span class="pre">pstrains[i]</span></code> is <code class="docutils literal notranslate"><span class="pre">(npart,6)</span></code>. The columns represent the directions <cite>xx</cite>, <cite>yy</cite>, <cite>zz</cite>, <cite>xy</cite>, <cite>yz</cite> and <cite>xz</cite> respectively.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -213,7 +217,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.postprocessing.ResultsReader.ppressures">
-<code class="sig-name descname">ppressures</code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.ppressures" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ppressures</span></code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.ppressures" title="Permalink to this definition">¶</a></dt>
 <dd><p>Particles’ pressures for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of <code class="docutils literal notranslate"><span class="pre">ppressures[i]</span></code> is <code class="docutils literal notranslate"><span class="pre">(npart,)</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -224,7 +228,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.postprocessing.ResultsReader.pmasses">
-<code class="sig-name descname">pmasses</code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.pmasses" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pmasses</span></code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.pmasses" title="Permalink to this definition">¶</a></dt>
 <dd><p>Particles’ masses for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of <code class="docutils literal notranslate"><span class="pre">pmasses[i]</span></code> is <code class="docutils literal notranslate"><span class="pre">(npart,)</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -235,7 +239,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.postprocessing.ResultsReader.pvolumes">
-<code class="sig-name descname">pvolumes</code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.pvolumes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pvolumes</span></code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.pvolumes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Particles’ volumes for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of <code class="docutils literal notranslate"><span class="pre">pvolumes[i]</span></code> is <code class="docutils literal notranslate"><span class="pre">(npart,)</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -246,7 +250,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.postprocessing.ResultsReader.pmaterials">
-<code class="sig-name descname">pmaterials</code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.pmaterials" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pmaterials</span></code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.pmaterials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Particles’ material’s id for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of <code class="docutils literal notranslate"><span class="pre">pmaterials[i]</span></code> is <code class="docutils literal notranslate"><span class="pre">(npart,)</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -257,7 +261,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.postprocessing.ResultsReader.raw_data">
-<code class="sig-name descname">raw_data</code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.raw_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">raw_data</span></code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.raw_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>All data saved from the simulation. The data is stored for each time step as a dataframe.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -268,7 +272,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.postprocessing.ResultsReader.steps">
-<code class="sig-name descname">steps</code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.steps" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">steps</span></code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.steps" title="Permalink to this definition">¶</a></dt>
 <dd><p>All saved steps.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -279,7 +283,7 @@
 
 <dl class="py attribute">
 <dt id="pycbg.postprocessing.ResultsReader.times">
-<code class="sig-name descname">times</code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.times" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">times</span></code><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.times" title="Permalink to this definition">¶</a></dt>
 <dd><p>All times corresponding to saved steps.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -290,7 +294,7 @@
 
 <dl class="py method">
 <dt id="pycbg.postprocessing.ResultsReader.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">directory</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -311,48 +315,41 @@
 </table>
 <dl class="py method">
 <dt id="pycbg.postprocessing.ResultsReader.load_simulation">
-<code class="sig-name descname">load_simulation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.load_simulation" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">load_simulation</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pycbg.postprocessing.ResultsReader.load_simulation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load the simulation object used to write the input files</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>
            
           </div>
           <footer>
-  
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-      
-        <a href="pycbg.preprocessing.Simulation.html" class="btn btn-neutral float-left" title="pycbg.preprocessing.Simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+        <a href="pycbg.preprocessing.Simulation.html" class="btn btn-neutral float-left" title="pycbg.preprocessing.Simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        
-        &copy; Copyright 2020, Sacha Duverger
+        &#169; Copyright 2020, Sacha Duverger.
 
     </p>
   </div>
     
     
     
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
     
     provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
-
         </div>
       </div>
 

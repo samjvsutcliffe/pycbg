@@ -1,13 +1,13 @@
 Install pycbg
 =============
 
-`pycbg` can be installed using pip which will also install its depedencies. Type the following command from the root of pycbg (the directory where this present file is): 
+`pycbg` can be installed as a Python3 module using pip. Type the following command from the root of pycbg (the directory where this present file is): 
 
 ```
 python3 -m pip install -e .
 ```
 
-The following modules should be automatically installed: 
+Installation should automatically include the following dependencies: 
  - `numpy`
  - `gmsh`
  - `pandas`

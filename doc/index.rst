@@ -12,11 +12,11 @@ Preprocessing
 
 Preprocessing a MPM simulation for CB-Geo consists in creating several input files :
 
- - a mesh file, where the positions of all nodes and their interconnections are described. Pycbg saves it under the name `mesh.msh`. Can be created using the :py:class:`Mesh<pycbg.preprocessing.Mesh>` object.
- - a particles file, where the initial positions of all material points are specified. Pycbg saves it under the name `particles.txt`. Can be created using the :py:class:`Particles<pycbg.preprocessing.Particles>` object.
- - an entity sets file (if entity sets are defined), where all entity sets are defined using entities' ids. An entity can be a node, a particle or a cell. Pycbg saves it under the name `entity_sets.txt`. Can be created using the :py:class:`EntitySets<pycbg.preprocessing.EntitySets>` object.
+ - a mesh file, where the positions of all nodes and their interconnections are described. Pycbg saves it under the name `mesh.msh`. Can be created using the :py:class:`Mesh<pycbg.preprocessing.Mesh>` class.
+ - a particles file, where the initial positions of all material points are specified. Pycbg saves it under the name `particles.txt`. Can be created using the :py:class:`Particles<pycbg.preprocessing.Particles>` class.
+ - an entity sets file (if entity sets are defined), where all entity sets are defined using entities' ids. An entity can be a node, a particle or a cell. Pycbg saves it under the name `entity_sets.txt`. Can be created using the :py:class:`EntitySets<pycbg.preprocessing.EntitySets>` class.
 
-The :py:class:`Simulation<pycbg.preprocessing.Simulation>` object creates :py:class:`Mesh<pycbg.preprocessing.Mesh>`, :py:class:`Particles<pycbg.preprocessing.Particles>`, :py:class:`Materials<pycbg.preprocessing.Materials>` and :py:class:`EntitySets<pycbg.preprocessing.EntitySets>` objects and should be enough to prepare a simulation.
+Instantiating the :py:class:`Simulation<pycbg.preprocessing.Simulation>` class involves creating :py:class:`Mesh<pycbg.preprocessing.Mesh>`, :py:class:`Particles<pycbg.preprocessing.Particles>`, :py:class:`Materials<pycbg.preprocessing.Materials>` and :py:class:`EntitySets<pycbg.preprocessing.EntitySets>` objects and should be enough to prepare a simulation.
 
 Classes overview
 ----------------

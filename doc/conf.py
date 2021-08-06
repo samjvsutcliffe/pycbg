@@ -13,14 +13,14 @@
 import sphinx_rtd_theme
 import os
 import sys
-sys.path.insert(0, os.path.abspath('..'))
+sys.path.insert(0, os.path.abspath('../pycbg'))
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'pycbg'
-copyright = '2020, Sacha Duverger'
-author = 'Sacha Duverger'
+copyright = '2020, Sacha Duverger, Jérôme Duriez (INRAE, Aix Marseille Univ, RECOVER)'
+author = 'Sacha Duverger, Jérôme Duriez'
 
 
 # -- General configuration ---------------------------------------------------

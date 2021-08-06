@@ -511,7 +511,7 @@ class Materials():
                                "poisson_ratio": poisson_ratio})
 
 class Simulation():
-    """Create a simulation.
+    """Includes all simulation ingredients in order to create an appropriate CB-Geo MPM .json input file with the `write_simulation` method, after attributes definition.
 
     Parameters
     ----------
@@ -531,13 +531,13 @@ class Simulation():
     materials : :class:`~pycbg.preprocessing.Materials` object
         Simulation's materials. Created upon creating the `Simulation` object. 
     init_stresses : numpy array
-        Initial stresses for each particle. Noting `npart` the number of particles, its shape is ``(npart, 3)``.
+        Initial stresses for each particle, to define through the `set_initial_particles_stresses` method, if desired. Noting `npart` the number of particles, its shape is ``(npart, 3)``.
     input_filename : str
-        Path to the input file.
+        Path to the CB-Geo MPM .json input file to create. Default is 'input_file.json' in `directory`.
     title : str
-        Simulation title.
+        Simulation title. Can be passed as an instantiation parameter.
     directory : str
-        Path to the simulation's directory.
+        Path to the simulation's directory. Can be passed as an instantiation parameter.
     custom_params : dict
         Dictionary containing user-defined parameters. It will be saved in the :class:`~pycbg.preprocessing.Simulation` object when the input file is written. Its element should be appended using the `add_custom_parameters` method.
 

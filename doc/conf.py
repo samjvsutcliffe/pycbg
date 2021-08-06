@@ -19,8 +19,8 @@ sys.path.insert(0, os.path.abspath('../pycbg/src/'))
 # -- Project information -----------------------------------------------------
 
 project = 'pycbg'
-copyright = '2020, Sacha Duverger'
-author = 'Sacha Duverger'
+copyright = '2020, Sacha Duverger, Jérôme Duriez (INRAE, Aix Marseille Univ, RECOVER)'
+author = 'Sacha Duverger, Jérôme Duriez'
 
 
 # -- General configuration ---------------------------------------------------

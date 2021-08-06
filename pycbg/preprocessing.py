@@ -16,7 +16,7 @@ class Mesh():
     directory : str, optional
         Directory in which the mesh file will be saved. If the directory doesn't already exist, it will be created. It is set by default to the current working directory.
     check_duplicates : bool, optional  
-        See CB-Geo documentation for informations on this parameter. Default is `True`.
+        See CB-Geo MPM documentation for informations on this parameter. Default is `True`.
     cell_type : {'ED3H8', 'ED3H20', 'ED3H64'}, optional
         Type of cell. Only 3D Hexahedrons are supported. The number of nodes can be 8, 20 or 64. Default is 'ED3H8'.
 
@@ -39,7 +39,7 @@ class Mesh():
     directory : str
         Directory in which the mesh file will be saved.
     check_duplicates : bool
-        See CB-Geo documentation.
+        See CB-Geo MPM documentation.
     cell_type : {'ED3H8', 'ED3H20', 'ED3H64'}
         Type of cell. 
 
@@ -109,7 +109,7 @@ class Mesh():
         gmsh.model.mesh.generate(3)
 
     def write_file(self):
-        """Write the mesh file formated for CB-Geo."""
+        """Write the mesh file formated for CB-Geo MPM."""
         self.create_mesh()
 
         gmsh.write(self.filename)
@@ -159,7 +159,7 @@ class Particles():
     directory : str, optional
         Directory in which the particles file will be saved. If the directory doesn't already exist, it will be created. It is set by default to the current working directory.
     check_duplicates : bool, optional  
-        See CB-Geo documentation for informations on this parameter. Default is `True`.
+        See CB-Geo MPM documentation for informations on this parameter. Default is `True`.
 
     Attributes
     ----------
@@ -172,7 +172,7 @@ class Particles():
     directory : str
         Directory in which the particles file will be saved.
     check_duplicates : bool 
-        See CB-Geo documentation.
+        See CB-Geo MPM documentation.
 
     Notes
     -----
@@ -243,7 +243,7 @@ class Particles():
         self.particles = np.array(self.particles)
 
     def write_file(self):
-        """Write the particles file formatted for CB-Geo."""
+        """Write the particles file formatted for CB-Geo MPM."""
         pfile = open(self.filename, "w") 
         pfile.write("{:d}\n".format(len(self.particles)))   
         for p in self.particles: pfile.write("{:e}\t{:e}\t{:e}\n".format(*p)) 
@@ -338,7 +338,7 @@ class EntitySets():
         return len(set_list)-1 if typ=="node" else len(set_list)
     
     def write_file(self):
-        """Write the entity sets file formatted for CB-Geo."""
+        """Write the entity sets file formatted for CB-Geo MPM."""
         main_dic = {}
         for typ, sets_tmp in zip(("particle_sets", "node_sets"), (self.psets, self.nsets)):
             if len(sets_tmp)==0: continue
@@ -367,7 +367,7 @@ class Materials():
     
     Notes
     -----
-    Due to (probably) a bug in CB-Geo, materials should be created in the same order than the corresponding particle sets (so particle sets and materials have the same id). 
+    Due to (probably) a bug in CB-Geo MPM, materials should be created in the same order than the corresponding particle sets (so particle sets and materials have the same id). 
     
     Examples
     --------
@@ -400,7 +400,7 @@ class Materials():
     def create_Newtonian3D(self, pset_id=0, density=1.225, 
                                             bulk_modulus=1.42e5, 
                                             dynamic_viscosity=1.81e-5):
-        """Create Newtonian3D material, as specified by CB-Geo documentation.
+        """Create Newtonian3D material, as specified by CB-Geo MPM documentation.
 
         Parameters
         ----------
@@ -437,7 +437,7 @@ class Materials():
                                               residual_friction=13.,
                                               residual_dilation=0.,
                                               residual_cohesion=0.):
-        """Create MohrCoulomb3D material, as specified by CB-Geo documentation.
+        """Create MohrCoulomb3D material, as specified by CB-Geo MPM documentation.
 
         Parameters
         ----------
@@ -518,7 +518,7 @@ class Simulation():
     title : str, optional
         Simulation title. Default is 'Sim_title'.
     directory : str, optional
-        Path to the simulation's directory (will be created if not existent. User-indication of a final '/' is optional). Mesh, particles and entity sets files will be saved in this directory. The result folder is also set to be created by CB-Geo in this directory. Default is `title`.
+        Path to the simulation's directory (will be created if not existent. User-indication of a final '/' is optional). Mesh, particles and entity sets files will be saved in this directory. The result folder is also set to be created by CB-Geo MPM in this directory. Default is `title`.
 
     Attributes
     ----------
@@ -600,7 +600,7 @@ class Simulation():
         ncells : tuple of ints
             Number of cells in each direction. Its length should be 3, with `ncells[n]` the number of cells on the axis `n`.
         check_duplicates : bool, optional
-            See CB-Geo documentation for informations on this parameter. Default is `True`.
+            See CB-Geo MPM documentation for informations on this parameter. Default is `True`.
         cell_type : {'ED3H8', 'ED3H20', 'ED3H64'}, optional
             Type of cell. Only 3D Hexahedrons are supported. The number of nodes can be 8, 20 or 64. Default is 'ED3H8'.
         """
@@ -616,7 +616,7 @@ class Simulation():
         npart_perdim_percell : int, optional
             Number of particles for each dimension in one cell. All cells will contain ``npart_perdim_percell**3`` equally spaced particles. Note that particles are equally spaced within a cell, not between cells. Default is 1 .
         check_duplicates : bool, optional
-            See CB-Geo documentation for informations on this parameter. Default is `True`.
+            See CB-Geo MPM documentation for informations on this parameter. Default is `True`.
         """
         if "mesh" in kwargs: raise TypeError("`mesh` parameter is defined by the `Simulation` object")
         if "directory" in kwargs or len(args)>1: raise TypeError("`directory` parameter is defined by the `Simulation` object")

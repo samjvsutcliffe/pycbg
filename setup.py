@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setuptools.setup(
     name='pycbg',
     version=get_git_version(),
-    description='Python scripts able to generate easily CB-Geo mpm input files',
+    description='Python scripts for handy generations of CB-Geo MPM input files',
     author='Sacha Duverger',
     author_email='sacha.duverger@inrae.fr',
     url='git_repos@axp20009:~/pycbg.git',

@@ -10,7 +10,7 @@ class Mesh():
     Parameters
     ----------
     dimensions : tuple of floats
-        Dimensions of the mesh. Its length should be 3, with `dimensions[n]` the dimension of the mesh on the axis `n`.
+        Dimensions of the mesh. Its length should be 3, with `dimensions[n]` the space dimension of the mesh on the axis `n`.
     ncells : tuple of ints
         Number of cells in each direction. Its length should be 3, with `ncells[n]` the number of cells on the axis `n`.
     directory : str, optional
@@ -643,7 +643,7 @@ class Simulation():
         entity_set : int
             Id of the entity set on which the velocity is imposed.
         typ : {"node", "particle"}, optional
-            Type of set on which the velocity is imposed. Default is "particle".
+            Type of set on which the velocity is imposed. Default is "node".
         """
         if typ=="particle": list_name, key_name = "particles_velocity_constraints", "pset_id"
         elif typ=="node": list_name, key_name = "velocity_constraints", "nset_id"
@@ -662,17 +662,15 @@ class Simulation():
             Axis of the normal vector to the plane where friction is acting.
         sgn_n : {-1, 1}
             Sign of the normal vector to the plane where friction is acting.
-        vel_value : float
+        frict_value : float
             Imposed friction coefficient's value.
-        entity_set : int
-            Id of the entity set on which the velocity is imposed.
-        typ : {"node", "particle"}, optional
-            Type of set on which the velocity is imposed. Default is "particle".
+        node_set : int
+            Id of the node set on which friction is imposed.
         """
         self.__boundary_conditions["friction_constraints"].append({"nset_id": node_set,
                                                                    "dir": dir,
                                                                    "sign_n": sgn_n,
-                                                                   "velocity": frict_value})
+                                                                   "friction": frict_value})
     
     def add_math_function(self, times, values):
         """Add a math function to the simulation. The function can only be
@@ -696,7 +694,7 @@ class Simulation():
         return fct_id
 
     def add_force(self, dir, force, entity_set, typ="node", math_function_id=None):
-        """Add a force on all the element in a entity set.
+        """Add a force on all the elements in a entity set.
 
         Parameters
         ----------
@@ -705,9 +703,9 @@ class Simulation():
         force : float
             Imposed force's value (:math:`N`).
         entity_set : int
-            Id of the entity set on which the velocity is imposed.
+            Id of the entity set on which the force is imposed.
         typ : {"node", "particle"}, optional
-            Type of set on which the velocity is imposed. Default is "particle".
+            Type of set on which the force is imposed. Default is "particle".
         math_function_id : int, optional
             Id of the math function to use. Default value is `None` (the load is then static).
         """

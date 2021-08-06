@@ -10,7 +10,7 @@ setuptools.setup(
     description='Python scripts able to generate easily CB-Geo mpm input files',
     author='Sacha Duverger, Jérôme Duriez',
     author_email='sacha.duverger@inrae.fr, jerome.duriez@inrae.fr',
-    url='git@forgemia.inra.fr:mpm-at-recover/pycbg.git',
+    url='https://forgemia.inra.fr/mpm-at-recover/pycbg.git',
     long_description=long_description,
     long_description_content_type='text/markdown',
     licence='MIT',

@@ -10,13 +10,13 @@ class Mesh():
     Parameters
     ----------
     dimensions : tuple of floats
-        Dimensions of the mesh. Its length should be 3, with `dimensions[n]` the dimension of the mesh on the axis `n`.
+        Dimensions of the mesh. Its length should be 3, with `dimensions[n]` the space dimension of the mesh on the axis `n`.
     ncells : tuple of ints
         Number of cells in each direction. Its length should be 3, with `ncells[n]` the number of cells on the axis `n`.
     directory : str, optional
         Directory in which the mesh file will be saved. If the directory doesn't already exist, it will be created. It is set by default to the current working directory.
     check_duplicates : bool, optional  
-        See CB-Geo documentation for informations on this parameter. Default is `True`.
+        See CB-Geo MPM documentation for informations on this parameter. Default is `True`.
     cell_type : {'ED3H8', 'ED3H20', 'ED3H64'}, optional
         Type of cell. Only 3D Hexahedrons are supported. The number of nodes can be 8, 20 or 64. Default is 'ED3H8'.
 
@@ -39,7 +39,7 @@ class Mesh():
     directory : str
         Directory in which the mesh file will be saved.
     check_duplicates : bool
-        See CB-Geo documentation.
+        See CB-Geo MPM documentation.
     cell_type : {'ED3H8', 'ED3H20', 'ED3H64'}
         Type of cell. 
 
@@ -109,7 +109,7 @@ class Mesh():
         gmsh.model.mesh.generate(3)
 
     def write_file(self):
-        """Write the mesh file formated for CB-Geo."""
+        """Write the mesh file formated for CB-Geo MPM."""
         self.create_mesh()
 
         gmsh.write(self.filename)
@@ -159,7 +159,7 @@ class Particles():
     directory : str, optional
         Directory in which the particles file will be saved. If the directory doesn't already exist, it will be created. It is set by default to the current working directory.
     check_duplicates : bool, optional  
-        See CB-Geo documentation for informations on this parameter. Default is `True`.
+        See CB-Geo MPM documentation for informations on this parameter. Default is `True`.
 
     Attributes
     ----------
@@ -172,7 +172,7 @@ class Particles():
     directory : str
         Directory in which the particles file will be saved.
     check_duplicates : bool 
-        See CB-Geo documentation.
+        See CB-Geo MPM documentation.
 
     Notes
     -----
@@ -243,7 +243,7 @@ class Particles():
         self.particles = np.array(self.particles)
 
     def write_file(self):
-        """Write the particles file formatted for CB-Geo."""
+        """Write the particles file formatted for CB-Geo MPM."""
         pfile = open(self.filename, "w") 
         pfile.write("{:d}\n".format(len(self.particles)))   
         for p in self.particles: pfile.write("{:e}\t{:e}\t{:e}\n".format(*p)) 
@@ -338,7 +338,7 @@ class EntitySets():
         return len(set_list)-1 if typ=="node" else len(set_list)
     
     def write_file(self):
-        """Write the entity sets file formatted for CB-Geo."""
+        """Write the entity sets file formatted for CB-Geo MPM."""
         main_dic = {}
         for typ, sets_tmp in zip(("particle_sets", "node_sets"), (self.psets, self.nsets)):
             if len(sets_tmp)==0: continue
@@ -367,7 +367,7 @@ class Materials():
     
     Notes
     -----
-    Due to (probably) a bug in CB-Geo, materials should be created in the same order than the corresponding particle sets (so particle sets and materials have the same id). 
+    Due to (probably) a bug in CB-Geo MPM, materials should be created in the same order than the corresponding particle sets (so particle sets and materials have the same id). 
     
     Examples
     --------
@@ -400,7 +400,7 @@ class Materials():
     def create_Newtonian3D(self, pset_id=0, density=1.225, 
                                             bulk_modulus=1.42e5, 
                                             dynamic_viscosity=1.81e-5):
-        """Create Newtonian3D material, as specified by CB-Geo documentation.
+        """Create Newtonian3D material, as specified by CB-Geo MPM documentation.
 
         Parameters
         ----------
@@ -437,7 +437,7 @@ class Materials():
                                               residual_friction=13.,
                                               residual_dilation=0.,
                                               residual_cohesion=0.):
-        """Create MohrCoulomb3D material, as specified by CB-Geo documentation.
+        """Create MohrCoulomb3D material, as specified by CB-Geo MPM documentation.
 
         Parameters
         ----------
@@ -518,7 +518,7 @@ class Simulation():
     title : str, optional
         Simulation title. Default is 'Sim_title'.
     directory : str, optional
-        Path to the simulation's directory. Mesh, particles and entity sets files will be saved in this directory. The result folder is also set to be created by CB-Geo in this directory. Default is `title`.
+        Path to the simulation's directory (will be created if not existent. User-indication of a final '/' is optional). Mesh, particles and entity sets files will be saved in this directory. The result folder is also set to be created by CB-Geo MPM in this directory. Default is `title`.
 
     Attributes
     ----------
@@ -600,7 +600,7 @@ class Simulation():
         ncells : tuple of ints
             Number of cells in each direction. Its length should be 3, with `ncells[n]` the number of cells on the axis `n`.
         check_duplicates : bool, optional
-            See CB-Geo documentation for informations on this parameter. Default is `True`.
+            See CB-Geo MPM documentation for informations on this parameter. Default is `True`.
         cell_type : {'ED3H8', 'ED3H20', 'ED3H64'}, optional
             Type of cell. Only 3D Hexahedrons are supported. The number of nodes can be 8, 20 or 64. Default is 'ED3H8'.
         """
@@ -616,7 +616,7 @@ class Simulation():
         npart_perdim_percell : int, optional
             Number of particles for each dimension in one cell. All cells will contain ``npart_perdim_percell**3`` equally spaced particles. Note that particles are equally spaced within a cell, not between cells. Default is 1 .
         check_duplicates : bool, optional
-            See CB-Geo documentation for informations on this parameter. Default is `True`.
+            See CB-Geo MPM documentation for informations on this parameter. Default is `True`.
         """
         if "mesh" in kwargs: raise TypeError("`mesh` parameter is defined by the `Simulation` object")
         if "directory" in kwargs or len(args)>1: raise TypeError("`directory` parameter is defined by the `Simulation` object")
@@ -643,7 +643,7 @@ class Simulation():
         entity_set : int
             Id of the entity set on which the velocity is imposed.
         typ : {"node", "particle"}, optional
-            Type of set on which the velocity is imposed. Default is "particle".
+            Type of set on which the velocity is imposed. Default is "node".
         """
         if typ=="particle": list_name, key_name = "particles_velocity_constraints", "pset_id"
         elif typ=="node": list_name, key_name = "velocity_constraints", "nset_id"
@@ -662,17 +662,15 @@ class Simulation():
             Axis of the normal vector to the plane where friction is acting.
         sgn_n : {-1, 1}
             Sign of the normal vector to the plane where friction is acting.
-        vel_value : float
+        frict_value : float
             Imposed friction coefficient's value.
-        entity_set : int
-            Id of the entity set on which the velocity is imposed.
-        typ : {"node", "particle"}, optional
-            Type of set on which the velocity is imposed. Default is "particle".
+        node_set : int
+            Id of the node set on which friction is imposed.
         """
         self.__boundary_conditions["friction_constraints"].append({"nset_id": node_set,
                                                                    "dir": dir,
                                                                    "sign_n": sgn_n,
-                                                                   "velocity": frict_value})
+                                                                   "friction": frict_value})
     
     def add_math_function(self, times, values):
         """Add a math function to the simulation. The function can only be
@@ -696,7 +694,7 @@ class Simulation():
         return fct_id
 
     def add_force(self, dir, force, entity_set, typ="node", math_function_id=None):
-        """Add a force on all the element in a entity set.
+        """Add a force on all the elements in a entity set.
 
         Parameters
         ----------
@@ -705,9 +703,9 @@ class Simulation():
         force : float
             Imposed force's value (:math:`N`).
         entity_set : int
-            Id of the entity set on which the velocity is imposed.
+            Id of the entity set on which the force is imposed.
         typ : {"node", "particle"}, optional
-            Type of set on which the velocity is imposed. Default is "particle".
+            Type of set on which the force is imposed. Default is "particle".
         math_function_id : int, optional
             Id of the math function to use. Default value is `None` (the load is then static).
         """

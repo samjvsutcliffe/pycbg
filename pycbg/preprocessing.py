@@ -518,7 +518,7 @@ class Simulation():
     title : str, optional
         Simulation title. Default is 'Sim_title'.
     directory : str, optional
-        Path to the simulation's directory. Mesh, particles and entity sets files will be saved in this directory. The result folder is also set to be created by CB-Geo in this directory. Default is `title`.
+        Path to the simulation's directory (will be created if not existent. User-indication of a final '/' is optional). Mesh, particles and entity sets files will be saved in this directory. The result folder is also set to be created by CB-Geo in this directory. Default is `title`.
 
     Attributes
     ----------

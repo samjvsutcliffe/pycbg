@@ -541,9 +541,6 @@ class Simulation():
     custom_params : dict
         Dictionary containing user-defined parameters. It will be saved in the :class:`~pycbg.preprocessing.Simulation` object when the input file is written. Its element should be appended using the `add_custom_parameters` method.
 
-    Notes
-    -----
-    `Mesh`, `Particles`, `EntitySets` and :class:`~pycbg.preprocessing.Materials` objects are created from the `Simulation` object.
 
     Examples
     --------

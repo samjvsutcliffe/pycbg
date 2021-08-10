@@ -89,7 +89,6 @@ class Mesh():
         self.l0, self.l1, self.l2 = dimensions
         self.nc0, self.nc1, self.nc2 = ncells
         self.origin = origin
-        self._o0, self._o1, self._o2 = origin
 
     def create_mesh(self):
         """Create the mesh in gmsh.
@@ -103,7 +102,7 @@ class Mesh():
         gmsh.initialize()
         gmsh.option.setNumber("Mesh.MshFileVersion", 2.1)
         
-        p = gmsh.model.geo.addPoint(self._o0, self._o1, self._o2)
+        p = gmsh.model.geo.addPoint(*self.origin)
         l = gmsh.model.geo.extrude([(0, p)], self.l0, 0, 0, [self.nc0], [1])
         s = gmsh.model.geo.extrude([l[1]], 0, self.l1, 0, [self.nc1], [1], recombine=True)
         v = gmsh.model.geo.extrude([s[1]], 0, 0, self.l2, [self.nc2], [1], recombine=True)

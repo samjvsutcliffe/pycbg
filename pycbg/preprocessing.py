@@ -13,6 +13,8 @@ class Mesh():
         Dimensions of the mesh. Its length should be 3, with `dimensions[n]` the dimension of the mesh on the axis `n`.
     ncells : tuple of ints
         Number of cells in each direction. Its length should be 3, with `ncells[n]` the number of cells on the axis `n`.
+    origin : tuple of floats, optional
+        Origin of the mesh. Default is `(0.,0.,0.)`.
     directory : str, optional
         Directory in which the mesh file will be saved. If the directory doesn't already exist, it will be created. It is set by default to the current working directory.
     check_duplicates : bool, optional  
@@ -36,6 +38,8 @@ class Mesh():
         Number of cells in each direction.
     nc1, nc2, nc3 : ints
         Number of cells in each direction (``self.nc0, self.nc1, self.nc2 = self.ncells``).
+    origin : tuple of floats
+        Origin of the mesh.
     directory : str
         Directory in which the mesh file will be saved.
     check_duplicates : bool
@@ -46,10 +50,7 @@ class Mesh():
     Notes
     -----
      - The mesh file is written upon creating the object.
-     - The nodes' coordinates are always positive.
-     - The point `(0,0,0)` will always be a node of the mesh. 
-     - The maximum coordinates are ``self.l0``, ``self.l1`` and ``self.l2`` on the axis 0, 1 and 2 respectively.
-
+     
     Examples
     --------
     Creating a cubic mesh of 1000 cells : 
@@ -62,8 +63,8 @@ class Mesh():
     ##       - Avoid having to write the mesh file from gmsh for rewritting it again
     ##       - Make crete_mesh usable by the user 
 
-    def __init__(self, dimensions, ncells, directory="", check_duplicates=True, cell_type="ED3H8"):
-        self.set_parameters(dimensions, ncells)
+    def __init__(self, dimensions, ncells, origin=(0.,0.,0.), directory="", check_duplicates=True, cell_type="ED3H8"):
+        self.set_parameters(dimensions, ncells, origin)
         if not os.path.isdir(directory) and directory!='' : os.mkdir(directory)
         self.filename = directory + "mesh.msh"
 
@@ -80,7 +81,7 @@ class Mesh():
         self.write_file()
         self.cells, self.nodes = np.array(self.cells), np.array(self.nodes)
 
-    def set_parameters(self, dimensions, ncells):
+    def set_parameters(self, dimensions, ncells, origin):
         """Set the dimensions and number of cells of the mesh.
 
         Parameters
@@ -92,6 +93,8 @@ class Mesh():
         """
         self.l0, self.l1, self.l2 = dimensions
         self.nc0, self.nc1, self.nc2 = ncells
+        self.origin = origin
+        self._o0, self._o1, self._o2 = origin
 
     def create_mesh(self):
         """Create the mesh in gmsh.
@@ -105,7 +108,7 @@ class Mesh():
         gmsh.initialize()
         gmsh.option.setNumber("Mesh.MshFileVersion", 2.1)
         
-        p = gmsh.model.geo.addPoint(0, 0, 0)
+        p = gmsh.model.geo.addPoint(self._o0, self._o1, self._o2)
         l = gmsh.model.geo.extrude([(0, p)], self.l0, 0, 0, [self.nc0], [1])
         s = gmsh.model.geo.extrude([l[1]], 0, self.l1, 0, [self.nc1], [1], recombine=True)
         v = gmsh.model.geo.extrude([s[1]], 0, 0, self.l2, [self.nc2], [1], recombine=True)

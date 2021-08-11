@@ -25,5 +25,6 @@ setuptools.setup(
     # extras_require={
     #     'documentation': ['sphinx>=3.3.1', 'sphinx_rtd_theme']
     # },
-    packages=setuptools.find_packages(include=['pycbg/*'])
+    package_dir={"": "src"},
+    packages=setuptools.find_packages(where="src")
 )

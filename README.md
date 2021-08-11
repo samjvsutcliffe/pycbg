@@ -12,6 +12,7 @@ The following modules should be automatically installed:
  - `gmsh`
  - `pandas`
  - `matplotlib`
+ - `versioneer`
  - `sphinx` (at least version `3.3.1`)
  - `sphinx_rtd_theme`
 

@@ -90,6 +90,8 @@ class Mesh():
             Dimensions of the mesh. Its length should be 3, with `dimensions[n]` the dimension of the mesh on the axis `n`.
         ncells : tuple of ints
             Number of cells in each direction. Its length should be 3, with `ncells[n]` the number of cells on the axis `n`.
+        origin : tuple of floats, optional
+            Origin of the mesh. Default is `(0.,0.,0.)`.
         """
         self.l0, self.l1, self.l2 = dimensions
         self.nc0, self.nc1, self.nc2 = ncells

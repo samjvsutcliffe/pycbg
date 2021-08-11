@@ -1,12 +1,13 @@
 import setuptools
-from version import get_git_version
+import versioneer
+commands = versioneer.get_cmdclass().copy()
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
     name='pycbg',
-    version=get_git_version(),
+    version=versioneer.get_version(),
     description='Python scripts able to generate easily CB-Geo mpm input files',
     author='Sacha Duverger',
     author_email='sacha.duverger@inrae.fr',

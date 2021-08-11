@@ -1,2 +1,2 @@
-include RELEASE-VERSION
-include version.py
+include versioneer.py
+include src/pycbg/_version.py

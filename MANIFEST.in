@@ -1,2 +1,3 @@
 include versioneer.py
 include src/pycbg/_version.py
+recursive-include doc *

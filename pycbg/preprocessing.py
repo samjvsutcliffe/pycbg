@@ -13,7 +13,7 @@ class Mesh():
         Dimensions of the mesh. Its length should be 3, with `dimensions[n]` the dimension of the mesh on the axis `n`.
     ncells : tuple of ints
         Number of cells in each direction. Its length should be 3, with `ncells[n]` the number of cells on the axis `n`.
-    origin : tuple of floats, optional
+    origin : tuple of floats
         Origin of the mesh. Default is `(0.,0.,0.)`.
     directory : str, optional
         Directory in which the mesh file will be saved. If the directory doesn't already exist, it will be created. It is set by default to the current working directory.
@@ -90,7 +90,7 @@ class Mesh():
             Dimensions of the mesh. Its length should be 3, with `dimensions[n]` the dimension of the mesh on the axis `n`.
         ncells : tuple of ints
             Number of cells in each direction. Its length should be 3, with `ncells[n]` the number of cells on the axis `n`.
-        origin : tuple of floats, optional
+        origin : tuple of floats
             Origin of the mesh. Default is `(0.,0.,0.)`.
         """
         self.l0, self.l1, self.l2 = dimensions

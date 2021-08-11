@@ -1,4 +1,6 @@
-Install pycbg
+PyCBG is a python module able to generate [CB-Geo MPM](https://github.com/cb-geo/mpm)'s input files.
+
+Install PyCBG
 =============
 
 `pycbg` can be installed using pip which will also install its depedencies. Type the following command from the root of pycbg (the directory where this present file is): 
@@ -19,8 +21,7 @@ The following modules should be automatically installed:
 Build the documentation
 =======================
 
-The documentation can be build using `sphinx`. From the root of pycbg, run the following command :
-
+The documentation can be build using `sphinx`. From the root of PyCBG, run the following command:
 ```
 sh build_doc.sh
 ```

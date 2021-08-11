@@ -20,6 +20,7 @@ setuptools.setup(
         'gmsh',
         'pandas',
         'matplotlib',
+        'versioneer',
         'sphinx>=3.3.1',
         'sphinx_rtd_theme'
     ],

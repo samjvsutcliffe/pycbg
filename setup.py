@@ -8,6 +8,7 @@ setuptools.setup(
     name='pycbg',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
+    zip_safe=True,
     description='Python scripts able to generate easily CB-Geo mpm input files',
     author='Sacha Duverger',
     author_email='sacha.duverger@inrae.fr',

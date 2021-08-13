@@ -32,7 +32,8 @@ extensions = ['sphinx.ext.autosectionlabel',
               'sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
               'sphinx.ext.napoleon',
-              "sphinx_rtd_theme"
+              'sphinx_rtd_theme',
+              'sphinx_search.extension'
 ]
 autosummary_generate = True
 

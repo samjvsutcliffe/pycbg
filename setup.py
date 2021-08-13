@@ -13,6 +13,9 @@ setuptools.setup(
     author='Sacha Duverger, Jérôme Duriez',
     author_email='sacha.duverger@inrae.fr, jerome.duriez@inrae.fr',
     url='https://forgemia.inra.fr/mpm-at-recover/pycbg.git',
+    project_urls={
+        "Documentation": "https://pycbg.readthedocs.io/en/latest/",
+    },
     long_description=long_description,
     long_description_content_type='text/markdown',
     licence='MIT',
@@ -23,10 +26,11 @@ setuptools.setup(
         'matplotlib',
         'versioneer',
         'sphinx>=3.3.1',
-        'sphinx_rtd_theme'
+        'sphinx_rtd_theme==0.5.2',
+        'sphinx_search.extension==0.1.0'
     ],
     # extras_require={
-    #     'documentation': ['sphinx>=3.3.1', 'sphinx_rtd_theme']
+    #     'documentation': ['sphinx>=3.3.1', 'sphinx_rtd_theme', 'sphinx_search.extension']
     # },
     package_dir={"": "src"},
     packages=setuptools.find_packages(where="src")

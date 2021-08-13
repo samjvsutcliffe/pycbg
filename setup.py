@@ -26,8 +26,7 @@ setuptools.setup(
         'matplotlib',
         'versioneer',
         'sphinx>=3.3.1',
-        'sphinx_rtd_theme==0.5.2',
-        'sphinx_search.extension==0.1.0'
+        'sphinx_rtd_theme==0.5.2'
     ],
     # extras_require={
     #     'documentation': ['sphinx>=3.3.1', 'sphinx_rtd_theme', 'sphinx_search.extension']

@@ -24,8 +24,7 @@ extensions = ['sphinx.ext.autosectionlabel',
               'sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
               'sphinx.ext.napoleon',
-              'sphinx_rtd_theme',
-              'sphinx_search.extension'
+              'sphinx_rtd_theme'
 ]
 autosummary_generate = True
 # Add any paths that contain templates here, relative to this directory.

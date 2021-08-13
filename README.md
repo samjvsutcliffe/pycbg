@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5179973.svg)](https://doi.org/10.5281/zenodo.5179973)
+
 PyCBG is a python module able to generate [CB-Geo MPM](https://github.com/cb-geo/mpm)'s input files.
 
 Install PyCBG

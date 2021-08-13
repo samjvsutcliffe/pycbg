@@ -18,10 +18,16 @@ The following modules should be automatically installed:
  - `sphinx` (at least version `3.3.1`)
  - `sphinx_rtd_theme`
 
-Build the documentation
-=======================
+Documentation
+=============
 
-The documentation can be build using `sphinx`. From the root of PyCBG, run the following command:
+## On ReadTheDocs
+
+The latest build of the documentation is available online [here](https://pycbg.readthedocs.io/en/latest/). If nothing appears under `Classes overview`, please reload the page (this is probably a small bug on ReadTheDocs).
+
+## Build documentation locally
+
+The documentation can also be build locally using `sphinx`. From the root of PyCBG, run the following command:
 ```
 sh build_doc.sh
 ```

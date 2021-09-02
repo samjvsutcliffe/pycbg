@@ -33,7 +33,7 @@ You can download the package with `git`:
 git clone git@forgemia.inra.fr:mpm-at-recover/pycbg.git
 ```
 
-Altenativly, you can download it manually from [ForgeMia](https://forgemia.inra.fr/mpm-at-recover/pycbg).
+Alternativly, you can download it manually from [ForgeMia](https://forgemia.inra.fr/mpm-at-recover/pycbg).
 
 **Installing PyCBG**
 

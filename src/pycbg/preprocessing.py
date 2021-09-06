@@ -64,7 +64,7 @@ class Mesh():
     def __init__(self, dimensions, ncells, origin=(0.,0.,0.), directory="", check_duplicates=True, cell_type="ED3H8"):
         self.set_parameters(dimensions, ncells, origin)
         if not os.path.isdir(directory) and directory!='' : os.mkdir(directory)
-        self.filename = directory + "mesh.msh"
+        self.directory = directory
 
         self.check_duplicates = check_duplicates
         self.cell_type = cell_type

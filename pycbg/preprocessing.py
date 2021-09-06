@@ -66,15 +66,16 @@ class Mesh():
         self.set_parameters(dimensions, ncells)
         if not os.path.isdir(directory) and directory!='' : os.mkdir(directory)
         self.filename = directory + "mesh.msh"
-        
-        self.write_file()
-        self.cells, self.nodes = np.array(self.cells), np.array(self.nodes)
 
         self.check_duplicates = check_duplicates
         self.cell_type = cell_type
         self._isoparametric = False # Shouldn't have to be set to another value
         self._io_type = "Ascii3D" # Shouldn't have to be set to another value
         self._node_type = "N3D" # Shouldn't have to be set to another value
+        
+        self.write_file()
+        self.cells, self.nodes = np.array(self.cells), np.array(self.nodes)
+
     def set_parameters(self, dimensions, ncells):
         """Set the dimensions and number of cells of the mesh.
 
@@ -107,6 +108,11 @@ class Mesh():
         gmsh.model.geo.synchronize()
         gmsh.model.addPhysicalGroup(3, [v[1][1]])
         gmsh.model.mesh.generate(3)
+        if self.cell_type=='ED3H20': 
+            gmsh.option.setNumber("Mesh.SecondOrderIncomplete", 1)
+            gmsh.model.mesh.setOrder(2)
+        elif self.cell_type=='ED3H64': 
+            gmsh.model.mesh.setOrder(3)
 
     def write_file(self):
         """Write the mesh file formated for CB-Geo."""

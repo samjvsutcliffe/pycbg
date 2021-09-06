@@ -82,7 +82,7 @@ class Mesh():
         
         self.set_parameters(dimensions, ncells, origin)
         if not os.path.isdir(directory) and directory!='' : os.mkdir(directory)
-        self.filename = directory + "mesh.msh"
+        self.directory = directory
 
         self.check_duplicates = check_duplicates
 

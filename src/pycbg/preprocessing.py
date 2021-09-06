@@ -64,17 +64,18 @@ class Mesh():
     def __init__(self, dimensions, ncells, origin=(0.,0.,0.), directory="", check_duplicates=True, cell_type="ED3H8"):
         self.set_parameters(dimensions, ncells, origin)
         if not os.path.isdir(directory) and directory!='' : os.mkdir(directory)
-        self.directory = directory 
-        
-        self.write_file()
-        self.cells, self.nodes = np.array(self.cells), np.array(self.nodes)
+        self.filename = directory + "mesh.msh"
 
         self.check_duplicates = check_duplicates
         self.cell_type = cell_type
         self._isoparametric = False # Shouldn't have to be set to another value
         self._io_type = "Ascii3D" # Shouldn't have to be set to another value
         self._node_type = "N3D" # Shouldn't have to be set to another value
-    def set_parameters(self, dimensions, ncells, origin):
+        
+        self.write_file()
+        self.cells, self.nodes = np.array(self.cells), np.array(self.nodes)
+
+    def set_parameters(self, dimensions, ncells):
         """Set the dimensions and number of cells of the mesh.
 
         Parameters
@@ -109,6 +110,11 @@ class Mesh():
         gmsh.model.geo.synchronize()
         gmsh.model.addPhysicalGroup(3, [v[1][1]])
         gmsh.model.mesh.generate(3)
+        if self.cell_type=='ED3H20': 
+            gmsh.option.setNumber("Mesh.SecondOrderIncomplete", 1)
+            gmsh.model.mesh.setOrder(2)
+        elif self.cell_type=='ED3H64': 
+            gmsh.model.mesh.setOrder(3)
 
     def write_file(self, filename="mesh"):
         """

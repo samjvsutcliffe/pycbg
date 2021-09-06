@@ -97,7 +97,6 @@ class Mesh():
         self.write_file()
         self.cells, self.nodes = np.array(self.cells), np.array(self.nodes)
 
-
     def set_parameters(self, dimensions, ncells, origin):
         """Set the dimensions and number of cells of the mesh.
 

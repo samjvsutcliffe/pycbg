@@ -825,8 +825,9 @@ class Simulation():
             Stops the simulation when particles go outside the mesh if `True`. Default is `False`.
         dt : float, optional
             Time step (:math:`s`). Default is `1e-5` :math:`s`.
-        velocity_update : {'pic', 'flip', 'flipX', 'apic'}, optional
+        velocity_update : {'pic', 'flip', 'flipX', 'apic', 'nflip'}, optional
             How to compute particle's velocity. If `'pic'` nodal velocity is directly interpolated to particles. If `'flip'` nodal velocity is computed from the acceleration interpolated to particles. If `'flipX'`, the nodal velocity will be a proportion between the `'flip'` velocity and the `'pic'` velocity: `X*velocity('flip') + (1-X)*velocity('pic')`. If `'apic'`, momentum is interpolated according to *Jiang, Chenfanfu, et al., 2015*. Default is `'flip'`.
+            If `'nflip'`, the velocity will be computed using `'flip'` but the material points will be moved according to this velocity (not the nodal one).
         nsteps : int, optional
             Number of steps to be performed. Default is 2000.
         verbosity : int, optional

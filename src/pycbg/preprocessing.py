@@ -18,8 +18,8 @@ class Mesh():
     directory : str, optional
         Directory in which the mesh file will be saved. If the directory doesn't already exist, it will be created. It is set by default to the current working directory.
     check_duplicates : bool, optional  
-        See CB-Geo MPM documentation for informations on this parameter. Default is `True`.
-    cell_type : {'ED3H8', 'ED3H20', 'ED3H64'}, optional
+        See CB-Geo documentation for informations on this parameter. Default is `True`.
+    cell_type : {'ED3H8', 'ED3H20', 'ED3H64G'}, optional
         Type of cell. Only 3D Hexahedrons are supported. The number of nodes can be 8, 20 or 64. Default is 'ED3H8'.
 
     Attributes
@@ -41,8 +41,8 @@ class Mesh():
     directory : str
         Directory in which the mesh file will be saved.
     check_duplicates : bool
-        See CB-Geo MPM documentation.
-    cell_type : {'ED3H8', 'ED3H20', 'ED3H64'}
+        See CB-Geo documentation.
+    cell_type : {'ED3H8', 'ED3H20', 'ED3H64G'}
         Type of cell. 
 
     Notes
@@ -57,7 +57,7 @@ class Mesh():
     >>> mesh.nc0 * mesh.nc1 * mesh.nc2
     1000
     """
-    ## TODO: - Test 'ED3H20' and 'ED3H64'
+    ## TODO: - Test 'ED3H20' and 'ED3H64G'
     ##       - Avoid having to write the mesh file from gmsh for rewritting it again
     ##       - Make crete_mesh usable by the user 
 
@@ -114,7 +114,7 @@ class Mesh():
         if self.cell_type=='ED3H20': 
             gmsh.option.setNumber("Mesh.SecondOrderIncomplete", 1)
             gmsh.model.mesh.setOrder(2)
-        elif self.cell_type=='ED3H64': 
+        elif self.cell_type=='ED3H64G': 
             gmsh.model.mesh.setOrder(3)
 
     def write_file(self, filename="mesh"):
@@ -633,8 +633,8 @@ class Simulation():
         ncells : tuple of ints
             Number of cells in each direction. Its length should be 3, with `ncells[n]` the number of cells on the axis `n`.
         check_duplicates : bool, optional
-            See CB-Geo MPM documentation for informations on this parameter. Default is `True`.
-        cell_type : {'ED3H8', 'ED3H20', 'ED3H64'}, optional
+            See CB-Geo documentation for informations on this parameter. Default is `True`.
+        cell_type : {'ED3H8', 'ED3H20', 'ED3H64G'}, optional
             Type of cell. Only 3D Hexahedrons are supported. The number of nodes can be 8, 20 or 64. Default is 'ED3H8'.
         """
         if "directory" in kwargs or len(args)>2: raise TypeError("`directory` parameter is defined by the `Simulation` object")

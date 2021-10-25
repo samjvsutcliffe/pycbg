@@ -69,7 +69,6 @@ class Mesh():
 
         self.check_duplicates = check_duplicates
         self.cell_type = cell_type
-        self.nnodes_percell = int(cell_type[4:])
         self._isoparametric = False # Shouldn't have to be set to another value
         self._io_type = "Ascii3D" # Shouldn't have to be set to another value
         self._node_type = "N3D" # Shouldn't have to be set to another value

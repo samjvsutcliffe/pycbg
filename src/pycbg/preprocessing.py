@@ -68,6 +68,10 @@ class Mesh():
 
         self.check_duplicates = check_duplicates
         self.cell_type = cell_type
+        if cell_type=='ED3H8': self.nn_percell = 8
+        elif cell_type=='ED3H20': self.nn_percell = 20
+        elif cell_type=='ED3H64G': self.nn_percell = 64
+
         self._isoparametric = False # Shouldn't have to be set to another value
         self._io_type = "Ascii3D" # Shouldn't have to be set to another value
         self._node_type = "N3D" # Shouldn't have to be set to another value
@@ -157,9 +161,9 @@ class Mesh():
                 fil.write(out_line)
             for line in lines[start_ele:end_ele]: 
                 sl = line.split(' ')
-                self.cells.append([int(float(node)-1) for node in sl[-nn:]])
+                self.cells.append([int(float(node)-1) for node in sl[-self.nn_percell:]])
                 out_line = ""
-                for node in sl[-nn:-1]: out_line += str(int(float(node)-1)) + " "
+                for node in sl[-self.nn_percell:-1]: out_line += str(int(float(node)-1)) + " "
                 out_line += str(int(float(sl[-1])-1)) + "\n"
                 fil.write(out_line)
         

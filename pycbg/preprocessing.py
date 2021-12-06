@@ -552,7 +552,7 @@ class Materials():
         for i, init_val in enumerate(init_state_variables): material_dict["svars_"+str(i)] = init_val
         self.materials.append(material_dict) 
 
-def create_PythonModel3D(self, pset_id=0, density=1e3,
+    def create_PythonModel3D(self, pset_id=0, density=1e3,
                                             init_state_variables=[],
                                             script_path="custom_law",
                                             function_name="custom_law",

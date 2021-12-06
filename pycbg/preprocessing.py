@@ -552,6 +552,37 @@ class Materials():
         for i, init_val in enumerate(init_state_variables): material_dict["svars_"+str(i)] = init_val
         self.materials.append(material_dict) 
 
+def create_PythonModel3D(self, pset_id=0, density=1e3,
+                                            init_state_variables=[],
+                                            script_path="custom_law",
+                                            function_name="custom_law",
+                                            particles_ids=""
+                                            ):
+        """Create PythonModel3D material. This material is identical to CustomLaw3D except that it is able to run in parallel. For sequential simulations, CustomLaw3D is more efficient than PythonModel3D. 
+
+        Parameters
+        ----------
+        pset_id : int or list of ints
+            Particle set id that will be made of this material.
+        init_state_variables : list of floats
+            Contains the initial values of the states variables. The order in which they are given is their numbering among states variables : the first one is named "svars_0", the second is named "svars_1", ... Default is an empty list, for no state variables.
+        script_path : str
+            Path to the user-defined script that compute the material's behaviour. Note that the exentsion `.py` shouldn't be specified. Default is 'custom_law'.
+        function_name : str
+            Name of the function in `script_path` that compute the stress increment from the strain increment. It should take as input `6 + n_state_vars` arguments. The first 6 are the components of the engineering strain increment (in the directions `xx`, `yy`, `zz`, `xy`, `yz` and `xz` respectively), the others are the state variables. The order of the state variables in the function parameter gives their numbering in the output files (`'svars_0'`, `'svars_1'`, ...).
+        particles_ids : str
+            List of the particles' ids that uses this material. The list must be space separated. (For MPMxDEM coupling, to be improved)
+        """
+        self.pset_ids.append(pset_id)
+        material_dict = {"id": len(self.materials),
+                         "type": "PythonModel3D",
+                         "density": density,
+                         "script_path": script_path,
+                         "function_name": function_name,
+                         "particles_ids": particles_ids}
+        for i, init_val in enumerate(init_state_variables): material_dict["svars_"+str(i)] = init_val
+        self.materials.append(material_dict) 
+
 
 class Simulation():
     """Create a simulation.

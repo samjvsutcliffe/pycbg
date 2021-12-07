@@ -117,7 +117,7 @@ def plot_mesh(mesh, fig=None, ax=None):
 
     return fig 
 
-def load_batch_results(directory):
+def load_batch_results(directory, fail_flag=True):
     if directory[-1] != '/' : directory += '/'
 
     with open(directory + "parameters_sets.table", 'r') as fil: lines = fil.readlines()
@@ -130,9 +130,10 @@ def load_batch_results(directory):
         for key, val in zip(header, sl) : dic[key] = val
         
         sim_dir = directory + "sim{:d}".format(int(dic["sim_id"]))
-        results = ResultsReader(sim_dir)
+        if fail_flag: results = ResultsReader(sim_dir)
+        else:
+            try: results = ResultsReader(sim_dir)
+            except FileNotFoundError: break
 
         sims.append((dic, results))
     return sims
-
-

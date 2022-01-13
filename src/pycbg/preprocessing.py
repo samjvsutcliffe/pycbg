@@ -545,7 +545,7 @@ class Materials():
                                "poisson_ratio": poisson_ratio})
 
 class Simulation():
-    """Includes all simulation ingredients in order to create an appropriate CB-Geo MPM .json input file with the `write_simulation` method, after attributes definition.
+    """Includes all simulation ingredients in order to create an appropriate CB-Geo MPM .json input file with the `write_input_file` method, after attributes definition.
 
     Parameters
     ----------
@@ -554,7 +554,7 @@ class Simulation():
     directory : str, optional
         Path to the simulation's directory (will be created if not existent. User-indication of a final '/' is optional). Mesh, particles and entity sets files will be saved in this directory. The result folder is also set to be created by CB-Geo MPM in this directory. Default is `title`.
     input_filename : str, optional
-        Name of the input file, the extension `.json` is automatically added. Default is 'input_file'.
+        Name of the input file for CB-Geo MPM, the extension `.json` is automatically added. Default is 'input_file'.
 
     Attributes
     ----------

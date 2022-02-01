@@ -161,15 +161,14 @@ class Mesh():
         
 
 class Particles():
-    """Create and write to a file particles from a
-    :class:`~pycbg.preprocessing.Mesh` object.
+    """For defining particles on a :class:`~pycbg.preprocessing.Mesh` and ultimately generate the particles file expected by CB-Geo MPM .
 
     Parameters
     ----------
     mesh : :class:`~pycbg.preprocessing.Mesh` object
         Mesh in which the particles will be generated.
     npart_perdim_percell : int, optional
-        Number of particles for each dimensions in one cell. All cells will contain ``npart_perdim_percell**3`` equally spaced particles. Note that particles are equally spaced within a cell, not between cells. Default is 1 .
+        Number of particles along each dimension in a cell. All cells will thus contain ``npart_perdim_percell**3`` equally spaced particles (note that particles are equally spaced within a cell, but not between cells). Default is 1. It is possible to subsequently override the default behavior, manually tuning particles number and locations, see below.
     directory : str, optional
         Directory in which the particles file will be saved. If the directory doesn't already exist, it will be created. It is set by default to the current working directory.
     check_duplicates : bool, optional  
@@ -190,12 +189,11 @@ class Particles():
 
     Notes
     -----
-     - The particles file is written upon creating the object.
-     - One can manually generate the particles by directly setting the `particles` attribute. It is then necessary to rewrite the particles file using the `write_file` method.
+     - One can manually define the particles (number and positions) by direct modification of the `particles` attribute, after object instantiation.
 
     Examples
     --------
-    Generating 8 particles in a one cell mesh :
+    Generating automatically 8 particles in a one cell mesh :
 
     >>> mesh = Mesh((1.,1.,1.), (1,1,1))
     >>> particles = Particles(mesh, 2)
@@ -217,7 +215,6 @@ class Particles():
     ...                                 [.05, .02, .02],
     ...                                 [.02, .05, .02],
     ...                                 [.02, .02, .05]])
-    >>> particles.write_file()
 
     Note that a mesh has to be specified even if it isn't used.
     """
@@ -257,7 +254,7 @@ class Particles():
         self.particles = np.array(self.particles)
 
     def write_file(self):
-        """Write the particles file formatted for CB-Geo."""
+        """Write the particles file formatted for CB-Geo MPM."""
         pfile = open(self.filename, "w") 
         pfile.write("{:d}\n".format(len(self.particles)))   
         for p in self.particles: pfile.write("{:e}\t{:e}\t{:e}\n".format(*p)) 
@@ -673,7 +670,7 @@ class Simulation():
         self.__init_velocity_filename = self.directory + "particles_velocities.txt"
 
     def create_mesh(self, *args, **kwargs):
-        """Create the simulation's mesh.
+        """Defines the simulation's mesh, with the generation of an appropriate mesh file for CB-Geo MPM.
 
         Parameters
         ----------
@@ -691,7 +688,7 @@ class Simulation():
         self.mesh.write_file()
 
     def create_particles(self, *args, **kwargs):
-        """Create the simulation's particles.
+        """Defines the simulation's particles, with the generation of an appropriate particles file for CB-Geo MPM.
 
         Parameters
         ----------

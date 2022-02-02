@@ -10,7 +10,7 @@ This module helps configuring MPM simulations for `CB-Geo MPM <https://github.co
 Preprocessing
 =============
 
-Preprocessing a MPM simulation for CB-Geo consists in creating several input files :
+Preprocessing a MPM simulation for CB-Geo consists in creating several input files:
 
  - a mesh file, where the positions of all nodes and their interconnections are described. Pycbg saves it under the name `mesh.msh`. Can be created using the :py:class:`Mesh<pycbg.preprocessing.Mesh>` object.
  - a particles file, where the initial positions of all material points are specified. Pycbg saves it under the name `particles.txt`. Can be created using the :py:class:`Particles<pycbg.preprocessing.Particles>` object.
@@ -40,7 +40,7 @@ Classes overview
 Postprocessing
 ==============
 
-**TODO**: *explain postprocessing here*
+While CB-Geo MPM outputs results in a number of files being often generated at each save iteration, the :py:class:`ResultsReader<pycbg.postprocessing.ResultsReader>` is provided for a seamless processing of those data.
 
 .. currentmodule:: pycbg.postprocessing
 

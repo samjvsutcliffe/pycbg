@@ -21,9 +21,9 @@ class ResultsReader():
     pvelocities : list of numpy arrays
         Particles' velocities for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of ``pvelocities[i]`` is ``(npart,3)``.
     pstresses : list of numpy arrays
-        Particles' stresses for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of ``pstresses[i]`` is ``(npart,6)``. The columns represent the directions `xx`, `yy`, `zz`, `xy`, `yz` and `xz` respectively.
+        Particles' stresses for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of ``pstresses[i]`` is ``(npart,6)``. The columns respectively correspond to `xx`, `yy`, `zz`, `xy`, `yz` and `xz` components.
     pstrains : list of numpy arrays
-        Particles' strains for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of ``pstrains[i]`` is ``(npart,6)``. The columns represent the directions `xx`, `yy`, `zz`, `xy`, `yz` and `xz` respectively.
+        Particles' strains for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of ``pstrains[i]`` is ``(npart,6)``. The columns respectively correspond to `xx`, `yy`, `zz`, `xy`, `yz` and `xz` components.
     ppressures : list of numpy arrays
         Particles' pressures for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of ``ppressures[i]`` is ``(npart,)``.
     pmasses : list of numpy arrays

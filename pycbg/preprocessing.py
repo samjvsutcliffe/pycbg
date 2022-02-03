@@ -997,6 +997,15 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
         param_sets = [{key:val for key, val in zip(params.keys(), val_set)} for val_set in all_combinations]
 
     with open(script_path, 'r') as fil: script = fil.readlines()
+
+    script_a, script_b, insert_flag = [], [], True
+    for line in script:
+        if "BATCH PARAMETERS INSERTION" in line:
+            insert_flag = False
+        else:
+            if insert_flag: script_a.append(line)
+            else: script_b.append(line)
+    if insert_flag: script_b, script_a = script_a, []
     
     table_file = open(directory + "parameters_sets.table", "w")
     header = "sim_id"
@@ -1023,13 +1032,13 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
         sim_dir = directory + sim_title + "/"
         if not os.path.isdir(sim_dir): os.mkdir(sim_dir)
 
-        affectation_lines  = ["# Batch parameters:\n"]
+        affectation_lines  = ["\n# Batch parameters:\n"]
         affectation_lines += [key + " = " + str(val) + "\n" for key, val in param_set.items()]
         affectation_lines += ["sim_title = '{:}'\n".format(sim_title)]
         affectation_lines += ["sim_dir = '{:}'\n\n".format(sim_dir)]
         affectation_lines += ["# Base script:\n"]
 
-        out_script = affectation_lines + script
+        out_script = script_a + affectation_lines + script_b
 
         out_script_path = sim_dir + "pycbg_script.py"
         with open(out_script_path, "w") as fil: 

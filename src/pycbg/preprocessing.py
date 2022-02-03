@@ -934,7 +934,10 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
     
     table_file = open(directory + "parameters_sets.table", "w")
     header = "sim_id"
-    for key in params.keys(): header += "\t" + key
+    if type(params) == list : 
+        for key in params[0].keys(): header += "\t" + key
+    elif type(params) == dict :
+        for key in params.keys(): header += "\t" + key
     table_file.write(header + "\n")
 
     if set_executable: 

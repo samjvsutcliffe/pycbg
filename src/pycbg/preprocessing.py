@@ -188,7 +188,7 @@ class Particles():
 
     Attributes
     ----------
-    particles : numpy array
+    positions : numpy array
         Positions of all particles written into the particles file. The id of a particle is the index of its line in this array. Noting `npart` the number of particles, the shape of `particles` is ``(npart,3)``.
     npart_perdim_percell : int
         Number of particles for each dimensions in one cell.
@@ -200,7 +200,7 @@ class Particles():
     Notes
     -----
      - The particles file is written upon creating the object.
-     - One can manually generate the particles by directly setting the `particles` attribute. It is then necessary to rewrite the particles file using the `write_file` method.
+     - One can manually define the particles (number and positions) by direct modification of the `positions` attribute, after object instantiation.
 
     Examples
     --------
@@ -208,7 +208,7 @@ class Particles():
 
     >>> mesh = Mesh((1.,1.,1.), (1,1,1))
     >>> particles = Particles(mesh, 2)
-    >>> particles.particles
+    >>> particles.positions
     array([[0.33333333, 0.33333333, 0.33333333],
            [0.33333333, 0.33333333, 0.66666667],
            [0.33333333, 0.66666667, 0.33333333],
@@ -222,7 +222,7 @@ class Particles():
 
     >>> mesh = Mesh((1.,1.,1.), (1,1,1))
     >>> particles = Particles(mesh)
-    >>> particles.particles = np.array([[.02, .02, .02],
+    >>> particles.positions = np.array([[.02, .02, .02],
     ...                                 [.05, .02, .02],
     ...                                 [.02, .05, .02],
     ...                                 [.02, .02, .05]])
@@ -237,7 +237,7 @@ class Particles():
         if directory[-1] != '/' : directory += '/'
         if not os.path.isdir(directory): os.mkdir(directory)
         self.directory = directory
-        self.particles = []
+        self.positions = []
         self.create_particles(mesh, npart_perdim_percell)
         
         self.check_duplicates = check_duplicates
@@ -264,8 +264,8 @@ class Particles():
             for x in xs:
                 for y in ys:
                     for z in zs:
-                        self.particles.append([x, y, z])
-        self.particles = np.array(self.particles)
+                        self.positions.append([x, y, z])
+        self.positions = np.array(self.positions)
 
     def write_file(self, filename="particles"):
         """
@@ -278,8 +278,8 @@ class Particles():
         """
         self._filename = self.directory + filename + '.txt'
         pfile = open(self._filename, "w") 
-        pfile.write("{:d}\n".format(len(self.particles)))   
-        for p in self.particles: pfile.write("{:e}\t{:e}\t{:e}\n".format(*p)) 
+        pfile.write("{:d}\n".format(len(self.positions)))   
+        for p in self.positions: pfile.write("{:e}\t{:e}\t{:e}\n".format(*p)) 
 
 class EntitySets():
     """Create and write to a file entity sets for nodes and particles.
@@ -362,7 +362,7 @@ class EntitySets():
         >>> node_set_id = entity_sets.create_set(lambda x,y,z: x==0, typ="node")
         >>> particle_set_id = entity_sets.create_set(lambda x,y,z: x<.5, typ="particle")
         """
-        if typ=="particle": points, set_list = self.particles.particles, self.psets
+        if typ=="particle": points, set_list = self.particles.positions, self.psets
         elif typ=="node": points, set_list = self.mesh.nodes, self.nsets
         else: raise ValueError("`typ` parameter should be 'particle' or 'node'")
         
@@ -777,7 +777,7 @@ class Simulation():
         self.init_stresses = init_stresses
 
         psfile = open(self.__init_stress_filename, "w") 
-        psfile.write("{:d}\n".format(len(self.particles.particles)))   
+        psfile.write("{:d}\n".format(len(self.particles.positions)))   
         for ps in init_stresses: psfile.write("{:e}\t{:e}\t{:e}\t{:e}\t{:e}\t{:e}\n".format(*ps)) 
 
     

@@ -173,6 +173,8 @@ class Particles():
         Directory in which the particles file will be saved. If the directory doesn't already exist, it will be created. It is set by default to the current working directory.
     check_duplicates : bool, optional  
         See CB-Geo documentation for informations on this parameter. Default is `True`.
+    automatic_generation : {'pycbg', 'cbgeo'}, optional
+        Use PyCBG or CB-Geo for automatic material points' generation. CB-Geo will generate the materials points at the Gauss' points of the cells. Default is `'pycbg'`.
 
     Attributes
     ----------
@@ -186,6 +188,8 @@ class Particles():
         Directory in which the particles file will be saved.
     check_duplicates : bool 
         See CB-Geo documentation.
+    automatic_generation : str
+        Use PyCBG or CB-Geo for automatic material points' generation. CB-Geo will generate the materials points at the Gauss' points of the cells.
 
     Notes
     -----
@@ -220,18 +224,18 @@ class Particles():
     """
     ## TODO: Make the empty initialisation of Particles object possible (without specifying a mesh)
 
-    def __init__(self, mesh, npart_perdim_percell=1, directory="", check_duplicates=True):
+    def __init__(self, mesh, npart_perdim_percell=1, directory="", check_duplicates=True, automatic_generation="pycbg"):
         if not os.path.isdir(directory) and directory!='' : os.mkdir(directory)
         self.filename = directory + "particles.txt"
         self.positions = []
-        self.create_particles(mesh, npart_perdim_percell)
+        self.automatic_generation = automatic_generation
+        self.create_particles(mesh, npart_perdim_percell, automatic_generation)
         
         self.check_duplicates = check_duplicates
         self._io_type = "Ascii3D" # Shouldn't have to be set to another value
         self._particle_type = "P3D" # Shouldn't have to be set to another value
-        self._type = "file" # Shouldn't have to be set to another value
 
-    def create_particles(self, mesh, npart_perdim_percell=1):
+    def create_particles(self, mesh, npart_perdim_percell=1, automatic_generation="pycbg"):
         """Create the particles using the given mesh.
 
         Parameters
@@ -240,18 +244,27 @@ class Particles():
             Mesh in which the particles will be generated.
         npart_perdim_percell : int, optional
             Number of particles for each dimensions in one cell. All cells will contain ``npart_perdim_percell**3`` equally spaced particles. Note that particles are equally spaced within a cell, not between cells. Default is 1 .
+        automatic_generation : {'pycbg', 'cbgeo'}, optional
+            Use PyCBG or CB-Geo for automatic material points' generation. CB-Geo will generate the materials points at the Gauss' points of the cells. Default is `'pycbg'`.
         """
-        for ie, e in enumerate(mesh.cells):
-            coors = np.array([mesh.nodes[i] for i in e])
-            mins, maxs = coors.min(axis=0), coors.max(axis=0)
-            steps = (maxs-mins)/(npart_perdim_percell+1)
-            poss = [mins + steps*i for i in range(1, npart_perdim_percell+1)]
-            xs, ys, zs = [p[0] for p in poss], [p[1] for p in poss], [p[2] for p in poss]
-            for x in xs:
-                for y in ys:
-                    for z in zs:
-                        self.positions.append([x, y, z])
-        self.positions = np.array(self.positions)
+        if automatic_generation == "pycbg":
+            self.type = "file"
+            for ie, e in enumerate(mesh.cells):
+                coors = np.array([mesh.nodes[i] for i in e])
+                mins, maxs = coors.min(axis=0), coors.max(axis=0)
+                steps = (maxs-mins)/(npart_perdim_percell+1)
+                poss = [mins + steps*i for i in range(1, npart_perdim_percell+1)]
+                xs, ys, zs = [p[0] for p in poss], [p[1] for p in poss], [p[2] for p in poss]
+                for x in xs:
+                    for y in ys:
+                        for z in zs:
+                            self.positions.append([x, y, z])
+            self.positions = np.array(self.positions)
+        elif automatic_generation == "cbgeo":
+            self.type = "gauss"
+            self.cset_id = -1
+            self.nparticles_per_dir = npart_perdim_percell
+
 
     def write_file(self):
         """Write the particles file formatted for CB-Geo MPM."""
@@ -659,6 +672,7 @@ class Simulation():
         self.entity_sets = None
         self.init_stresses = None
         self.init_velocities = None
+        self.init_volumes = None
 
         self.custom_params = {}
 
@@ -917,14 +931,22 @@ class Simulation():
             mesh_dic["particles_velocities"] = self.__init_velocity_filename
         if self.init_volumes is not None: 
             mesh_dic["particles_volumes"] = self.__init_volumes_filename
-        
-        particles_list = [{"generator": {"check_duplicates": self.particles.check_duplicates,
-                                         "location": self.particles.filename,
-                                         "io_type": self.particles._io_type,
-                                         "pset_id": 0,
-                                         "particle_type": self.particles._particle_type,
-                                         "material_id": 0,
-                                         "type": self.particles._type}}]
+        if self.particles.type == "file":
+            particles_list = [{"generator": {"check_duplicates": self.particles.check_duplicates,
+                                            "location": self.particles.filename,
+                                            "io_type": self.particles._io_type,
+                                            "pset_id": 0,
+                                            "particle_type": self.particles._particle_type,
+                                            "material_id": 0,
+                                            "type": self.particles.type}}]
+        elif self.particles.type == "gauss":
+            particles_list = [{"generator": {"check_duplicates": self.particles.check_duplicates,
+                                            "pset_id": 0,
+                                            "cset_id": self.particles.cset_id, 
+                                            "nparticles_per_dir": self.particles.nparticles_per_dir,
+                                            "particle_type": self.particles._particle_type,
+                                            "material_id": 0,
+                                            "type": self.particles.type}}]
 
         material_sets_list = [] 
         for m_id, ps_id in enumerate(self.materials.pset_ids):

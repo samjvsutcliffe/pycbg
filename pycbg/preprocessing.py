@@ -609,6 +609,8 @@ class Simulation():
         Initial stresses for each particle. Noting `npart` the number of particles, its shape is ``(npart, 6)``.
     init_velocities : numpy array
         Initial velocities for each particle. Noting `npart` the number of particles, its shape is ``(npart, 3)``.
+    init_volumes : numpy array
+        Initial volume for each particle. Noting `npart` the number of particles, its shape is ``(npart, 1)``.
     input_filename : str
         Path to the input file.
     title : str
@@ -668,6 +670,7 @@ class Simulation():
         self.__particle_traction = []
         self.__init_stress_filename = self.directory + "particles_stresses.txt"
         self.__init_velocity_filename = self.directory + "particles_velocities.txt"
+        self.__init_volumes_filename = self.directory + "particles_volumes.txt"
 
     def create_mesh(self, *args, **kwargs):
         """Defines the simulation's mesh, with the generation of an appropriate mesh file for CB-Geo MPM.
@@ -832,6 +835,19 @@ class Simulation():
         psfile = open(self.__init_velocity_filename, "w") 
         psfile.write("{:d}\n".format(len(self.particles.positions)))   
         for ps in init_velocities: psfile.write("{:e}\t{:e}\t{:e}\n".format(*ps)) 
+    
+    def set_initial_particles_volumes(self, init_volumes):
+        """Set the initial volume for each particle.
+
+        Parameters
+        ----------
+        init_volumes : numpy array
+            Initial volumes for each particle. Noting `npart` the number of particles, it should have the shape ``(npart, 1)``.
+        """
+        self.init_volumes = init_volumes
+
+        psfile = open(self.__init_volumes_filename, "w") 
+        for i, ps in enumerate(init_volumes): psfile.write("{:d}\t{:e}\n".format(i, ps)) 
 
     
     def set_gravity(self, gravity): 
@@ -899,6 +915,8 @@ class Simulation():
             mesh_dic["particles_stresses"] = self.__init_stress_filename
         if self.init_velocities is not None: 
             mesh_dic["particles_velocities"] = self.__init_velocity_filename
+        if self.init_volumes is not None: 
+            mesh_dic["particles_volumes"] = self.__init_volumes_filename
         
         particles_list = [{"generator": {"check_duplicates": self.particles.check_duplicates,
                                          "location": self.particles.filename,

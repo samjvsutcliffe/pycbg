@@ -264,6 +264,7 @@ class Particles():
             self.type = "gauss"
             self.cset_id = -1
             self.nparticles_per_dir = npart_perdim_percell
+        else: raise ValueError("automatic_generation is set to '{:}' while it should be 'pycbg' or 'cbgeo'".format(automatic_generation))
 
 
     def write_file(self):

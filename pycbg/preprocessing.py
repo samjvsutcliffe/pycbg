@@ -73,6 +73,7 @@ class Mesh():
         if cell_type=='ED3H8': self.nn_percell = 8
         elif cell_type=='ED3H20': self.nn_percell = 20
         elif cell_type=='ED3H64G': self.nn_percell = 64
+        else : raise ValueError("cell_type is set to '{:}' while it should be one of the following: 'ED3H8', 'ED3H20' or 'ED3H64G'".format(cell_type))
 
         self._isoparametric = False # Shouldn't have to be set to another value
         self._io_type = "Ascii3D" # Shouldn't have to be set to another value

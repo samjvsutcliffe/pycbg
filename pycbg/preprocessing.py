@@ -327,7 +327,7 @@ class EntitySets():
 
         self.psets, self.nsets = [], []
     
-    def create_set(self, condition_function, typ="particle"):
+    def create_set(self, condition_function, typ="particle", kwargs={}):
         """Create a set of nodes or particles and add it to the corresponding
         list. Nodes and particles are selected using `condition_function`.
 
@@ -337,6 +337,8 @@ class EntitySets():
             Select particles or nodes using their positions. The inputs should be 3 parameters `x`, `y` and `z` that correspond to the position of a node or particle. Should return `True` if the node or particle belongs to the set, `False` otherwise.
         typ : {"node", "particle"}, optional
             Type of set to be created. Default is "particle".
+        kwargs : dictionary
+            Contains the key-word arguments to be passed to `condition_function`
         
         Returns
         -------
@@ -359,7 +361,7 @@ class EntitySets():
         
         ids = []
         for i, p in enumerate(points): 
-            if condition_function(*p): ids.append(i)
+            if condition_function(*p, **kwargs): ids.append(i)
         set_list.append(ids)
         return len(set_list)-1 if typ=="node" else len(set_list)
     

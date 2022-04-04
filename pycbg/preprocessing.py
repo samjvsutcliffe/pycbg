@@ -334,11 +334,11 @@ class EntitySets():
         Parameters
         ----------
         condition_function : function
-            Select particles or nodes using their positions. The inputs should be 3 parameters `x`, `y` and `z` that correspond to the position of a node or particle. Should return `True` if the node or particle belongs to the set, `False` otherwise.
+            Select particles or nodes using their positions. The inputs should be at least 3 parameters `x`, `y` and `z` that correspond to the position of a node or particle, additional keyword parameters can be passed through `kwargs`. Should return `True` if the node or particle belongs to the set, `False` otherwise.
         typ : {"node", "particle"}, optional
             Type of set to be created. Default is "particle".
         kwargs : dictionary
-            Contains the key-word arguments to be passed to `condition_function`
+            Contains the keyword arguments to be passed to `condition_function`
         
         Returns
         -------

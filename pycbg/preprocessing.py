@@ -46,6 +46,8 @@ class Mesh():
         See CB-Geo documentation.
     cell_type : {'ED3H8', 'ED3H20', 'ED3H64G'}
         Type of cell. 
+    round_decimal : int or None
+        Rounds nodes coordinates to the specified decimal (`round_decimal` is directly passed to the built-in function `round`). This is useful when using `ED3H64G`. Default to None. 
 
     Notes
     -----
@@ -63,7 +65,7 @@ class Mesh():
     ##       - Avoid having to write the mesh file from gmsh for rewritting it again
     ##       - Make crete_mesh usable by the user 
 
-    def __init__(self, dimensions, ncells, origin=(0.,0.,0.), directory="", check_duplicates=True, cell_type="ED3H8"):
+    def __init__(self, dimensions, ncells, origin=(0.,0.,0.), directory="", check_duplicates=True, cell_type="ED3H8", round_decimal=None):
         self.set_parameters(dimensions, ncells, origin)
         if not os.path.isdir(directory) and directory!='' : os.mkdir(directory)
         self.filename = directory + "mesh.msh"
@@ -78,7 +80,8 @@ class Mesh():
         self._isoparametric = False # Shouldn't have to be set to another value
         self._io_type = "Ascii3D" # Shouldn't have to be set to another value
         self._node_type = "N3D" # Shouldn't have to be set to another value
-        
+        self.round_decimal = round_decimal
+
         self.write_file()
         self.cells, self.nodes = np.array(self.cells), np.array(self.nodes)
 
@@ -147,9 +150,12 @@ class Mesh():
             fil.write("{:d}\t{:d}\n".format(nn, ne))
             for line in lines[start_nodes:end_nodes]: 
                 sl = line.split(' ')
-                self.nodes.append([float(c) for c in sl[-3:]])
+                def wrapped_round(x): return round(x, self.round_decimal) if self.round_decimal is not None else x
+                node = [wrapped_round(float(c)) for c in sl[-3:]]
+                self.nodes.append(node)
+
                 out_line = ""
-                for node in sl[-3:-1]: out_line += node + " "
+                for coord in node: out_line += str(coord) + " "
                 out_line += sl[-1]
                 fil.write(out_line)
             for line in lines[start_ele:end_ele]: 

@@ -94,22 +94,45 @@ __ind_sgmts = [[0,1], [1,2], [2,3], [3,0],
                [4,5], [5,6], [6,7], [7,4],
                [0,4], [1,5], [2,6], [3,7]]
 
+__ind_gimp_sgmts = [[8,19], [9, 18], [24,31], [25,30], 
+                    [17,21], [16,20], [12,22], [13,23],
+                    [14,10], [15,11], [28,26], [29,27],
+                    [16,12], [17,13], [20,22], [21,23],
+                    [8,24], [9,25], [19,31], [18,30],
+                    [14,28], [15,29], [10,26], [11,27],
+                    [32,52], [35,53], [34,54], [33,55],
+                    [39,50], [36,49], [37,48], [48,51],
+                    [47,41], [44,40], [46,42], [45,43]]
+
 def plot_mesh(mesh, fig=None, ax=None):
     if fig is None and ax is None: 
         fig = plt.figure(1, figsize=(15,10))
         ax = fig.add_subplot(111, projection='3d')
 
-    added_segments = []
+    added_segments, added_dotted_segments = [], []
     for cell in mesh.cells:
         nodes = [mesh.nodes[i_node] for i_node in cell]
+        # for i, node in enumerate(nodes): ax.text(*node, str(i)) # to print node numbers
         xs = [[nodes[i][0], nodes[j][0]] for i,j in __ind_sgmts]
         ys = [[nodes[i][1], nodes[j][1]] for i,j in __ind_sgmts]
         zs = [[nodes[i][2], nodes[j][2]] for i,j in __ind_sgmts]
-        
+
         for seg in zip(xs, ys, zs): 
             if seg not in added_segments: 
                 ax.plot(*seg, color="black")
                 added_segments.append(seg)
+
+        if not mesh.cell_type=="ED3H64G": continue
+
+        xds = [[nodes[i][0], nodes[j][0]] for i,j in __ind_gimp_sgmts]
+        yds = [[nodes[i][1], nodes[j][1]] for i,j in __ind_gimp_sgmts]
+        zds = [[nodes[i][2], nodes[j][2]] for i,j in __ind_gimp_sgmts]
+
+        for seg in zip(xds, yds, zds): 
+            if seg not in added_dotted_segments: 
+                ax.plot(*seg, color="gray", linestyle="dotted")
+                added_dotted_segments.append(seg)
+
     
     ax.set_xlabel(r"x", labelpad=10)
     ax.set_ylabel(r"y", labelpad=10)

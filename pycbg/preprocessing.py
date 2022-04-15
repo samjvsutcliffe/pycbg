@@ -410,13 +410,19 @@ class EntitySets():
 class Materials():
     """Create materials for particle sets.
 
+    Parameters
+    ----------
+    n_dims : int, optional
+        Number of dimension in the simulation (2 for 2D, 3 for 3D). Default to 3.
+
     Attributes
     ----------
     materials : list of dict
         Each element is a dictionnary containing a material's parameters. The index of a material is his id.
     pset_ids : list of (ints or list of ints)
         The element i of this list is the id (or list of ids) of the particle set made of the material defined in ``materials[i]``.
-    
+    n_dims : int
+        Number of dimension in the simulation (2 for 2D, 3 for 3D).
     Notes
     -----
     Due to (probably) a bug in CB-Geo, materials should be created in the same order than the corresponding particle sets (so particle sets and materials have the same id). 
@@ -431,25 +437,26 @@ class Materials():
     >>> lower_particles = entity_sets.create_set(lambda x,y,z: x<.5, typ="particle")
     >>> upper_particles = entity_sets.create_set(lambda x,y,z: x>=.5, typ="particle")
     >>> materials = Materials()
-    >>> materials.create_MohrCoulomb3D(pset_id=lower_particles, density=750,
-    ...                                                         youngs_modulus=5.26e7,
-    ...                                                         poisson_ratio=.3,
-    ...                                                         friction=36.,
-    ...                                                         dilation=0.,
-    ...                                                         cohesion=1.,
-    ...                                                         tension_cutoff=1.,
-    ...                                                         softening=False)
-    >>> materials.create_Newtonian3D(pset_id=upper_particles, density=1.225, 
-    ...                                                       bulk_modulus=1.42e5, 
-    ...                                                       dynamic_viscosity=1.81e3)
+    >>> materials.create_MohrCoulomb(pset_id=lower_particles, density=750,
+    ...                                                       youngs_modulus=5.26e7,
+    ...                                                       poisson_ratio=.3,
+    ...                                                       friction=36.,
+    ...                                                       dilation=0.,
+    ...                                                       cohesion=1.,
+    ...                                                       tension_cutoff=1.,
+    ...                                                       softening=False)
+    >>> materials.create_Newtonian(pset_id=upper_particles, density=1.225, 
+    ...                                                     bulk_modulus=1.42e5, 
+    ...                                                     dynamic_viscosity=1.81e3)
     >>> materials.pset_ids
     [0, 1]
     """
-    def __init__(self): 
+    def __init__(self, n_dims=3): 
         self.materials = []
         self.pset_ids = []
+        self.n_dims = n_dims
 
-    def create_Newtonian3D(self, pset_id=0, density=1.225, 
+    def create_Newtonian(self, pset_id=0, density=1.225, 
                                             bulk_modulus=1.42e5, 
                                             dynamic_viscosity=1.81e-5):
         """Create Newtonian3D material, as specified by CB-Geo documentation.
@@ -471,24 +478,24 @@ class Materials():
         """
         self.pset_ids.append(pset_id)
         self.materials.append({"id": len(self.materials),
-                               "type": "Newtonian3D",
+                               "type": "Newtonian{:d}D".format(self.n_dims),
                                "density": density,
                                "bulk_modulus": bulk_modulus,
                                "dynamic_viscosity": dynamic_viscosity})
     
-    def create_MohrCoulomb3D(self, pset_id=0, density=1e3,
-                                              youngs_modulus=5e7,
-                                              poisson_ratio=.3,
-                                              friction=36.,
-                                              dilation=0.,
-                                              cohesion=0.,
-                                              tension_cutoff=0.,
-                                              softening=False,
-                                              peak_pdstrain=0.,
-                                              residual_pdstrain=0.,
-                                              residual_friction=13.,
-                                              residual_dilation=0.,
-                                              residual_cohesion=0.):
+    def create_MohrCoulomb(self, pset_id=0, density=1e3,
+                                            youngs_modulus=5e7,
+                                            poisson_ratio=.3,
+                                            friction=36.,
+                                            dilation=0.,
+                                            cohesion=0.,
+                                            tension_cutoff=0.,
+                                            softening=False,
+                                            peak_pdstrain=0.,
+                                            residual_pdstrain=0.,
+                                            residual_friction=13.,
+                                            residual_dilation=0.,
+                                            residual_cohesion=0.):
         """Create MohrCoulomb3D material, as specified by CB-Geo documentation.
 
         Parameters
@@ -524,7 +531,7 @@ class Materials():
         """
         self.pset_ids.append(pset_id)
         self.materials.append({"id": len(self.materials),
-                               "type": "MohrCoulomb3D",
+                               "type": "MohrCoulomb{:d}D".format(self.n_dims),
                                "density": density,
                                "youngs_modulus": youngs_modulus,
                                "poisson_ratio": poisson_ratio,
@@ -539,10 +546,10 @@ class Materials():
                                "residual_cohesion": residual_cohesion,
                                "residual_pdstrain": residual_pdstrain})
 
-    def create_LinearElastic3D(self, pset_id=0, density=1e3,
+    def create_LinearElastic(self, pset_id=0, density=1e3,
                                               youngs_modulus=5e7,
                                               poisson_ratio=.3):
-        """Create LinearElastic3D material.
+        """Create LinearElastic material.
 
         Parameters
         ----------
@@ -557,7 +564,7 @@ class Materials():
         """
         self.pset_ids.append(pset_id)
         self.materials.append({"id": len(self.materials),
-                               "type": "LinearElastic3D",
+                               "type": "LinearElastic{:d}D".format(self.n_dims),
                                "density": density,
                                "youngs_modulus": youngs_modulus,
                                "poisson_ratio": poisson_ratio})
@@ -624,6 +631,11 @@ class Materials():
                          "particles_ids": particles_ids}
         for i, init_val in enumerate(init_state_variables): material_dict["svars_"+str(i)] = init_val
         self.materials.append(material_dict) 
+
+    def _set_n_dims(self, n_dims): 
+        self.n_dims = n_dims
+        for mat in self.materials:
+            mat["type"] = mat["type"][:-2] + "{:d}D".format(self.n_dims)
 
 
 class Simulation():
@@ -731,6 +743,7 @@ class Simulation():
         if "directory" in kwargs or len(args)>2: raise TypeError("`directory` parameter is defined by the `Simulation` object")
         self.mesh = Mesh(*args, directory=self.directory, **kwargs)
         self.mesh.write_file()
+        self.materials._set_n_dims(self.mesh.n_dims)
 
     def create_particles(self, *args, **kwargs):
         """Defines the simulation's particles, with the generation of an appropriate particles file for CB-Geo MPM.
@@ -876,7 +889,7 @@ class Simulation():
 
         psfile = open(self.__init_velocity_filename, "w") 
         psfile.write("{:d}\n".format(len(self.particles.positions)))   
-        for ps in init_velocities: psfile.write("{:e}\t{:e}\t{:e}\n".format(*ps)) 
+        for ps in init_velocities: psfile.write("\t".join(["{:e}"]*self.mesh.n_dims).format(*ps)+"\n") 
     
     def set_initial_particles_volumes(self, init_volumes):
         """Set the initial volume for each particle.

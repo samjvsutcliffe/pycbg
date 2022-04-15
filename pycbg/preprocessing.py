@@ -125,7 +125,10 @@ class Mesh():
         gmsh.initialize()
         gmsh.option.setNumber("Mesh.MshFileVersion", 2.1)
         
-        p = gmsh.model.geo.addPoint(*self.origin)
+        if self.n_dims==2: origin = list(self.origin) + [0]
+        elif self.n_dims==2: origin = list(self.origin)
+
+        p = gmsh.model.geo.addPoint(*origin)
         l = gmsh.model.geo.extrude([(0, p)], self.l0, 0, 0, [self.nc0], [1])
         s = gmsh.model.geo.extrude([l[1]], 0, self.l1, 0, [self.nc1], [1], recombine=True)
         if self.n_dims==3:
@@ -254,8 +257,9 @@ class Particles():
         self.create_particles(mesh, npart_perdim_percell, automatic_generation)
         
         self.check_duplicates = check_duplicates
-        self._io_type = "Ascii3D" # Shouldn't have to be set to another value
-        self._particle_type = "P3D" # Shouldn't have to be set to another value
+        self.n_dims = mesh.n_dims
+        self._io_type = "Ascii{:d}D".format(mesh.n_dims) # Shouldn't have to be set to another value
+        self._particle_type = "P{:d}D".format(mesh.n_dims) # Shouldn't have to be set to another value
 
     def create_particles(self, mesh, npart_perdim_percell=1, automatic_generation="pycbg"):
         """Create the particles using the given mesh.
@@ -276,11 +280,10 @@ class Particles():
                 mins, maxs = coors.min(axis=0), coors.max(axis=0)
                 steps = (maxs-mins)/(npart_perdim_percell+1)
                 poss = [mins + steps*i for i in range(1, npart_perdim_percell+1)]
-                xs, ys, zs = [p[0] for p in poss], [p[1] for p in poss], [p[2] for p in poss]
-                for x in xs:
-                    for y in ys:
-                        for z in zs:
-                            self.positions.append([x, y, z])
+                coor_ss = []
+                for i in range(mesh.n_dims): 
+                    coor_ss.append([p[i] for p in poss])
+                self.positions += list(it.product(*coor_ss))
             self.positions = np.array(self.positions)
         elif automatic_generation == "cbgeo":
             self.type = "gauss"
@@ -293,7 +296,7 @@ class Particles():
         """Write the particles file formatted for CB-Geo MPM."""
         pfile = open(self.filename, "w") 
         pfile.write("{:d}\n".format(len(self.positions)))   
-        for p in self.positions: pfile.write("{:e}\t{:e}\t{:e}\n".format(*p)) 
+        for p in self.positions: pfile.write("\t".join(["{:e}"]*self.n_dims).format(*p)+"\n") 
 
 class EntitySets():
     """Create and write to a file entity sets for nodes and particles.

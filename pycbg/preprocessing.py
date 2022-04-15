@@ -997,6 +997,7 @@ class Simulation():
                 for ps_id_p in ps_id: material_sets_list.append({"material_id": m_id, "pset_id": ps_id_p})
             else: material_sets_list.append({"material_id": m_id, "pset_id": ps_id})
 
+        if self.__gravity==[0,0,0] and self.mesh.n_dims==2: self.__gravity = [0,0]
         external_loading_conditions_dic = {"gravity": self.__gravity}
         if len(self.__nodal_forces) != 0: external_loading_conditions_dic["concentrated_nodal_forces"] = self.__nodal_forces
         if len(self.__particle_traction) != 0: external_loading_conditions_dic["particle_surface_traction"] = self.__particle_traction

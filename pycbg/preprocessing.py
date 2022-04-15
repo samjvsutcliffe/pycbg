@@ -942,7 +942,9 @@ class Simulation():
         output_step_interval : int, optional
             Number of steps between two data points. Default is 100.
         """
-        self.analysis = {"type": type,
+        try: detected_type = 'MPMExplicit{:d}D'.format(self.mesh.n_dims)
+        except: detected_type = type
+        self.analysis = {"type": detected_type,
                            "mpm_scheme": mpm_scheme,
                            "locate_particles": locate_particles,
                            "dt": dt,

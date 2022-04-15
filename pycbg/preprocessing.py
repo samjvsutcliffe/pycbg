@@ -44,10 +44,12 @@ class Mesh():
         Directory in which the mesh file will be saved.
     check_duplicates : bool
         See CB-Geo documentation.
-    cell_type : {'ED3H8', 'ED3H20', 'ED3H64G'}
+    cell_type : {'ED3H8', 'ED3H20', 'ED3H64G', 'ED2Q4', 'ED2Q8', 'ED2Q9', 'ED2Q16G'}
         Type of cell. 
+    n_dims : int
+        Number of dimensions (2 for 2D and 3 for 3D), automatically detrmined from the cell type.
     round_decimal : int or None
-        Rounds nodes coordinates to the specified decimal (`round_decimal` is directly passed to the built-in function `round`). This is useful when using `ED3H64G`. Default to None. 
+        Rounds nodes coordinates to the specified decimal (`round_decimal` is directly passed to the built-in function `round`). This is useful when using `ED3H64G` or 'ED2Q16G'. Default to None. 
 
     Notes
     -----
@@ -66,20 +68,25 @@ class Mesh():
     ##       - Make crete_mesh usable by the user 
 
     def __init__(self, dimensions, ncells, origin=(0.,0.,0.), directory="", check_duplicates=True, cell_type="ED3H8", round_decimal=None):
+        self.cell_type = cell_type
+        if cell_type=='ED3H8': self.nn_percell, self.n_dims = 8, 3
+        elif cell_type=='ED3H20': self.nn_percell, self.n_dims = 20, 3
+        elif cell_type=='ED3H64G': self.nn_percell, self.n_dims = 64, 3
+        elif cell_type=='ED2Q4': self.nn_percell, self.n_dims = 4, 2
+        elif cell_type=='ED2Q8': self.nn_percell, self.n_dims = 8, 2
+        elif cell_type=='ED2Q9': self.nn_percell, self.n_dims = 9, 2
+        elif cell_type=='ED2Q16G': self.nn_percell, self.n_dims = 16, 2
+        else : raise ValueError("cell_type is set to '{:}' while it should be one of the following: 'ED3H8', 'ED3H20', 'ED3H64G', 'ED2Q4', 'ED2Q8', 'ED2Q9' or 'ED2Q16G'".format(cell_type))
+        
         self.set_parameters(dimensions, ncells, origin)
         if not os.path.isdir(directory) and directory!='' : os.mkdir(directory)
         self.filename = directory + "mesh.msh"
 
         self.check_duplicates = check_duplicates
-        self.cell_type = cell_type
-        if cell_type=='ED3H8': self.nn_percell = 8
-        elif cell_type=='ED3H20': self.nn_percell = 20
-        elif cell_type=='ED3H64G': self.nn_percell = 64
-        else : raise ValueError("cell_type is set to '{:}' while it should be one of the following: 'ED3H8', 'ED3H20' or 'ED3H64G'".format(cell_type))
 
         self._isoparametric = False # Shouldn't have to be set to another value
-        self._io_type = "Ascii3D" # Shouldn't have to be set to another value
-        self._node_type = "N3D" # Shouldn't have to be set to another value
+        self._io_type = "Ascii{:d}D".format(self.n_dims) # Shouldn't have to be set to another value
+        self._node_type = "N{:d}D".format(self.n_dims) # Shouldn't have to be set to another value
         self.round_decimal = round_decimal
 
         self.write_file()
@@ -97,8 +104,13 @@ class Mesh():
         origin : tuple of floats
             Origin of the mesh. Default is `(0.,0.,0.)`.
         """
-        self.l0, self.l1, self.l2 = dimensions
-        self.nc0, self.nc1, self.nc2 = ncells
+        if self.n_dims==2: 
+            self.l0, self.l1 = dimensions
+            self.nc0, self.nc1 = ncells
+        elif self.n_dims==3: 
+            self.l0, self.l1, self.l2 = dimensions
+            self.nc0, self.nc1, self.nc2 = ncells
+
         self.origin = origin
 
     def create_mesh(self):
@@ -116,14 +128,17 @@ class Mesh():
         p = gmsh.model.geo.addPoint(*self.origin)
         l = gmsh.model.geo.extrude([(0, p)], self.l0, 0, 0, [self.nc0], [1])
         s = gmsh.model.geo.extrude([l[1]], 0, self.l1, 0, [self.nc1], [1], recombine=True)
-        v = gmsh.model.geo.extrude([s[1]], 0, 0, self.l2, [self.nc2], [1], recombine=True)
+        if self.n_dims==3:
+            v = gmsh.model.geo.extrude([s[1]], 0, 0, self.l2, [self.nc2], [1], recombine=True)
+            group = v[1][1]
+        elif self.n_dims==2: group = s[1][1]
         gmsh.model.geo.synchronize()
-        gmsh.model.addPhysicalGroup(3, [v[1][1]])
-        gmsh.model.mesh.generate(3)
-        if self.cell_type=='ED3H20': 
-            gmsh.option.setNumber("Mesh.SecondOrderIncomplete", 1)
+        gmsh.model.addPhysicalGroup(self.n_dims, [group])
+        gmsh.model.mesh.generate(self.n_dims)
+        if self.cell_type in ['ED3H20', 'ED2Q8', 'ED2Q9']: 
+            if self.cell_type!='ED2Q9': gmsh.option.setNumber("Mesh.SecondOrderIncomplete", 1)
             gmsh.model.mesh.setOrder(2)
-        elif self.cell_type=='ED3H64G': 
+        elif self.cell_type in ['ED3H64G', 'ED2Q16G']: 
             gmsh.model.mesh.setOrder(3)
 
     def write_file(self):
@@ -151,12 +166,12 @@ class Mesh():
             for line in lines[start_nodes:end_nodes]: 
                 sl = line.split(' ')
                 def wrapped_round(x): return round(x, self.round_decimal) if self.round_decimal is not None else x
-                node = [wrapped_round(float(c)) for c in sl[-3:]]
+                node = [wrapped_round(float(c)) for c in sl[-3:][:self.n_dims]]
                 self.nodes.append(node)
 
                 out_line = ""
                 for coord in node: out_line += str(coord) + " "
-                out_line += sl[-1]
+                out_line += "\n" #sl[-1]
                 fil.write(out_line)
             for line in lines[start_ele:end_ele]: 
                 sl = line.split(' ')

@@ -278,8 +278,8 @@ class Particles():
             for ie, e in enumerate(mesh.cells):
                 coors = np.array([mesh.nodes[i] for i in e])
                 mins, maxs = coors.min(axis=0), coors.max(axis=0)
-                steps = (maxs-mins)/(npart_perdim_percell+1)
-                poss = [mins + steps*i for i in range(1, npart_perdim_percell+1)]
+                step = (maxs-mins)/(npart_perdim_percell)
+                poss = [mins + step*(.5+i) for i in range(npart_perdim_percell)]
                 coor_ss = []
                 for i in range(mesh.n_dims): 
                     coor_ss.append([p[i] for p in poss])

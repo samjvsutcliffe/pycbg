@@ -5,7 +5,7 @@ PyCBG is a python module able to generate [CB-Geo MPM](https://github.com/cb-geo
 Install PyCBG
 =============
 
-`pycbg` can be installed using pip which will also install its depedencies. Type the following command from the root of pycbg (the directory where this present file is): 
+`pycbg` can be installed using `pip` (the latter being itself installed on Debian-based systems with `sudo apt install python3-pip`) which will also install its depedencies. Type the following command from the root of `pycbg` (the directory where this present file is): 
 
 ```
 python3 -m pip install pycbg

@@ -81,7 +81,10 @@ class Mesh():
         else : raise ValueError("cell_type is set to '{:}' while it should be one of the following: 'ED3H8', 'ED3H20', 'ED3H64G', 'ED2Q4', 'ED2Q8', 'ED2Q9' or 'ED2Q16G'".format(cell_type))
         
         self.set_parameters(dimensions, ncells, origin)
-        if not os.path.isdir(directory) and directory!='' : os.mkdir(directory)
+        if directory == '' : directory = '/'
+        if directory[-1] != '/' : directory += '/'
+        if not os.path.isdir(directory): os.mkdir(directory)
+        self.filename = directory + "mesh.msh"
         self.directory = directory
 
         self.check_duplicates = check_duplicates
@@ -269,7 +272,9 @@ class Particles():
     """
     ## TODO: Make the empty initialisation of Particles object possible (without specifying a mesh)
     def __init__(self, mesh, npart_perdim_percell=1, positions=None, directory="", check_duplicates=True, automatic_generation="pycbg"):
-        if not os.path.isdir(directory) and directory!='' : os.mkdir(directory)
+        if directory == '' : directory = '/'
+        if directory[-1] != '/' : directory += '/'
+        if not os.path.isdir(directory): os.mkdir(directory)
         self.filename = directory + "particles.txt"
         self.positions = positions if positions is not None else []
         self.automatic_generation = automatic_generation
@@ -379,7 +384,9 @@ class EntitySets():
     def __init__(self, mesh, particles, directory=""):
         self.mesh = mesh
         self.particles = particles
-        if not os.path.isdir(directory) and directory!='' : os.mkdir(directory)
+        if directory == '' : directory = '/'
+        if directory[-1] != '/' : directory += '/'
+        if not os.path.isdir(directory): os.mkdir(directory)
         self.filename = directory + "entity_sets.txt"
 
         self.psets, self.nsets = [], []

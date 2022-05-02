@@ -916,7 +916,7 @@ class Simulation():
         """
         self.__gravity = gravity
 
-    def set_analysis_parameters(self, type="MPMExplicit3D", mpm_scheme="usf", damping=0.05, locate_particles=False, dt=1e-05, velocity_update='flip', nsteps=2000, verbosity=1000, output_step_interval=100):
+    def set_analysis_parameters(self, type="MPMExplicit3D", mpm_scheme="usf", damping=0.05, locate_particles=False, dt=1e-05, velocity_update='flip', nsteps=2000, verbosity=100, output_step_interval=100):
         """Set the analysis parameters. Has to be called before
         `write_input_file`.
 
@@ -938,7 +938,7 @@ class Simulation():
         nsteps : int, optional
             Number of steps to be performed. Default is 2000.
         verbosity : int, optional
-            Number of lines to be printed in the console. Default is 1000.
+            Number of info lines (with current step number) to be printed in the console during MPM execution. Default is 100.
         output_step_interval : int, optional
             Number of steps between two data points. Default is 100.
         """

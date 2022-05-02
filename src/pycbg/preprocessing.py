@@ -63,7 +63,10 @@ class Mesh():
 
     def __init__(self, dimensions, ncells, origin=(0.,0.,0.), directory="", check_duplicates=True, cell_type="ED3H8"):
         self.set_parameters(dimensions, ncells, origin)
-        if not os.path.isdir(directory) and directory!='' : os.mkdir(directory)
+        if directory == '' : directory = '/'
+        if directory[-1] != '/' : directory += '/'
+        if not os.path.isdir(directory): os.mkdir(directory)
+        self.filename = directory + "mesh.msh"
         self.directory = directory
 
         self.check_duplicates = check_duplicates
@@ -230,7 +233,9 @@ class Particles():
     ## TODO: Make the empty initialisation of Particles object possible (without specifying a mesh)
 
     def __init__(self, mesh, npart_perdim_percell=1, directory="", check_duplicates=True):
-        if not os.path.isdir(directory) and directory!='' : os.mkdir(directory)
+        if directory == '' : directory = '/'
+        if directory[-1] != '/' : directory += '/'
+        if not os.path.isdir(directory): os.mkdir(directory)
         self.directory = directory
         self.particles = []
         self.create_particles(mesh, npart_perdim_percell)
@@ -322,7 +327,9 @@ class EntitySets():
     def __init__(self, mesh, particles, directory=""):
         self.mesh = mesh
         self.particles = particles
-        if not os.path.isdir(directory) and directory!='' : os.mkdir(directory)
+        if directory == '' : directory = '/'
+        if directory[-1] != '/' : directory += '/'
+        if not os.path.isdir(directory): os.mkdir(directory)
         self.directory = directory 
 
         self.psets, self.nsets = [], []

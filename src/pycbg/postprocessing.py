@@ -80,15 +80,57 @@ class ResultsReader():
         self.ppositions, self.pvelocities = [], []
         self.pstresses, self.pstrains, self.ppressures = [], [], []
         self.pmasses, self.pvolumes, self.pmaterials = [], [], []
-        for df in self.raw_data : 
-            self.ppositions.append(np.array([df[key] for key in ["coord_x", "coord_y", "coord_z"]]).T)
-            self.pvelocities.append(np.array([df[key] for key in ["velocity_x", "velocity_y", "velocity_z"]]).T)
-            self.pstresses.append(np.array([df[key] for key in ["stress_xx", "stress_yy", "stress_zz", "tau_xy", "tau_yz", "tau_xz"]]).T)
-            self.pstrains.append(np.array([df[key] for key in ["strain_xx", "strain_yy", "strain_zz", "gamma_xy", "gamma_yz", "gamma_xz"]]).T)
-            self.ppressures.append(df['pressure'].values)
-            self.pmaterials.append(df['material_id'].values)
-            self.pvolumes.append(df['volume'].values)
-            self.pmasses.append(df['mass'].values)
+        n_mp_init = len(self.raw_data[0]["id"])
+        for df in self.raw_data :
+            ids = list(df["id"])
+
+            # Positions
+            ppos = np.full([n_mp_init, 3], np.nan)
+            ppos_df = np.array([df[key] for key in ["coord_x", "coord_y", "coord_z"]]).T
+            for i, p_id in enumerate(ids): ppos[p_id,:] = ppos_df[i, :]
+            self.ppositions.append(ppos)
+
+            # Velocities
+            pvel = np.full([n_mp_init, 3], np.nan)
+            pvel_df = np.array([df[key] for key in ["velocity_x", "velocity_y", "velocity_z"]]).T
+            for i, p_id in enumerate(ids): pvel[p_id,:] = pvel_df[i, :]
+            self.pvelocities.append(pvel)
+
+            # Stresses
+            psig = np.full([n_mp_init, 6], np.nan)
+            psig_df = np.array([df[key] for key in ["stress_xx", "stress_yy", "stress_zz", "tau_xy", "tau_yz", "tau_xz"]]).T
+            for i, p_id in enumerate(ids): psig[p_id,:] = psig_df[i, :]
+            self.pstresses.append(psig)
+            
+            # Strains
+            peps = np.full([n_mp_init, 6], np.nan)
+            peps_df = np.array([df[key] for key in ["strain_xx", "strain_yy", "strain_zz", "gamma_xy", "gamma_yz", "gamma_xz"]]).T
+            for i, p_id in enumerate(ids): peps[p_id,:] = peps_df[i, :]
+            self.pstrains.append(peps)
+
+            # Pressures
+            ppre = np.full([n_mp_init], np.nan)
+            ppre_df = df['pressure'].values
+            for i, p_id in enumerate(ids): ppre[p_id] = ppre_df[i]
+            self.ppressures.append(ppre)
+
+            # Materials
+            pmat = np.full([n_mp_init], np.nan)
+            pmat_df = df['material_id'].values
+            for i, p_id in enumerate(ids): pmat[p_id] = pmat_df[i]
+            self.pmaterials.append(pmat)
+
+            # Volumes
+            pvol = np.full([n_mp_init], np.nan)
+            pvol_df = df['volume'].values
+            for i, p_id in enumerate(ids): pvol[p_id] = pvol_df[i]
+            self.pvolumes.append(pvol)
+
+            # Masses
+            pmas = np.full([n_mp_init], np.nan)
+            pmas_df = df['mass'].values
+            for i, p_id in enumerate(ids): pmas[p_id] = pmas_df[i]
+            self.pmasses.append(pmas)
     
 __ind_sgmts = [[0,1], [1,2], [2,3], [3,0],
                [4,5], [5,6], [6,7], [7,4],

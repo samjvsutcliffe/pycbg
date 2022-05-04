@@ -1,4 +1,5 @@
 import sys, os
+import glob as gb, pickle
 
 ## Beware, anything defined globally in this module (except variable whose names are in the no_auto_import list) is also imported in the main script (the one importing this module) upon calling __update_imports (which is called by several functions of this module)
 
@@ -29,17 +30,18 @@ def __update_imports(custom_dict={}):
     # Update glob dictionary, so at next call only new items will be processed
     glob = set(globals())
 
-def setup_yade(pycbg_sim, yade_exec="/usr/bin/yade"):
-    """Import YADE in the current scope and create a directory for all RVEs data (samples, vtk files, ...). This directory's path is stored in `rve_directory`, automatically imported in the main script. YADE's version is stored as the last commit SHA1 in `yade_sha1`, also automatically imported in the main script. The yade simulation should be set as periodic by the user (non periodic simulations are not supported).
+def setup_yade(yade_exec="/usr/bin/yade"):
+    """Import YADE in the current scope and create a directory for all RVEs data (samples, vtk files, ...). This directory's path is stored in `rve_directory`, automatically imported in the main script. YADE's version is stored as the last commit SHA1 in `yade_sha1`, also automatically imported in the main script. The YADE simulation should be set as periodic by the user (non periodic simulations are not supported).
 
     Parameters
     ----------
-    pycbg_sim : PyCBG's Simulation object
-        Used to allow all RVEs to access simulation's parameters.
     yade_exec : str
         Full path to the YADE executable. 
     """
-    global rve_directory, mpmxdem_sim, yade_sha1
+    global rve_directory, pycbg_sim, yade_sha1
+
+    # Get PyCBG simulation object
+    pycbg_sim = pickle.load(glob.glob(os.environ["PWD"] + "*.Simulation")[0])
 
     # Load YADE
     exec_path, exec_name = yade_exec.rstring("/", 1)
@@ -62,9 +64,6 @@ def setup_yade(pycbg_sim, yade_exec="/usr/bin/yade"):
             sys.stdout = f 
             printAllVersions()
             sys.stdout = original_stdout
-
-    # Keep PyCBG sim as variable inside the module
-    mpmxdem_sim = pycbg_sim
 
     # Create rve_data directory
     rve_directory = pycbg_sim.directory + "rve_data/"
@@ -157,7 +156,7 @@ def define_compute_stress(dem_strain_rate, function_name="compute_stress", run_o
         state_vars = [eval(var, globals()) for var in state_variables]
 
         # Save final state
-        if mpm_iteration == mpmxdem_sim.analysis_params["nsteps"] and save_fstate:
+        if mpm_iteration == pycbg_sim.analysis_params["nsteps"] and save_fstate:
             O.save(rve_directory + "rve{:d}_final_state.{:}yade.bz2".format(rve_id, yade_sha1))
 
         return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration, mpm_dt) + tuple(state_vars)

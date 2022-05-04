@@ -1,4 +1,4 @@
-import gmsh, os, json, pickle, csv, runpy, sys
+import gmsh, os, json, pickle, csv, runpy, sys, shutil
 import multiprocessing
 import numpy as np
 import itertools as it  
@@ -681,7 +681,7 @@ class Materials():
         init_state_variables : list of floats
             Contains the initial values of the states variables. The order in which they are given is their numbering among states variables : the first one is named "svars_0", the second is named "svars_1", ... Default is an empty list, for no state variables.
         script_path : str
-            Path to the user-defined script that compute the material's behaviour. Note that the exentsion `.py` shouldn't be specified. Default is 'custom_law'.
+            Path to the user-defined script that compute the material's behaviour. Note that the exentsion `.py` shouldn't be specified. This script will be copied into pycbg's simulation directory and executed there. Default is 'custom_law'.
         function_name : str
             Name of the function in `script_path` that compute the stress increment from the strain increment. It should take as input `6 + n_state_vars` arguments. The first 6 are the components of the engineering strain increment (in the directions `xx`, `yy`, `zz`, `xy`, `yz` and `xz` respectively), the others are the state variables. The order of the state variables in the function parameter gives their numbering in the output files (`'svars_0'`, `'svars_1'`, ...).
         particles_ids : str
@@ -1099,6 +1099,14 @@ class Simulation():
 
         save_name = self.directory + self.title + ".Simulation"
         with open(save_name, 'wb') as fil : pickle.dump(self, fil)
+
+        ## If PythonModel3D or CustomLaw3D is used, copy the rve script into the simulation's directory
+        mat_types = [mat["type"] for mat in self.materials.materials]
+        if "PythonModel3D" in mat_types or "CustomLaw3D" in mat_types:
+            try: mat = self.materials.materials[mat_types.index("PythonModel3D")]
+            except ValueError: mat = mat_types[mat_types.index("CustomLaw3D")]
+
+            shutil.copy(mat["script_path"]+".py", self.directory)
     
     def add_custom_parameters(self, dic):
         """Add `dict` content in `custom_params`.

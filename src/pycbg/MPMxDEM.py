@@ -105,7 +105,7 @@ def define_compute_stress(dem_strain_rate, function_name="compute_stress", run_o
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
     """
             
-    def fct(rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, mpm_dt, *state_vars):
+    def fct(rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
         global rve_id, state_variables
 
         # Use usual strain, not the engineering one computed by CB-Geo
@@ -159,7 +159,7 @@ def define_compute_stress(dem_strain_rate, function_name="compute_stress", run_o
         if mpm_iteration == pycbg_sim.analysis_params["nsteps"] and save_fstate:
             O.save(rve_directory + "rve{:d}_final_state.{:}yade.bz2".format(rve_id, yade_sha1))
 
-        return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration, mpm_dt) + tuple(state_vars)
+        return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration) + tuple(state_vars)
 
     # Give the function the name chosen by the user
     function_name = fct

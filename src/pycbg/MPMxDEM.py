@@ -41,7 +41,7 @@ def setup_yade(yade_exec="/usr/bin/yade"):
     global rve_directory, pycbg_sim, yade_sha1
 
     # Get PyCBG simulation object
-    pycbg_sim = pickle.load(glob.glob(os.environ["PWD"] + "*.Simulation")[0])
+    pycbg_sim = pickle.load(gb.glob(os.environ["PWD"] + "*.Simulation")[0])
 
     # Load YADE
     exec_path, exec_name = yade_exec.rstring("/", 1)

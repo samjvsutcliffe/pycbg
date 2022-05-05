@@ -70,7 +70,7 @@ def setup_yade(yade_exec="/usr/bin/yade"):
     __update_imports(loc)
 
 class DefineCallable():
-    """Callable object to be called at each MPM step, with CB-Geo's required signature. This function sets the global variable `rve_id`, which corresponds to the RVE's particle id in CB-Geo. User has to `MPMxDEM.set_opt_params` should be called before `MPMxDEM.define_compute_stress`.
+    """Callable object to be called at each MPM step, with CB-Geo's required signature.
 
     Parameters
     ----------
@@ -99,7 +99,7 @@ class DefineCallable():
     save_final_state : bool
         Wether or not to save the RVE final state in a ".{SHA1}yade.bz2" file, where "{SHA1}" is git's last commit SHA1 of YADE. Default is `False`.
     rve_id : int
-        The 'particle_id' of the current RVE, as numbered by CB-Geo. Before the first call of the object by CB-Geo, `rve_id=nan`.
+        The 'particle_id' of the current RVE, as numbered by CB-Geo. Before the first call of the object by CB-Geo, `rve_id=nan`, it is set to the actual particle id right before callin `run_on_setup`.
     """
 
     def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], save_final_state=False): 
@@ -111,7 +111,6 @@ class DefineCallable():
         self.rve_id = np.nan
 
     def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
-        global  state_variables
 
         # Use usual strain, not the engineering one computed by CB-Geo
         de_xy, de_yz, de_xz = .5*de_xy, .5*de_yz, .5*de_xz
@@ -129,7 +128,7 @@ class DefineCallable():
             if not os.path.isdir(vtk_dir): os.mkdir(vtk_dir)
 
             ## Add VTKRecorder to engines
-            O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=vtk_p)]
+            O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=self.vtk_p)]
 
         # Shaping dstrain increment matrix
         dstrain_matrix = Matrix3((de_xx, de_xy, de_xz,
@@ -158,10 +157,10 @@ class DefineCallable():
         dsigma = getStress(O.cell.volume)-sigma0
 
         # Update state variables
-        state_vars = [eval(var, globals()) for var in state_variables]
+        state_vars = [eval(var, globals()) for var in self.state_variables]
 
         # Save final state
-        if mpm_iteration == pycbg_sim.analysis_params["nsteps"] and save_fstate:
+        if mpm_iteration == pycbg_sim.analysis_params["nsteps"] and self.save_fstate:
             O.save(rve_directory + "rve{:d}_final_state.{:}yade.bz2".format(self.rve_id, yade_sha1))
 
         return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration) + tuple(state_vars)

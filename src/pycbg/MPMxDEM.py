@@ -3,7 +3,7 @@ import glob as gb, pickle, numpy as np
 
 ## Beware, anything defined globally in this module (except variable whose names are in the no_auto_import list) is also imported in the main script (the one importing this module) upon calling __update_imports (which is called by several functions of this module)
 
-no_auto_import = ["glob"]
+no_auto_import = ["glob", "rve_directory", "pycbg_sim", "yade_sha1"]
 
 # Initialise glob dictionary
 glob = set(globals())
@@ -25,7 +25,7 @@ def __update_imports(custom_dict={}):
     glob = set(globals())
 
 def setup_yade(yade_exec="/usr/bin/yade"):
-    """Import YADE in the current scope and create a directory for all RVEs data (samples, vtk files, ...). This directory's path is stored in `rve_directory`, automatically imported in the main script. YADE's version is stored as the last commit SHA1 in `yade_sha1`, also automatically imported in the main script. The YADE simulation should be set as periodic by the user (non periodic simulations are not supported).
+    """Import YADE in the current scope and create a directory for all RVEs data (samples, vtk files, ...). The YADE simulation should be set as periodic by the user (non periodic simulations are not supported).
 
     Parameters
     ----------
@@ -70,7 +70,7 @@ def setup_yade(yade_exec="/usr/bin/yade"):
     __update_imports(loc)
 
 class DefineCallable():
-    """Callable object to be called at each MPM step, with CB-Geo's required signature.
+    """Callable object to be called at each MPM step, with CB-Geo's required signature. The YADE periodic simulation defined in the script creating this callable object will be deformed at each MPM iteration using `O.cell.velGrad`.  The velocity gradient is computed using the strain increment provided by CB-Geo and the `dem_strain_rate` parameter provided by the user: `O.cell.velGrad = strain_increment_matrix / max(dstrain_increment_matrix) * dem_strain_rate`.
 
     Parameters
     ----------
@@ -100,6 +100,12 @@ class DefineCallable():
         Wether or not to save the RVE final state in a ".{SHA1}yade.bz2" file, where "{SHA1}" is git's last commit SHA1 of YADE. Default is `False`.
     rve_id : int
         The 'particle_id' of the current RVE, as numbered by CB-Geo. Before the first call of the object by CB-Geo, `rve_id=nan`, it is set to the actual particle id right before callin `run_on_setup`.
+    rve_directory : str
+        Path to the directory containing all RVEs data (samples, vtk files, ...), which is a subdirectory of PyCBG's simulation directory.
+    pycbg_sim : :class:`~pycbg.preprocessing.Simulation` object
+        PyCBG's simulation object used to create the input files.
+    yade_sha1 : str
+        Partial SHA1 of YADE's version
     """
 
     def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], save_final_state=False): 
@@ -108,6 +114,9 @@ class DefineCallable():
         self.vtk_period = vtk_period
         self.state_vars = state_vars
         self.save_final_state = save_final_state
+        self.rve_directory = rve_directory
+        self.pycbg_sim = pycbg_sim
+        self.yade_sha1 = yade_sha1
         self.rve_id = np.nan
 
     def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):

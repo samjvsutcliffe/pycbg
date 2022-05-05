@@ -1,15 +1,9 @@
 import sys, os
-import glob as gb, pickle
+import glob as gb, pickle, numpy as np
 
 ## Beware, anything defined globally in this module (except variable whose names are in the no_auto_import list) is also imported in the main script (the one importing this module) upon calling __update_imports (which is called by several functions of this module)
 
 no_auto_import = ["glob"]
-
-# Default value for optional parameters
-state_variables = []
-vtk_period = 0
-state_vars = ["O.iter, O.time, O.dt"]
-save_final_state = False
 
 # Initialise glob dictionary
 glob = set(globals())
@@ -75,26 +69,8 @@ def setup_yade(yade_exec="/usr/bin/yade"):
     for loc_var in ["yade_exec", "exec_path", "exec_name"]: del loc[loc_var]
     __update_imports(loc)
 
-
-def set_opt_params(vtk_period=0, state_vars=["O.iter, O.time, O.dt"], save_final_state=False):
-    """Set MPMxDEM optional parameters. `MPMxDEM.set_opt_params` should be called before `MPMxDEM.define_compute_stress`.
-
-    Parameters
-    ----------
-    vtk_period : int
-        `iterPeriod` for YADE's `VTKRecorder` engine. Its value is stored in `vtk_p`, automatically imported in the main script.
-    state_vars : list of str
-        List of python expressions that should return a scalar, to be save as state variable in the CB-Geo simulation. `state_vars` should have at most 19 elements, the first element being called `svars_1` in CB-Geo, the second `svars_2`, ... . Default to `["O.iter, O.time, O.dt"]`
-    save_final_state : bool
-        Wether or not to save the RVE final state in a ".{SHA1}yade.bz2" file, where "{SHA1}" is git's last commit SHA1 of YADE. Its value is stored in `save_fstate`, automatically imported in the main script.
-
-    """
-    global state_variables, vtk_p, save_fstate
-    state_variables, vtk_p, save_fstate = state_vars, vtk_period, save_final_state
-
-
-class define_cbgeo_callable():
-    """Creates the callable to be called at each MPM step, with CB-Geo's required signature. This function sets the global variable `rve_id`, which corresponds to the RVE's particle id in CB-Geo. User has to `MPMxDEM.set_opt_params` should be called before `MPMxDEM.define_compute_stress`.
+class DefineCallable():
+    """Callable object to be called at each MPM step, with CB-Geo's required signature. This function sets the global variable `rve_id`, which corresponds to the RVE's particle id in CB-Geo. User has to `MPMxDEM.set_opt_params` should be called before `MPMxDEM.define_compute_stress`.
 
     Parameters
     ----------
@@ -102,7 +78,13 @@ class define_cbgeo_callable():
         Strain rate applied to the RVE.
     run_on_setup : str or None
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
-    
+    vtk_period : int
+        `iterPeriod` for YADE's `VTKRecorder` engine. Default is 0 (no VTK file is saved).
+    state_vars : list of str
+        List of python expressions that should return a scalar, to be save as state variable in the CB-Geo simulation. `state_vars` should have at most 19 elements, the first element being called `svars_1` in CB-Geo, the second `svars_2`, ... . Default to `["O.iter, O.time, O.dt"]`.
+    save_final_state : bool
+        Wether or not to save the RVE final state in a ".{SHA1}yade.bz2" file, where "{SHA1}" is git's last commit SHA1 of YADE. Default is `False`.
+
 
     Attributes
     ----------
@@ -110,12 +92,26 @@ class define_cbgeo_callable():
         Strain rate applied to the RVE.
     run_on_setup : str or None
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
+    vtk_period : int
+        `iterPeriod` for YADE's `VTKRecorder` engine. Default is 0 (no VTK file is saved).
+    state_vars : list of str
+        List of python expressions that should return a scalar, to be save as state variable in the CB-Geo simulation. `state_vars` should have at most 19 elements, the first element being called `svars_1` in CB-Geo, the second `svars_2`, ... . Default to `["O.iter, O.time, O.dt"]`.
+    save_final_state : bool
+        Wether or not to save the RVE final state in a ".{SHA1}yade.bz2" file, where "{SHA1}" is git's last commit SHA1 of YADE. Default is `False`.
+    rve_id : int
+        The 'particle_id' of the current RVE, as numbered by CB-Geo. Before the first call of the object by CB-Geo, `rve_id=nan`.
     """
 
-    def __init__(self, dem_strain_rate, run_on_setup=None): self.dem_strain_rate, self.run_on_setup = dem_strain_rate, run_on_setup
+    def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], save_final_state=False): 
+        self.dem_strain_rate = dem_strain_rate
+        self.run_on_setup = run_on_setup
+        self.vtk_period = vtk_period
+        self.state_vars = state_vars
+        self.save_final_state = save_final_state
+        self.rve_id = np.nan
 
     def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
-        global rve_id, state_variables
+        global  state_variables
 
         # Use usual strain, not the engineering one computed by CB-Geo
         de_xy, de_yz, de_xz = .5*de_xy, .5*de_yz, .5*de_xz
@@ -123,13 +119,13 @@ class define_cbgeo_callable():
         # If this function is called for the first time
         if mpm_iteration==0:
             ## Keep rve_id
-            rve_id = rid
+            self.rve_id = int(rid)
 
             ## Run user's setup function
-            globals()[self.run_on_setup]()
+            self.run_on_setup()
 
             ## Create RVE directory
-            vtk_dir = rve_directory + "RVE_{:}/".format(rve_id) 
+            vtk_dir = rve_directory + "RVE_{:}/".format(self.rve_id) 
             if not os.path.isdir(vtk_dir): os.mkdir(vtk_dir)
 
             ## Add VTKRecorder to engines
@@ -166,6 +162,6 @@ class define_cbgeo_callable():
 
         # Save final state
         if mpm_iteration == pycbg_sim.analysis_params["nsteps"] and save_fstate:
-            O.save(rve_directory + "rve{:d}_final_state.{:}yade.bz2".format(rve_id, yade_sha1))
+            O.save(rve_directory + "rve{:d}_final_state.{:}yade.bz2".format(self.rve_id, yade_sha1))
 
         return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration) + tuple(state_vars)

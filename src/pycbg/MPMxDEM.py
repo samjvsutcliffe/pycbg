@@ -94,7 +94,7 @@ class DefineCallable():
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
     vtk_period : int
         `iterPeriod` for YADE's `VTKRecorder` engine. Default is 0 (no VTK file is saved).
-    state_vars : list of str
+    state_variables : list of str
         List of python expressions that should return a scalar, to be save as state variable in the CB-Geo simulation. `state_vars` should have at most 19 elements, the first element being called `svars_1` in CB-Geo, the second `svars_2`, ... . Default to `["O.iter, O.time, O.dt"]`.
     save_final_state : bool
         Wether or not to save the RVE final state in a ".{SHA1}yade.bz2" file, where "{SHA1}" is git's last commit SHA1 of YADE. Default is `False`.
@@ -108,11 +108,12 @@ class DefineCallable():
         Partial SHA1 of YADE's version
     """
 
-    def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], save_final_state=False): 
+    def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic=globals(), save_final_state=False): 
         self.dem_strain_rate = dem_strain_rate
         self.run_on_setup = run_on_setup
         self.vtk_period = vtk_period
-        self.state_vars = state_vars
+        self.state_variables = state_vars
+        self.svars_dic = svars_dic
         self.save_final_state = save_final_state
         self.rve_directory = rve_directory
         self.pycbg_sim = pycbg_sim
@@ -159,14 +160,14 @@ class DefineCallable():
         sigma0 = getStress(O.cell.volume)
 
         # Run DEM steps
-        O.run(n_dem_iter)
+        for i in range(int(n_dem_iter)): O.step()
         
         # Finnish the MPM iteration
         mpm_iteration += 1
         dsigma = getStress(O.cell.volume)-sigma0
 
         # Update state variables
-        state_vars = [eval(var, globals()) for var in self.state_variables]
+        state_vars = [eval(var, self.svars_dic) for var in self.state_variables]
 
         # Save final state
         if mpm_iteration == pycbg_sim.analysis_params["nsteps"] and self.save_fstate:

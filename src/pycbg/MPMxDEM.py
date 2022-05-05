@@ -41,10 +41,10 @@ def setup_yade(yade_exec="/usr/bin/yade"):
     global rve_directory, pycbg_sim, yade_sha1
 
     # Get PyCBG simulation object
-    pycbg_sim = pickle.load(gb.glob(os.environ["PWD"] + "*.Simulation")[0])
+    with open(gb.glob("*.Simulation")[0], 'rb') as fil : pycbg_sim = pickle.load(fil)
 
     # Load YADE
-    exec_path, exec_name = yade_exec.rstring("/", 1)
+    exec_path, exec_name = yade_exec.rsplit("/", 1)
 
         ## Add exec_path to path
     sys.path.append(exec_path)
@@ -53,25 +53,26 @@ def setup_yade(yade_exec="/usr/bin/yade"):
     for key, val in vars(__import__(exec_name)).items():
         if key.startswith('__') and key.endswith('__'): continue
         vars()[key] = val
+        globals()[key] = val
 
         ## Get git's SHA1
     yade_sha1 = version.split("-")[-1]
 
         ## Print all versions to a file
-    if not os.path.isfile(pycbg_sim.directory + 'yade_all_versions.txt'):
+    if not os.path.isfile('yade_all_versions.txt'):
         original_stdout = sys.stdout 
-        with open(pycbg_sim.directory + 'yade_all_versions.txt', 'w') as f:
+        with open('yade_all_versions.txt', 'w') as f:
             sys.stdout = f 
             printAllVersions()
             sys.stdout = original_stdout
 
     # Create rve_data directory
-    rve_directory = pycbg_sim.directory + "rve_data/"
+    rve_directory = "rve_data/"
     if not os.path.isdir(rve_directory): os.mkdir(rve_directory)
 
     # Update variables in main script
     loc = locals().copy()
-    for loc_var in ["yade_exec", "exec_path", "exec_name", "pycbg_sim"]: del loc[loc_var]
+    for loc_var in ["yade_exec", "exec_path", "exec_name"]: del loc[loc_var]
     __update_imports(loc)
 
 
@@ -162,9 +163,9 @@ def define_compute_stress(dem_strain_rate, function_name="compute_stress", run_o
         return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration) + tuple(state_vars)
 
     # Give the function the name chosen by the user
-    function_name = fct
+    locals()[function_name] = fct
 
     # Update variables in main script
     loc = locals().copy()
-    for loc_var in ["dem_strain_rate", "function_name", "run_on_setup", "fct"]: del loc[loc_var]
+    for loc_var in ["dem_strain_rate", "run_on_setup", "fct"]: del loc[loc_var]
     __update_imports(loc)

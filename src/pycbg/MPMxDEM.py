@@ -70,7 +70,7 @@ def setup_yade(yade_exec="/usr/bin/yade"):
     __update_imports(loc)
 
 class DefineCallable():
-    """Callable object to be called at each MPM step, with CB-Geo's required signature. The YADE periodic simulation defined in the script creating this callable object will be deformed at each MPM iteration using `O.cell.velGrad`.  The velocity gradient is computed using the strain increment provided by CB-Geo and the `dem_strain_rate` parameter provided by the user: `O.cell.velGrad = strain_increment_matrix / max(dstrain_increment_matrix) * dem_strain_rate`.
+    """Callable object to be called at each MPM step, with CB-Geo's required signature. The YADE periodic simulation defined in the script creating this callable object will be deformed at each MPM iteration using `O.cell.velGrad`. The velocity gradient is computed using the strain increment provided by CB-Geo and the `dem_strain_rate` parameter provided by the user: `O.cell.velGrad = strain_increment_matrix / max(strain_increment_matrix) * dem_strain_rate`.
 
     Parameters
     ----------
@@ -137,7 +137,7 @@ class DefineCallable():
             if not os.path.isdir(vtk_dir): os.mkdir(vtk_dir)
 
             ## Add VTKRecorder to engines
-            O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=self.vtk_p)]
+            O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=self.vtk_period)]
 
         # Shaping dstrain increment matrix
         dstrain_matrix = Matrix3((de_xx, de_xy, de_xz,
@@ -170,6 +170,6 @@ class DefineCallable():
 
         # Save final state
         if mpm_iteration == pycbg_sim.analysis_params["nsteps"] and self.save_fstate:
-            O.save(rve_directory + "rve{:d}_final_state.{:}yade.bz2".format(self.rve_id, yade_sha1))
+            O.save(rve_directory + "rve{:d}_final_state.{:}yade.bz2".format(self.rve_id, self.yade_sha1))
 
         return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration) + tuple(state_vars)

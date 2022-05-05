@@ -655,16 +655,13 @@ class Materials():
             Path to the user-defined script that compute the material's behaviour. Note that the exentsion `.py` shouldn't be specified. Default is 'custom_law'.
         function_name : str
             Name of the function in `script_path` that compute the stress increment from the strain increment. It should take as input `6 + n_state_vars` arguments. The first 6 are the components of the engineering strain increment (in the directions `xx`, `yy`, `zz`, `xy`, `yz` and `xz` respectively), the others are the state variables. The order of the state variables in the function parameter gives their numbering in the output files (`'svars_0'`, `'svars_1'`, ...).
-        particles_ids : str
-            List of the particles' ids that uses this material. The list must be space separated. (For MPMxDEM coupling, to be improved)
         """
         self.pset_ids.append(pset_id)
         material_dict = {"id": len(self.materials),
                          "type": "CustomLaw3D",
                          "density": density,
                          "script_path": script_path,
-                         "function_name": function_name,
-                         "particles_ids": particles_ids}
+                         "function_name": function_name}
         for i, init_val in enumerate(init_state_variables): material_dict["svars_"+str(i)] = init_val
         self.materials.append(material_dict) 
 
@@ -688,16 +685,13 @@ class Materials():
             Path to the user-defined script that compute the material's behaviour. Note that the exentsion `.py` shouldn't be specified. This script will be copied into pycbg's simulation directory and executed there. Default is 'custom_law'.
         function_name : str
             Name of the function in `script_path` that compute the stress increment from the strain increment. It should take as input `6 + n_state_vars` arguments. The first 6 are the components of the engineering strain increment (in the directions `xx`, `yy`, `zz`, `xy`, `yz` and `xz` respectively), the others are the state variables. The order of the state variables in the function parameter gives their numbering in the output files (`'svars_0'`, `'svars_1'`, ...).
-        particles_ids : str
-            List of the particles' ids that uses this material. The list must be space separated. (For MPMxDEM coupling, to be improved)
         """
         self.pset_ids.append(pset_id)
         material_dict = {"id": len(self.materials),
                          "type": "PythonModel3D",
                          "density": density,
                          "script_path": script_path,
-                         "function_name": function_name,
-                         "particles_ids": particles_ids}
+                         "function_name": function_name}
         for i, init_val in enumerate(init_state_variables): material_dict["svars_"+str(i)] = init_val
         self.materials.append(material_dict) 
 

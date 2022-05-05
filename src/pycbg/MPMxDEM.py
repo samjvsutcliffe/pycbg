@@ -108,7 +108,7 @@ class DefineCallable():
         Partial SHA1 of YADE's version
     """
 
-    def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic=globals(), save_final_state=False): 
+    def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False): 
         self.dem_strain_rate = dem_strain_rate
         self.run_on_setup = run_on_setup
         self.vtk_period = vtk_period

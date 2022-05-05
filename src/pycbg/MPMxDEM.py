@@ -76,7 +76,7 @@ class DefineCallable():
     ----------
     dem_strain_rate : float
         Strain rate applied to the RVE.
-    run_on_setup : str or None
+    run_on_setup : callable or None
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
     vtk_period : int
         `iterPeriod` for YADE's `VTKRecorder` engine. Default is 0 (no VTK file is saved).
@@ -90,7 +90,7 @@ class DefineCallable():
     ----------
     dem_strain_rate : float
         Strain rate applied to the RVE.
-    run_on_setup : str or None
+    run_on_setup : callable or None
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
     vtk_period : int
         `iterPeriod` for YADE's `VTKRecorder` engine. Default is 0 (no VTK file is saved).

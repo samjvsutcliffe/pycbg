@@ -93,20 +93,28 @@ def set_opt_params(vtk_period=0, state_vars=["O.iter, O.time, O.dt"], save_final
     state_variables, vtk_p, save_fstate = state_vars, vtk_period, save_final_state
 
 
-def define_compute_stress(dem_strain_rate, function_name="compute_stress", run_on_setup=None):
-    """Define the function to be called at each MPM step, with CB-Geo's required signature. This function sets the global variable `rve_id`, which corresponds to the RVE's particle id in CB-Geo. User has to `MPMxDEM.set_opt_params` should be called before `MPMxDEM.define_compute_stress`.
+class define_cbgeo_callable():
+    """Creates the callable to be called at each MPM step, with CB-Geo's required signature. This function sets the global variable `rve_id`, which corresponds to the RVE's particle id in CB-Geo. User has to `MPMxDEM.set_opt_params` should be called before `MPMxDEM.define_compute_stress`.
 
     Parameters
     ----------
     dem_strain_rate : float
         Strain rate applied to the RVE.
-    function_name : str
-        Name of the function to be defined (also the one to be passed to PyCBG's PythonModel3D material). Default is `"compute_stress"`.
+    run_on_setup : str or None
+        Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
+    
+
+    Attributes
+    ----------
+    dem_strain_rate : float
+        Strain rate applied to the RVE.
     run_on_setup : str or None
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
     """
-            
-    def fct(rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
+
+    def __init__(self, dem_strain_rate, run_on_setup=None): self.dem_strain_rate, self.run_on_setup = dem_strain_rate, run_on_setup
+
+    def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
         global rve_id, state_variables
 
         # Use usual strain, not the engineering one computed by CB-Geo
@@ -118,7 +126,7 @@ def define_compute_stress(dem_strain_rate, function_name="compute_stress", run_o
             rve_id = rid
 
             ## Run user's setup function
-            globals()[run_on_setup]()
+            globals()[self.run_on_setup]()
 
             ## Create RVE directory
             vtk_dir = rve_directory + "RVE_{:}/".format(rve_id) 
@@ -134,7 +142,7 @@ def define_compute_stress(dem_strain_rate, function_name="compute_stress", run_o
         
         # Compute the DEM deformation time to keep the simulation quasistatic 
         max_deps = max([abs(i) for i in [de_xx, de_yy, de_zz, de_xy, de_yz, de_xz]])
-        deformation_time = max_deps / dem_strain_rate
+        deformation_time = max_deps / self.dem_strain_rate
 
         # Compute the number of DEM iterations
         n_dem_iter = -(-deformation_time//O.dt)
@@ -161,11 +169,3 @@ def define_compute_stress(dem_strain_rate, function_name="compute_stress", run_o
             O.save(rve_directory + "rve{:d}_final_state.{:}yade.bz2".format(rve_id, yade_sha1))
 
         return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration) + tuple(state_vars)
-
-    # Give the function the name chosen by the user
-    locals()[function_name] = fct
-
-    # Update variables in main script
-    loc = locals().copy()
-    for loc_var in ["dem_strain_rate", "run_on_setup", "fct"]: del loc[loc_var]
-    __update_imports(loc)

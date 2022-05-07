@@ -522,8 +522,8 @@ class Materials():
         self.n_dims = n_dims
 
     def create_Newtonian(self, pset_id=0, density=1.225, 
-                                            bulk_modulus=1.42e5, 
-                                            dynamic_viscosity=1.81e-5):
+                                          bulk_modulus=1.42e5, 
+                                          dynamic_viscosity=1.81e-5):
         """Create Newtonian3D material, as specified by CB-Geo documentation.
 
         Parameters
@@ -531,7 +531,7 @@ class Materials():
         pset_id : int or list of ints
             Particle set ids that will be made of this material
         density : float, optional
-            Density of the material (:math:`kg/m^3`). Default is 1.225 :math:`kg/m^3`.
+            Initial density of the material (:math:`kg/m^3`). Default is 1.225 :math:`kg/m^3`.
         bulk_modulus : float, optional
             Bulk modulus of the material (:math:`Pa`). Default is 142 :math:`kPa`.
         dynamic_viscosity : float, otpional
@@ -568,7 +568,7 @@ class Materials():
         pset_id : int or list of ints
             Particle set id that will be made of this material
         density : float
-            Density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
+            Initial density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
         young_modulus : float
             Young's modulus of the material (:math:`Pa`). Default is 50 :math:`MPa`.
         poisson_ratio : float
@@ -621,7 +621,7 @@ class Materials():
         pset_id : int or list of ints
             Particle set id that will be made of this material
         density : float
-            Density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
+            Initial density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
         young_modulus : float
             Young's modulus of the material (:math:`Pa`). Default is 50 :math:`MPa`.
         poisson_ratio : float
@@ -634,11 +634,11 @@ class Materials():
                                "youngs_modulus": youngs_modulus,
                                "poisson_ratio": poisson_ratio})
 
-    def create_CustomLaw3D(self, pset_id=0, density=1e3,
-                                            init_state_variables=[],
-                                            script_path="custom_law",
-                                            function_name="custom_law",
-                                            particles_ids=""
+    def create_CustomLaw(self, pset_id=0, density=1e3,
+                                          init_state_variables=[],
+                                          script_path="custom_law",
+                                          function_name="custom_law",
+                                          particles_ids=""
                                             ):
         """Create CustomLaw3D material. The behaviour of the material is
         computed using a user-defined python script.
@@ -647,6 +647,8 @@ class Materials():
         ----------
         pset_id : int or list of ints
             Particle set id that will be made of this material.
+        density : float
+            Initial density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
         init_state_variables : list of floats
             Contains the initial values of the states variables. The order in which they are given is their numbering among states variables : the first one is named "svars_0", the second is named "svars_1", ... Default is an empty list, for no state variables.
         script_path : str
@@ -666,7 +668,7 @@ class Materials():
         for i, init_val in enumerate(init_state_variables): material_dict["svars_"+str(i)] = init_val
         self.materials.append(material_dict) 
 
-    def create_PythonModel3D(self, pset_id=0, density=1e3,
+    def create_PythonModel(self, pset_id=0, density=1e3,
                                             init_state_variables=[],
                                             script_path="custom_law",
                                             function_name="custom_law",
@@ -678,6 +680,8 @@ class Materials():
         ----------
         pset_id : int or list of ints
             Particle set id that will be made of this material.
+        density : float
+            Initial density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
         init_state_variables : list of floats
             Contains the initial values of the states variables. The order in which they are given is their numbering among states variables : the first one is named "svars_0", the second is named "svars_1", ... Default is an empty list, for no state variables.
         script_path : str

@@ -63,7 +63,7 @@ def setup_yade(yade_exec="/usr/bin/yade"):
     try: yade_sha1 = version.split("-")[-1]
     except NameError: yade_sha1 = "release-"
 
-    ## Print all versions to a file
+        ## Print all versions to a file
     if not os.path.isfile('yade_all_versions.txt'):
         original_stdout = sys.stdout 
         with open('yade_all_versions.txt', 'w') as f:
@@ -92,6 +92,8 @@ class DefineCallable():
         `iterPeriod` for YADE's `VTKRecorder` engine. Default is 0 (no VTK file is saved).
     state_vars : list of str
         List of python expressions that should return a scalar, to be save as state variable in the CB-Geo simulation. `state_vars` should have at most 19 elements, the first element being called `svars_1` in CB-Geo, the second `svars_2`, ... . Default to `["O.iter, O.time, O.dt"]`.
+    svars_dic : dict
+        Dictionary in which all elements of `state_vars`are evaluated. Most users need to set `svars_dic=globals()`.
     save_final_state : bool
         Wether or not to save the RVE final state in a ".{SHA1}yade.bz2" file, where "{SHA1}" is git's last commit SHA1 of YADE. Default is `False`.
 

@@ -8,7 +8,7 @@ Install PyCBG
 `pycbg` can be installed using `pip` (the latter being itself installed on Debian-based systems with `sudo apt install python3-pip`) which will also install its depedencies. Type the following command from the root of `pycbg` (the directory where this present file is): 
 
 ```console
-python3 -m pip install pycbg
+$ python3 -m pip install pycbg
 ```
 
 Installation automatically includes the following dependencies: 
@@ -28,7 +28,7 @@ If you want to install a specific version of PyCBG (e.g. the most recent one), y
 
 You can download the package with `git`:
 ```console
-git clone git@forgemia.inra.fr:mpm-at-recover/pycbg.git
+$ git clone git@forgemia.inra.fr:mpm-at-recover/pycbg.git
 ```
 
 Alternativly, you can download it manually from [ForgeMia](https://forgemia.inra.fr/mpm-at-recover/pycbg).
@@ -38,7 +38,7 @@ Alternativly, you can download it manually from [ForgeMia](https://forgemia.inra
 From the root of the `pycbg` directory (the one you just downloaded), type the following command: 
 
 ```console
-python3 -m pip install -e .
+$ python3 -m pip install -e .
 ```
 
 Command line usage

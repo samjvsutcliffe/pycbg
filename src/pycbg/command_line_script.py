@@ -10,6 +10,9 @@ def main():
   
     parser.add_argument('-v', '--version', action='version', version=_version.get_versions()['version'],
                         help="print %(prog)s version")
+    
+    parser.add_argument('-p', '--pip-show', action='store_true', dest="pip_show",
+                        help="alias for `pip show pycbg`")
 
     parser.add_argument('script', metavar='PYCBG_SCRIPT', type=str, nargs='?',
                         help='%(prog)s script to be run. By default, the following import lines are added at the top of the file: `from pycbg.preprocessing import *`, `from pycbg.postprocessing import *`. To deactivate this behaviour, use the -n (or --no-import) option')
@@ -26,6 +29,10 @@ def main():
   
     args = parser.parse_args()
   
+    if hasattr(args, "pip_show"):
+        pip_show_output = os.popen("python3 -m pip show pycbg")
+        print(pip_show_output.read())
+
     if hasattr(args, "build_doc"):
         directory = "pycbg_doc" if args.build_doc is None else args.build_doc
         subprocess.check_call([BUILD_DOC_SCRIPT, directory])
@@ -48,6 +55,3 @@ def main():
         globals().update(locals())
 
         ipshell()
-
-
-        

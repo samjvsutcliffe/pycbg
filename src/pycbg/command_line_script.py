@@ -5,23 +5,24 @@ from _pycbg_definitions import BUILD_DOC_SCRIPT
 def main():
   
     parser = argparse.ArgumentParser(prog ='pycbg',
-                                     description ='Manage CG-Geo MPM simulations using PyCBG Python module.',
+                                     description ='Manage CG-Geo MPM simulations using PyCBG Python module',
                                      argument_default=argparse.SUPPRESS)
   
-    parser.add_argument('script', metavar='PYCBG_SCRIPT', type=str, nargs='?',
-                        help='%(prog)s script to be run. By default, the following import lines are added at the top of the file: `from pycbg.preprocessing import *`, `from pycbg.postprocessing import *`. To deactivate this behaviour, use the -n (or --no-import) option.')
-    
-    parser.add_argument('-n', '--no-import', action='store_true', default=False, dest="import_pycbg",
-                        help="deactivate automatic import of %(prog)s when running PYCBG_SCRIPT")
-    
-    parser.add_argument('-d', '--build-doc', type=str, nargs='?', dest="build_doc",
-                        help="build %(prog)s's documentation in the directory whose path is specified, the path being relative to the current working directory. If the directory already exists, it is removed without prompt before building the doc. If no path is specified, the directory will be named `pycbg_doc` and located in the current directory. If -d and PYCBG_SCRIPT are specified, the documentation is build before running the script.")
-
-    parser.add_argument('-i', '--interactive', action='store_true', default=False, dest="interactive",
-                        help="run the script in an interactive IPython session")
-
     parser.add_argument('-v', '--version', action='version', version=_version.get_versions()['version'],
                         help="print %(prog)s version")
+
+    parser.add_argument('script', metavar='PYCBG_SCRIPT', type=str, nargs='?',
+                        help='%(prog)s script to be run. By default, the following import lines are added at the top of the file: `from pycbg.preprocessing import *`, `from pycbg.postprocessing import *`. To deactivate this behaviour, use the -n (or --no-import) option')
+    
+    parser.add_argument('-i', '--interactive', action='store_true', default=False, dest="interactive",
+                        help="run in an interactive IPython session. Using both the -i and -n options simply creates a IPython interactive session")
+
+    parser.add_argument('-n', '--no-import', action='store_true', default=False, dest="import_pycbg",
+                        help="deactivates automatic import of %(prog)s when running PYCBG_SCRIPT")
+
+    parser.add_argument('-d', '--build-doc', metavar="BUILD_DIR", type=str, nargs='?', dest="build_doc",
+                        help="build %(prog)s's documentation in BUILD_DIR, its path being relative to the current working directory. If the directory already exists, it is removed without prompt before building the doc. If BUILD_DIR isn't specified, it will be set to `${PWD}/pycbg_doc`. If -d and PYCBG_SCRIPT are specified, the documentation is build before running the script")
+
   
     args = parser.parse_args()
   

@@ -5,7 +5,7 @@ from _pycbg_definitions import BUILD_DOC_SCRIPT
 def main():
   
     parser = argparse.ArgumentParser(prog ='pycbg',
-                                     description ='Manage CG-Geo MPM simulations using PyCBG Python module',
+                                     description ='Manage CB-Geo MPM simulations using PyCBG Python module',
                                      argument_default=argparse.SUPPRESS)
   
     parser.add_argument('-v', '--version', action='version', version=_version.get_versions()['version'],

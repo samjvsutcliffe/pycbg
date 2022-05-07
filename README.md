@@ -44,7 +44,9 @@ python3 -m pip install -e .
 Command line usage
 ==================
 
-After installing PyCBG, a new python executable `pycbg` is available (`pip` should automatically install it inside a directory in your `$PATH`). It allows to easily create a PyCBG interactive session, build the documentation or getting PyCBG's version. Here is its description:
+After installing PyCBG, a new python executable `pycbg` is available (`pip` should automatically install it inside a directory in your `$PATH`). It allows to easily create a PyCBG interactive session, build the documentation or getting PyCBG's version. 
+
+## Complete description
 ```console
 $ pycbg -h
 usage: pycbg [-h] [-v] [-i] [-n] [-d [BUILD_DIR]] [PYCBG_SCRIPT]
@@ -63,6 +65,29 @@ optional arguments:
   -d [BUILD_DIR], --build-doc [BUILD_DIR]
                         build pycbg's documentation in BUILD_DIR, its path being relative to the current working directory. If the directory already exists, it is removed without prompt before building
                         the doc. If BUILD_DIR isn't specified, it will be set to `${PWD}/pycbg_doc`. If -d and PYCBG_SCRIPT are specified, the documentation is build before running the script
+```
+
+## Usage
+One can easily run a PyCBG script:
+```console
+$ pycbg my_script.py
+```
+
+Or experiment with PyCBG's functions and classes:
+```console
+$ pycbg -i
+Python 3.9.7 (default, Sep  3 2021, 12:45:31) 
+Type 'copyright', 'credits' or 'license' for more information
+IPython 8.0.1 -- An enhanced Interactive Python. Type '?' for help.
+
+In [1]: mesh = Mesh(...)
+```
+
+## Get version
+To get the installed version of PyCBG, simply run:
+```console
+$ pycbg -v
+v1.0.2+107.g3997bd9
 ```
 
 Documentation

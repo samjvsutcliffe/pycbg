@@ -15,7 +15,7 @@ def main():
                         help="alias for `pip show pycbg`")
 
     parser.add_argument('script', metavar='PYCBG_SCRIPT', type=str, nargs='?',
-                        help='%(prog)s script to be run. By default, the following import lines are added at the top of the file: `from pycbg.preprocessing import *`, `from pycbg.postprocessing import *`. To deactivate this behaviour, use the -n (or --no-import) option')
+                        help='%(prog)s script to be run. By default, the following import lines are added at the top of the file: `from pycbg.preprocessing import *`, `from pycbg.postprocessing import *` and `from pycbg.MPMxDEM import *`. To deactivate this behaviour, use the -n (or --no-import) option')
     
     parser.add_argument('-i', '--interactive', action='store_true', default=False, dest="interactive",
                         help="run in an interactive IPython session. Using both the -i and -n options simply creates a IPython interactive session")
@@ -40,7 +40,7 @@ def main():
     if hasattr(args, "script"):
         with open(args.script, 'r') as fil: lines = fil.readlines()
         if args.import_pycbg: str_script = ""
-        else: str_script = "from pycbg.preprocessing import *\nfrom pycbg.postprocessing import *\n"
+        else: str_script = "from pycbg.preprocessing import *\nfrom pycbg.postprocessing import *\nfrom pycbg.MPMxDEM import *\n"
         
         for line in lines: str_script += line
 

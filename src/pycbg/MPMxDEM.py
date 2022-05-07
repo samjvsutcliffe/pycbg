@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, warnings
 import glob as gb, pickle, numpy as np
 
 ## Beware, anything defined globally in this module (except variable whose names are in the no_auto_import list) is also imported in the main script (the one importing this module) upon calling __update_imports (which is called by several functions of this module)
@@ -24,32 +24,12 @@ def __update_imports(custom_dict={}):
     # Update glob dictionary, so at next call only new items will be processed
     glob = set(globals())
 
-def setup_yade(yade_exec="/usr/bin/yade"):
-    """Import YADE in the current scope and create a directory for all RVEs data (samples, vtk files, ...). The YADE simulation should be set as periodic by the user (non periodic simulations are not supported).
-
-    Parameters
-    ----------
-    yade_exec : str
-        Full path to the YADE executable. 
-    """
+def __on_yade_setup():
     global rve_directory, pycbg_sim, yade_sha1
-
     # Get PyCBG simulation object
     with open(gb.glob("*.Simulation")[0], 'rb') as fil : pycbg_sim = pickle.load(fil)
 
-    # Load YADE
-    exec_path, exec_name = yade_exec.rsplit("/", 1)
-
-        ## Add exec_path to path
-    sys.path.append(exec_path)
-
-        ## Perform an 'import *' on yade module. The following is NOT a good practice (tempering with the vars dict), I should try to improve this (thanks https://stackoverflow.com/a/11007138/16796697)
-    for key, val in vars(__import__(exec_name)).items():
-        if key.startswith('__') and key.endswith('__'): continue
-        vars()[key] = val
-        globals()[key] = val
-
-        ## Get git's SHA1
+    ## Get git's SHA1
     yade_sha1 = version.split("-")[-1]
 
         ## Print all versions to a file
@@ -63,6 +43,34 @@ def setup_yade(yade_exec="/usr/bin/yade"):
     # Create rve_data directory
     rve_directory = "rve_data/"
     if not os.path.isdir(rve_directory): os.mkdir(rve_directory)
+
+    # Update variables in main script
+    loc = locals().copy()
+    __update_imports(loc)
+
+def setup_yade(yade_exec="/usr/bin/yade"):
+    """Import YADE in the current scope and create a directory for all RVEs data (samples, vtk files, ...). The YADE simulation should be set as periodic by the user (non periodic simulations are not supported).
+
+    Parameters
+    ----------
+    yade_exec : str
+        Full path to the YADE executable. 
+    """
+
+    # Load YADE
+    exec_path, exec_name = yade_exec.rsplit("/", 1)
+
+        ## Add exec_path to path
+    sys.path.append(exec_path)
+
+        ## Perform an 'import *' on yade module. The following is NOT a good practice (tempering with the vars dict), I should try to improve this (thanks https://stackoverflow.com/a/11007138/16796697)
+    for key, val in vars(__import__(exec_name)).items():
+        if key.startswith('__') and key.endswith('__'): continue
+        vars()[key] = val
+        globals()[key] = val
+
+    try: __on_yade_setup()
+    except: warnings.warn("Extra setup steps coudln't be performed, the current session is then a simple YADE session")
 
     # Update variables in main script
     loc = locals().copy()

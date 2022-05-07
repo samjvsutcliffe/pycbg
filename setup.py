@@ -19,6 +19,7 @@ setuptools.setup(
     long_description=long_description,
     long_description_content_type='text/markdown',
     licence='MIT',
+    include_package_data=True,
     install_requires=[
         'numpy',
         'gmsh',
@@ -32,5 +33,10 @@ setuptools.setup(
     #     'documentation': ['sphinx>=3.3.1', 'sphinx_rtd_theme', 'sphinx_search.extension']
     # },
     package_dir={"": "src"},
-    packages=setuptools.find_packages(where="src")
+    packages=setuptools.find_packages(where="src"),
+    entry_points ={
+            'console_scripts': [
+                'pycbg = pycbg.command_line_script:main'
+            ]
+        }
 )

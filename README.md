@@ -109,6 +109,6 @@ It can then be accesed by opening `pycbg_doc/_build/html/index.html` in your bro
 
 The `pycbg_doc` folder name can be modified if necessary when executing the bash script:
 ```
-sh build_doc.sh my_folder_name
+pycbg -d my_folder_name
 ```
 

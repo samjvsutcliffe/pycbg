@@ -29,17 +29,6 @@ def __on_yade_setup():
     # Get PyCBG simulation object
     with open(gb.glob("*.Simulation")[0], 'rb') as fil : pycbg_sim = pickle.load(fil)
 
-    ## Get git's SHA1
-    yade_sha1 = version.split("-")[-1]
-
-        ## Print all versions to a file
-    if not os.path.isfile('yade_all_versions.txt'):
-        original_stdout = sys.stdout 
-        with open('yade_all_versions.txt', 'w') as f:
-            sys.stdout = f 
-            printAllVersions()
-            sys.stdout = original_stdout
-
     # Create rve_data directory
     rve_directory = "rve_data/"
     if not os.path.isdir(rve_directory): os.mkdir(rve_directory)
@@ -68,6 +57,17 @@ def setup_yade(yade_exec="/usr/bin/yade"):
         if key.startswith('__') and key.endswith('__'): continue
         vars()[key] = val
         globals()[key] = val
+
+    ## Get git's SHA1
+    yade_sha1 = version.split("-")[-1]
+
+    ## Print all versions to a file
+    if not os.path.isfile('yade_all_versions.txt'):
+        original_stdout = sys.stdout 
+        with open('yade_all_versions.txt', 'w') as f:
+            sys.stdout = f 
+            printAllVersions()
+            sys.stdout = original_stdout
 
     try: __on_yade_setup()
     except: warnings.warn("Extra setup steps coudln't be performed, the current session is then a simple YADE session")

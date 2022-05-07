@@ -1,4 +1,4 @@
-import argparse, os, subprocess
+import argparse, os, subprocess, sys
 from . import _version
 from _pycbg_definitions import BUILD_DOC_SCRIPT
 
@@ -47,7 +47,7 @@ def main():
         exec(str_script, globals())
     globals().update(locals())
 
-    if args.interactive: 
+    if args.interactive or len(sys.argv) <= 1: 
         from IPython.terminal.embed import InteractiveShellEmbed
         ipshell = InteractiveShellEmbed()
 

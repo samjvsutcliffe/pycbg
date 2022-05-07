@@ -45,6 +45,7 @@ def setup_yade(yade_exec="/usr/bin/yade"):
     yade_exec : str
         Full path to the YADE executable. 
     """
+    global yade_sha1
 
     # Load YADE
     exec_path, exec_name = yade_exec.rsplit("/", 1)
@@ -58,8 +59,9 @@ def setup_yade(yade_exec="/usr/bin/yade"):
         vars()[key] = val
         globals()[key] = val
 
-    ## Get git's SHA1
-    yade_sha1 = version.split("-")[-1]
+        ## Get git's SHA1
+    try: yade_sha1 = version.split("-")[-1]
+    except NameError: yade_sha1 = "release-"
 
     ## Print all versions to a file
     if not os.path.isfile('yade_all_versions.txt'):

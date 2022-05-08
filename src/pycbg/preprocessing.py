@@ -79,7 +79,7 @@ class Mesh():
         else : raise ValueError("cell_type is set to '{:}' while it should be one of the following: 'ED3H8', 'ED3H20', 'ED3H64G', 'ED2Q4', 'ED2Q8', 'ED2Q9' or 'ED2Q16G'".format(cell_type))
         
         self.set_parameters(dimensions, ncells, origin)
-        if directory == '' : directory = '/'
+        if directory == '' : directory = './'
         if directory[-1] != '/' : directory += '/'
         if not os.path.isdir(directory): os.mkdir(directory)
         self.directory = directory

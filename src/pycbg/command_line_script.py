@@ -24,7 +24,7 @@ def main():
                         help="deactivates automatic import of %(prog)s")
 
     parser.add_argument('-d', '--build-doc', metavar="BUILD_DIR", type=str, nargs='?', dest="build_doc",
-                        help="build %(prog)s's documentation in BUILD_DIR, its path being relative to the current working directory. If the directory already exists, it is removed without prompt before building the doc. If BUILD_DIR isn't specified, it will be set to `${PWD}/pycbg_doc`. If -d and PYCBG_SCRIPT are specified, the documentation is build before running the script")
+                        help="build %(prog)s's documentation in BUILD_DIR, its path being relative to the current working directory. If BUILD_DIR isn't specified, it will be set to `${PWD}/pycbg_doc`. If BUILD_DIR is `..`, it is set to `../pycbg_doc`. If -d and PYCBG_SCRIPT are specified, the documentation is build before running the script")
 
   
     args = parser.parse_args()

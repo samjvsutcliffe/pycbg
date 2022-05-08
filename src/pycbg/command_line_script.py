@@ -4,8 +4,8 @@ from _pycbg_definitions import BUILD_DOC_SCRIPT
 
 def main():
   
-    parser = argparse.ArgumentParser(prog ='pycbg',
-                                     description ='Manage CB-Geo MPM simulations using PyCBG Python module',
+    parser = argparse.ArgumentParser(prog='pycbg',
+                                     description='Manage CB-Geo MPM simulations using PyCBG Python module',
                                      argument_default=argparse.SUPPRESS)
   
     parser.add_argument('-v', '--version', action='version', version=_version.get_versions()['version'],
@@ -21,7 +21,7 @@ def main():
                         help="run in an interactive IPython session. Using both the -i and -n options simply creates a IPython interactive session")
 
     parser.add_argument('-n', '--no-import', action='store_true', default=False, dest="import_pycbg",
-                        help="deactivates automatic import of %(prog)s when running PYCBG_SCRIPT")
+                        help="deactivates automatic import of %(prog)s")
 
     parser.add_argument('-d', '--build-doc', metavar="BUILD_DIR", type=str, nargs='?', dest="build_doc",
                         help="build %(prog)s's documentation in BUILD_DIR, its path being relative to the current working directory. If the directory already exists, it is removed without prompt before building the doc. If BUILD_DIR isn't specified, it will be set to `${PWD}/pycbg_doc`. If -d and PYCBG_SCRIPT are specified, the documentation is build before running the script")
@@ -47,11 +47,14 @@ def main():
         exec(str_script, globals())
     globals().update(locals())
 
-    if args.interactive or len(sys.argv) <= 1: 
+    if args.interactive or len(sys.argv) <= 1 or (len(sys.argv)==2 and sys.argv[1]=="-n"):
+        print("Welcome to PyCBG {:} !\n".format(_version.get_versions()['version'])) 
         from IPython.terminal.embed import InteractiveShellEmbed
         ipshell = InteractiveShellEmbed()
 
-        if not hasattr(args, "script"): exec("from pycbg.preprocessing import *\nfrom pycbg.postprocessing import *", globals())
+        if not args.import_pycbg and not hasattr(args, "script"): 
+            exec("from pycbg.preprocessing import *\nfrom pycbg.postprocessing import *", globals())
+            print("Everything has been imported from pycbg.preprocessing and pycbg.postprocessing\n")
         globals().update(locals())
 
         ipshell()

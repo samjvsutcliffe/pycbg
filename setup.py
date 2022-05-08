@@ -26,6 +26,7 @@ setuptools.setup(
         'pandas',
         'matplotlib',
         'versioneer',
+        'pyreadline',
         'sphinx>=3.3.1',
         'sphinx_rtd_theme==0.5.2'
     ],

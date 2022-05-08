@@ -55,7 +55,7 @@ def main():
 
         if not args.import_pycbg and not hasattr(args, "script"): 
             exec("from pycbg.preprocessing import *\nfrom pycbg.postprocessing import *\nfrom pycbg.MPMxDEM import *", globals())
-            print("Everything has been imported from \033[0;33mpycbg.preprocessing\033[0m and \033[0;33mpycbg.postprocessing\033[0m\n")
+            print("Everything has been imported from \033[0;33mpycbg.preprocessing\033[0m, \033[0;33mpycbg.postprocessing\033[0m and \033[0;33mpycbg.MPMxDEM\033[0m\n")
         globals().update(locals())
 
         ipshell()

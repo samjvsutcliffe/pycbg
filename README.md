@@ -19,7 +19,6 @@ Installation automatically includes the following dependencies:
  - `pandas`
  - `matplotlib`
  - `versioneer`
- - `pyreadline`
  - `sphinx` (at least version `3.3.1`)
  - `sphinx_rtd_theme`
 

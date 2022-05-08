@@ -48,13 +48,14 @@ def main():
     globals().update(locals())
 
     if args.interactive or len(sys.argv) <= 1 or (len(sys.argv)==2 and sys.argv[1]=="-n"):
-        print("Welcome to PyCBG {:} !\n".format(_version.get_versions()['version'])) 
+        print("Welcome to PyCBG \033[0;32m{:}\033[0m !".format(_version.get_versions()['version'])) 
+        print("PyCBG's documentation can be accessed either locally by building it with the \033[0;35mpycbg -d\033[0m command, or at \033[0;36mhttps://pycbg.readthedocs.io/en/latest/\033[0m\n")
         from IPython.terminal.embed import InteractiveShellEmbed
         ipshell = InteractiveShellEmbed()
 
         if not args.import_pycbg and not hasattr(args, "script"): 
             exec("from pycbg.preprocessing import *\nfrom pycbg.postprocessing import *", globals())
-            print("Everything has been imported from pycbg.preprocessing and pycbg.postprocessing\n")
+            print("Everything has been imported from \033[0;33mpycbg.preprocessing\033[0m and \033[0;33mpycbg.postprocessing\033[0m\n")
         globals().update(locals())
 
         ipshell()

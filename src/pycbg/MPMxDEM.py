@@ -150,7 +150,7 @@ class DefineCallable():
             if not os.path.isdir(vtk_dir): os.mkdir(vtk_dir)
 
             ## Add VTKRecorder to engines
-            O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=self.vtk_period)]
+            if self.vtk_period!=0: O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=self.vtk_period)]
 
         # Shaping dstrain increment matrix
         dstrain_matrix = Matrix3((de_xx, de_xy, de_xz,
@@ -183,6 +183,6 @@ class DefineCallable():
 
         # Save final state
         if mpm_iteration == pycbg_sim.analysis_params["nsteps"] and self.save_final_state:
-            O.save(rve_directory + "rve{:d}_final_state.{:}yade.bz2".format(self.rve_id, self.yade_sha1))
+            O.save(rve_directory + "RVE_{:}/".format(self.rve_id) + "rve{:d}_final_state.{:}yade.bz2".format(self.rve_id, self.yade_sha1))
 
         return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration) + tuple(state_vars)

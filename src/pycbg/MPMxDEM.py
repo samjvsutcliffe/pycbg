@@ -143,7 +143,7 @@ class DefineCallable():
             self.rve_id = int(rid)
 
             ## Run user's setup function
-            self.run_on_setup()
+            if self.run_on_setup is not None: self.run_on_setup()
 
             ## Create RVE directory
             vtk_dir = rve_directory + "RVE_{:}/".format(self.rve_id) 

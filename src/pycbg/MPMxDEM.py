@@ -182,7 +182,7 @@ class DefineCallable():
         state_vars = [eval(var, self.svars_dic) for var in self.state_variables]
 
         # Save final state
-        if mpm_iteration == pycbg_sim.analysis_params["nsteps"] and self.save_fstate:
+        if mpm_iteration == pycbg_sim.analysis_params["nsteps"] and self.save_final_state:
             O.save(rve_directory + "rve{:d}_final_state.{:}yade.bz2".format(self.rve_id, self.yade_sha1))
 
         return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration) + tuple(state_vars)

@@ -885,7 +885,7 @@ class Simulation():
         self.__boundary_conditions["friction_constraints"].append({"nset_id": node_set,
                                                                    "dir": dir,
                                                                    "sign_n": sgn_n,
-                                                                   "velocity": frict_value})
+                                                                   "friction": frict_value})
     
     def add_math_function(self, times, values):
         """Add a math function to the simulation. The function can only be

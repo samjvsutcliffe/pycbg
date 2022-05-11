@@ -45,7 +45,7 @@ class Mesh():
     cell_type : {'ED3H8', 'ED3H20', 'ED3H64G', 'ED2Q4', 'ED2Q8', 'ED2Q9', 'ED2Q16G'}
         Type of cell. 
     n_dims : int
-        Number of dimensions (2 for 2D and 3 for 3D), automatically detrmined from the cell type.
+        Number of dimensions (2 for 2D and 3 for 3D), automatically determined from the cell type.
     round_decimal : int or None
         Rounds nodes coordinates to the specified decimal (`round_decimal` is directly passed to the built-in function `round`). This is useful when using `ED3H64G` or 'ED2Q16G'. Default to None. 
     params : dict
@@ -477,7 +477,7 @@ class Materials():
     Parameters
     ----------
     n_dims : int, optional
-        Number of dimension in the simulation (2 for 2D, 3 for 3D). Default to 3.
+        Number of dimensions in the simulation (2 for 2D, 3 for 3D). Default to 3.
 
     Attributes
     ----------
@@ -486,7 +486,7 @@ class Materials():
     pset_ids : list of (ints or list of ints)
         The element i of this list is the id (or list of ids) of the particle set made of the material defined in ``materials[i]``.
     n_dims : int
-        Number of dimension in the simulation (2 for 2D, 3 for 3D).
+        Number of dimensions in the simulation (2 for 2D, 3 for 3D).
     
     Notes
     -----
@@ -524,7 +524,7 @@ class Materials():
     def create_Newtonian(self, pset_id=0, density=1.225, 
                                           bulk_modulus=1.42e5, 
                                           dynamic_viscosity=1.81e-5):
-        """Create Newtonian3D material, as specified by CB-Geo documentation.
+        """Create a `Newtonian material <https://mpm.cb-geo.com/#/theory/material/newtonian>`_.
 
         Parameters
         ----------
@@ -561,7 +561,7 @@ class Materials():
                                             residual_friction=13.,
                                             residual_dilation=0.,
                                             residual_cohesion=0.):
-        """Create MohrCoulomb3D material, as specified by CB-Geo documentation.
+        """Create a `MohrCoulomb material <https://mpm.cb-geo.com/#/theory/material/mohr-coulomb>`_.
 
         Parameters
         ----------
@@ -614,7 +614,7 @@ class Materials():
     def create_LinearElastic(self, pset_id=0, density=1e3,
                                               youngs_modulus=5e7,
                                               poisson_ratio=.3):
-        """Create LinearElastic material.
+        """Create a `LinearElastic material <https://mpm.cb-geo.com/#/theory/material/linear-elastic>`_.
 
         Parameters
         ----------
@@ -756,8 +756,8 @@ class Simulation():
     >>> sim.init_entity_sets()
     >>> lower_particles = sim.entity_sets.create_set(lambda x,y,z: z<10, typ="particle")
     >>> upper_particles = sim.entity_sets.create_set(lambda x,y,z: z>=10, typ="particle")
-    >>> sim.materials.create_MohrCoulomb3D(pset_id=lower_particles)
-    >>> sim.materials.create_Newtonian3D(pset_id=upper_particles)
+    >>> sim.materials.create_MohrCoulomb(pset_id=lower_particles)
+    >>> sim.materials.create_Newtonian(pset_id=upper_particles)
     >>> walls = []
     >>> walls.append([sim.entity_sets.create_set(lambda x,y,z: x==lim, typ="node") for lim in [0, sim.mesh.l0]])
     >>> walls.append([sim.entity_sets.create_set(lambda x,y,z: y==lim, typ="node") for lim in [0, sim.mesh.l1]])

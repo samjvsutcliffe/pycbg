@@ -183,9 +183,9 @@ class DefineCallable():
                 # bases_s = [[np.linalg.norm(h) for h in par.T] for par in parallelograms]
                 # h_s = np.array([[a/b for b in bases] for a, bases in zip(areas, bases_s)])
                 # h_cell = h_s.min()
-                cond_x = O.cell.hSize[0,1]>=O.cell.hSize[0,0] or O.cell.hSize[0,2]>=O.cell.hSize[0,0]
-                cond_y = O.cell.hSize[1,0]>=O.cell.hSize[1,1] or O.cell.hSize[1,2]>=O.cell.hSize[1,1]
-                cond_z = O.cell.hSize[2,0]>=O.cell.hSize[2,2] or O.cell.hSize[2,1]>=O.cell.hSize[2,2]
+                cond_x = abs(O.cell.hSize[0,1])>=abs(O.cell.hSize[0,0]) or abs(O.cell.hSize[0,2])>=abs(O.cell.hSize[0,0])
+                cond_y = abs(O.cell.hSize[1,0])>=abs(O.cell.hSize[1,1]) or abs(O.cell.hSize[1,2])>=abs(O.cell.hSize[1,1])
+                cond_z = abs(O.cell.hSize[2,0])>=abs(O.cell.hSize[2,2]) or abs(O.cell.hSize[2,1])>=abs(O.cell.hSize[2,2])
                 if cond_x or cond_y or cond_z: flipCell()
 
             O.step()

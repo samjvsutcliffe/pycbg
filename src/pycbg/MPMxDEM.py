@@ -178,12 +178,15 @@ class DefineCallable():
         # Run DEM steps
         for i in range(int(n_dem_iter)): 
             if self.flip_cell is not None: 
-                parallelograms = [np.array(O.cell.hSize)[:,par] for par in list(it.combinations(range(3), 2))]
-                areas = [np.linalg.norm(np.cross(par[:,0], par[:,1])) for par in parallelograms]
-                bases_s = [[np.linalg.norm(h) for h in par.T] for par in parallelograms]
-                h_s = np.array([[a/b for b in bases] for a, bases in zip(areas, bases_s)])
-                h_cell = h_s.min()
-                if h_cell <= self.flip_cell: flipCell()
+                # parallelograms = [np.array(O.cell.hSize)[:,par] for par in list(it.combinations(range(3), 2))]
+                # areas = [np.linalg.norm(np.cross(par[:,0], par[:,1])) for par in parallelograms]
+                # bases_s = [[np.linalg.norm(h) for h in par.T] for par in parallelograms]
+                # h_s = np.array([[a/b for b in bases] for a, bases in zip(areas, bases_s)])
+                # h_cell = h_s.min()
+                cond_x = O.cell.hSize[0,1]>=O.cell.hSize[0,0] or O.cell.hSize[0,2]>=O.cell.hSize[0,0]
+                cond_y = O.cell.hSize[1,0]>=O.cell.hSize[1,1] or O.cell.hSize[1,2]>=O.cell.hSize[1,1]
+                cond_z = O.cell.hSize[2,0]>=O.cell.hSize[2,2] or O.cell.hSize[2,1]>=O.cell.hSize[2,2]
+                if cond_x or cond_y or cond_z: flipCell()
 
             O.step()
         

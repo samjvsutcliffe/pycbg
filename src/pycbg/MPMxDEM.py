@@ -121,6 +121,8 @@ class DefineCallable():
         Partial SHA1 of YADE's version
     flip_cell : float or None
         If not `None`, the periodic cell is flipped using YADE's `flipCell` if its smallest width is les or egal to `flip_cell`. 
+    flip_count : int
+        Number of time the DEM cell has been flipped
     """
 
     def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False, flip_cell=None): 
@@ -135,6 +137,7 @@ class DefineCallable():
         self.yade_sha1 = yade_sha1
         self.rve_id = np.nan
         self.flip_cell = flip_cell
+        self.flip_count = 0
 
     def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
 
@@ -187,6 +190,7 @@ class DefineCallable():
                 cond_y = abs(O.cell.hSize[1,0])>=abs(O.cell.hSize[1,1]) or abs(O.cell.hSize[1,2])>=abs(O.cell.hSize[1,1])
                 cond_z = abs(O.cell.hSize[2,0])>=abs(O.cell.hSize[2,2]) or abs(O.cell.hSize[2,1])>=abs(O.cell.hSize[2,2])
                 if cond_x or cond_y or cond_z: flipCell()
+                self.flip_count += 1
 
             O.step()
         

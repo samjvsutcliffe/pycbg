@@ -189,8 +189,9 @@ class DefineCallable():
                 cond_x = abs(O.cell.hSize[0,1])>=abs(O.cell.hSize[0,0]) or abs(O.cell.hSize[0,2])>=abs(O.cell.hSize[0,0])
                 cond_y = abs(O.cell.hSize[1,0])>=abs(O.cell.hSize[1,1]) or abs(O.cell.hSize[1,2])>=abs(O.cell.hSize[1,1])
                 cond_z = abs(O.cell.hSize[2,0])>=abs(O.cell.hSize[2,2]) or abs(O.cell.hSize[2,1])>=abs(O.cell.hSize[2,2])
-                if cond_x or cond_y or cond_z: flipCell()
-                self.flip_count += 1
+                if cond_x or cond_y or cond_z: 
+                    flipCell()
+                    self.flip_count += 1
 
             O.step()
         

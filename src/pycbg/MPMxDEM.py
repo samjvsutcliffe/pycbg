@@ -1,5 +1,6 @@
 import sys, os, warnings
 import glob as gb, pickle, numpy as np, itertools as it
+import pycbg
 
 ## Beware, anything defined globally in this module (except variable whose names are in the no_auto_import list) is also imported in the main script (the one importing this module) upon calling __update_imports (which is called by several functions of this module)
 
@@ -70,6 +71,14 @@ def setup_yade(yade_exec="/usr/bin/yade"):
             sys.stdout = f 
             printAllVersions()
             sys.stdout = original_stdout
+    
+    # Print pycbg version to a file
+    if not os.path.isfile('pycbg_version.txt'):
+        original_stdout = sys.stdout 
+        with open('yade_all_versions.txt', 'w') as f:
+            sys.stdout = f 
+            print(pycbg.__version__)
+            sys.stdout = original_stdout
 
     try: __on_yade_setup()
     except: warnings.warn("Extra setup steps coudln't be performed, the current session is then a simple YADE session")
@@ -96,8 +105,8 @@ class DefineCallable():
         Dictionary in which all elements of `state_vars`are evaluated. Most users need to set `svars_dic=globals()`.
     save_final_state : bool
         Wether or not to save the RVE final state in a ".{SHA1}yade.bz2" file, where "{SHA1}" is git's last commit SHA1 of YADE. Default is `False`.
-    flip_cell : float or None
-        If not `None`, the periodic cell is flipped using YADE's `flipCell` if its smallest width is les or egal to `flip_cell`. 
+    flip_cell_period : int
+        YADE's `flipCell` is called every `flip_cell_period`, which flips the RVE toward more axis-aligned base cell vectors if it is possible.
 
     Attributes
     ----------
@@ -119,13 +128,13 @@ class DefineCallable():
         PyCBG's simulation object used to create the input files.
     yade_sha1 : str
         Partial SHA1 of YADE's version
-    flip_cell : float or None
-        If not `None`, the periodic cell is flipped using YADE's `flipCell` if its smallest width is les or egal to `flip_cell`. 
+    flip_cell_period : int
+        YADE's `flipCell` is called every `flip_cell_period`, which flips the RVE toward more axis-aligned base cell vectors if it is possible.
     flip_count : int
         Number of time the DEM cell has been flipped
     """
 
-    def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False, flip_cell=None): 
+    def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False, flip_cell_period=0): 
         self.dem_strain_rate = dem_strain_rate
         self.run_on_setup = run_on_setup
         self.vtk_period = vtk_period
@@ -136,7 +145,7 @@ class DefineCallable():
         self.pycbg_sim = pycbg_sim
         self.yade_sha1 = yade_sha1
         self.rve_id = np.nan
-        self.flip_cell = flip_cell
+        self.flip_cell_period = flip_cell_period
         self.flip_count = 0
 
     def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
@@ -180,19 +189,10 @@ class DefineCallable():
 
         # Run DEM steps
         for i in range(int(n_dem_iter)): 
-            if self.flip_cell is not None: 
-                # parallelograms = [np.array(O.cell.hSize)[:,par] for par in list(it.combinations(range(3), 2))]
-                # areas = [np.linalg.norm(np.cross(par[:,0], par[:,1])) for par in parallelograms]
-                # bases_s = [[np.linalg.norm(h) for h in par.T] for par in parallelograms]
-                # h_s = np.array([[a/b for b in bases] for a, bases in zip(areas, bases_s)])
-                # h_cell = h_s.min()
-                cond_x = abs(O.cell.hSize[0,1])>=abs(O.cell.hSize[0,0]) or abs(O.cell.hSize[0,2])>=abs(O.cell.hSize[0,0])
-                cond_y = abs(O.cell.hSize[1,0])>=abs(O.cell.hSize[1,1]) or abs(O.cell.hSize[1,2])>=abs(O.cell.hSize[1,1])
-                cond_z = abs(O.cell.hSize[2,0])>=abs(O.cell.hSize[2,2]) or abs(O.cell.hSize[2,1])>=abs(O.cell.hSize[2,2])
-                if cond_x or cond_y or cond_z: 
+            if self.flip_cell_period>0: 
+                if O.iter % self.flip_cell_period == 0:
                     flipCell()
                     self.flip_count += 1
-
             O.step()
         
         # Finnish the MPM iteration

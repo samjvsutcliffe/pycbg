@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5179973.svg)](https://doi.org/10.5281/zenodo.5179973)
 
-PyCBG is a python module able to generate [CB-Geo MPM](https://github.com/cb-geo/mpm)'s input files.
+PyCBG is a Python tool that should be helpful in running [CB-Geo MPM](https://github.com/cb-geo/mpm) simulations, either for generating expected input files at the preprocessing stage, or for postprocessing results.
 
 Install PyCBG
 =============
@@ -45,7 +45,7 @@ $ python3 -m pip install -e .
 Command line usage
 ==================
 
-After installing PyCBG, a new python executable `pycbg` is available (`pip` should automatically install it inside a directory in your `$PATH`). It allows to easily create a PyCBG interactive session, build the documentation or getting PyCBG's version. 
+While PyCBG is essentially a Python module, installation also provides a new Python executable `pycbg` (`pip` should automatically install it inside a directory in your `$PATH`) with all PyCBG features being already imported. The executable may serve to create a PyCBG interactive session, build the documentation or get PyCBG's version.
 
 ## Complete description
 ```console

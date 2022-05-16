@@ -1,7 +1,7 @@
 Welcome to pycbg's documentation!
 =================================
 
-This module helps configuring MPM simulations for `CB-Geo MPM <https://github.com/cb-geo/mpm>`_: a simple python script can generate the input files required by CB-Geo (see :ref:`Preprocessing`). The results of the simulation can also be imported in python using pycbg (see :ref:`Postprocessing`). This documentation should be used alongside `CB-Geo's documentation <https://mpm.cb-geo.com/#/>`_.
+This module helps configuring MPM simulations for `CB-Geo MPM <https://github.com/cb-geo/mpm>`_: a simple python script can generate the input files required by CB-Geo MPM (see :ref:`Preprocessing`). The results of the simulation can also be imported in python using pycbg (see :ref:`Postprocessing`). This documentation should be used alongside `CB-Geo MPM's documentation <https://mpm.cb-geo.com/#/>`_.
 
 .. Preprocessing:
 

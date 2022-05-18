@@ -75,7 +75,7 @@ def setup_yade(yade_exec="/usr/bin/yade"):
     # Print pycbg version to a file
     if not os.path.isfile('pycbg_version.txt'):
         original_stdout = sys.stdout 
-        with open('yade_all_versions.txt', 'w') as f:
+        with open('pycbg_version.txt', 'w') as f:
             sys.stdout = f 
             print(pycbg.__version__)
             sys.stdout = original_stdout

@@ -155,6 +155,7 @@ class DefineCallable():
         self.use_gravity = use_gravity
 
     def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
+        global sigma0
 
         # Use usual strain, not the engineering one computed by CB-Geo
         de_xy, de_yz, de_xz = .5*de_xy, .5*de_yz, .5*de_xz
@@ -174,8 +175,12 @@ class DefineCallable():
             ## Add VTKRecorder to engines
             if self.vtk_period!=0: O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=self.vtk_period)]
 
-            ## If gravity is used, the sample global stress has to be computed manually, a list of particles and walls are thus
-            if self.use_gravity: _get_bodies_walls()
+            ## Measure initial stress
+            if not self.use_gravity: sigma0 = getStress(O.cell.volume)
+            else: 
+                ### If gravity is used, the sample global stress has to be computed manually, a list of particles and walls are thus
+                _get_bodies_walls()
+                sigma0 = _getStress_gravity()
 
         # Shaping dstrain increment matrix
         dstrain_matrix = Matrix3((de_xx, de_xy, de_xz,
@@ -193,10 +198,6 @@ class DefineCallable():
         # Compute the velocity gradient, assuming no rotation
         O.cell.velGrad = dstrain_matrix / deformation_time
 
-        # Measure initial stress
-        if not self.use_gravity: sigma0 = getStress(O.cell.volume)
-        else: sigma0 = _getStress_gravity()
-
         # Run DEM steps
         for i in range(int(n_dem_iter)): 
             if self.flip_cell_period>0: 
@@ -206,8 +207,10 @@ class DefineCallable():
         
         # Finnish the MPM iteration
         mpm_iteration += 1
-        if not self.use_gravity: dsigma = getStress(O.cell.volume)-sigma0
-        else: dsigma = _getStress_gravity()-sigma0
+        if not self.use_gravity: new_stress = getStress(O.cell.volume)
+        else: new_stress = _getStress_gravity()
+        dsigma = new_stress - sigma0
+        sigma0 = new_stress
 
         # Update state variables
         state_vars = [eval(var, self.svars_dic) for var in self.state_variables]

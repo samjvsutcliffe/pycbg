@@ -174,6 +174,9 @@ class DefineCallable():
             ## Add VTKRecorder to engines
             if self.vtk_period!=0: O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=self.vtk_period)]
 
+            ## If gravity is used, the sample global stress has to be computed manually, a list of particles and walls are thus
+            if self.use_gravity: _get_bodies_walls()
+
         # Shaping dstrain increment matrix
         dstrain_matrix = Matrix3((de_xx, de_xy, de_xz,
                                     de_xy, de_yy, de_yz,
@@ -215,12 +218,14 @@ class DefineCallable():
 
         return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration) + tuple(state_vars)
 
-def _getStress_gravity():
+def _get_bodies_walls():
+    global bodies_id, walls_id
     bodies_id, walls_id = [], []
     for b in O.bodies:
         if type(b.shape) in [Facet, Box, Wall]: walls_id.append(b.id)
         else: bodies_id.append(b.id)
-    
+
+def _getStress_gravity():
     volume = O.cell.volume
 
     for e in O.engines:

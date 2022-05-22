@@ -1,5 +1,6 @@
 import sys, os, warnings
 import glob as gb, pickle, numpy as np, itertools as it
+from matplotlib import use
 import pycbg
 
 ## Beware, anything defined globally in this module (except variable whose names are in the no_auto_import list) is also imported in the main script (the one importing this module) upon calling __update_imports (which is called by several functions of this module)
@@ -107,6 +108,8 @@ class DefineCallable():
         Wether or not to save the RVE final state in a ".{SHA1}yade.bz2" file, where "{SHA1}" is git's last commit SHA1 of YADE. Default is `False`.
     flip_cell_period : int
         YADE's `flipCell` is called every `flip_cell_period`, which flips the RVE toward more axis-aligned base cell vectors if it is possible.
+    use_gravity : bool
+        Wether or not to compute the DEM cell's global stress considering gravity
 
     Attributes
     ----------
@@ -132,9 +135,11 @@ class DefineCallable():
         YADE's `flipCell` is called every `flip_cell_period`, which flips the RVE toward more axis-aligned base cell vectors if it is possible.
     flip_count : int
         Number of time the DEM cell has been flipped
+    use_gravity : bool
+        Wether or not to compute the DEM cell's global stress considering gravity
     """
 
-    def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False, flip_cell_period=0): 
+    def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False, flip_cell_period=0, use_gravity=False): 
         self.dem_strain_rate = dem_strain_rate
         self.run_on_setup = run_on_setup
         self.vtk_period = vtk_period
@@ -147,6 +152,7 @@ class DefineCallable():
         self.rve_id = np.nan
         self.flip_cell_period = flip_cell_period
         self.flip_count = 0
+        self.use_gravity = use_gravity
 
     def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
 
@@ -185,7 +191,8 @@ class DefineCallable():
         O.cell.velGrad = dstrain_matrix / deformation_time
 
         # Measure initial stress
-        sigma0 = getStress(O.cell.volume)
+        if not self.use_gravity: sigma0 = getStress(O.cell.volume)
+        else: sigma0 = _getStress_gravity()
 
         # Run DEM steps
         for i in range(int(n_dem_iter)): 
@@ -196,7 +203,8 @@ class DefineCallable():
         
         # Finnish the MPM iteration
         mpm_iteration += 1
-        dsigma = getStress(O.cell.volume)-sigma0
+        if not self.use_gravity: dsigma = getStress(O.cell.volume)-sigma0
+        else: dsigma = _getStress_gravity()-sigma0
 
         # Update state variables
         state_vars = [eval(var, self.svars_dic) for var in self.state_variables]
@@ -206,3 +214,35 @@ class DefineCallable():
             O.save(rve_directory + "RVE_{:}/".format(self.rve_id) + "rve{:d}_final_state.{:}yade.bz2".format(self.rve_id, self.yade_sha1))
 
         return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration) + tuple(state_vars)
+
+def _getStress_gravity():
+    bodies_id, walls_id = [], []
+    for b in O.bodies:
+        if type(b.shape) in [Facet, Box, Wall]: walls_id.append(b.id)
+        else: bodies_id.append(b.id)
+    
+    volume = O.cell.volume
+
+    for e in O.engines:
+        if type(e)==NewtonIntegrator: gravity = e.gravity
+     
+    ## Interaction contribution
+    sigma_a = np.zeros((3,3))
+    for inter in O.interactions:
+        if inter.id1 in walls_id or inter.id2 in walls_id: # If one of the the bodies is a wall
+            if inter.id1 in walls_id and inter.id2 not in walls_id: sgn = 1 # If only body 1 is a wall
+            elif inter.id2 in walls_id and inter.id1 not in walls_id: sgn = -1 # If only body 2 is a wall
+            
+            f, x = sgn*(inter.phys.normalForce + inter.phys.shearForce), inter.geom.contactPoint
+            for i, fi in enumerate(f):
+                for j, xj in enumerate(x): sigma_a[i,j] += fi*xj/volume
+            
+    ## Gravity contribution
+    sigma_b = np.zeros((3,3))
+    for b_id in bodies_id:
+        b = O.bodies[int(b_id)]
+        m, x = b.state.mass, b.state.pos
+        for i, gi in enumerate(gravity):
+            for j, xj in enumerate(x): sigma_b[i,j] += m*gi*xj/volume
+
+    return sigma_a + sigma_b

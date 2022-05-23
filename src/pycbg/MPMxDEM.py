@@ -94,8 +94,8 @@ class DefineCallable():
 
     Parameters
     ----------
-    dem_strain_rate : float
-        Strain rate applied to the RVE.
+    dem_strain_rate : float or None
+        Strain rate applied to the RVE. If `None`, the MPM strain rate is used.
     run_on_setup : callable or None
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
     vtk_period : int
@@ -137,6 +137,8 @@ class DefineCallable():
         Number of time the DEM cell has been flipped
     use_gravity : bool
         Wether or not to compute the DEM cell's global stress considering gravity
+    mpm_dt : float
+        The MPM time step for the current simulation
     mpm_iter : int
         The current MPM iteration
     dstrain : numpy array of shape (3,3)
@@ -160,6 +162,7 @@ class DefineCallable():
         self.flip_count = 0
         self.use_gravity = use_gravity
         self.mpm_iter = 0
+        self.mpm_dt = pycbg_sim.analysis_params["dt"]
         self.dstrain = np.zeros((3,3))
         self.dstress = np.zeros((3,3))
 
@@ -204,7 +207,7 @@ class DefineCallable():
         
         # Compute the DEM deformation time to keep the simulation quasistatic 
         max_deps = max([abs(i) for i in [de_xx, de_yy, de_zz, de_xy, de_yz, de_xz]])
-        deformation_time = max_deps / self.dem_strain_rate
+        deformation_time = max_deps / self.dem_strain_rate if self.dem_strain_rate is not None else self.mpm_dt
 
         # Compute the number of DEM iterations
         n_dem_iter = -(-deformation_time//O.dt)

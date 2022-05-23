@@ -137,6 +137,12 @@ class DefineCallable():
         Number of time the DEM cell has been flipped
     use_gravity : bool
         Wether or not to compute the DEM cell's global stress considering gravity
+    mpm_iter : int
+        The current MPM iteration
+    dstrain : numpy array of shape (3,3)
+        Strain increment for the current MPM iteration
+    dstress : numpy array of shape (3,3)
+        Stress increment for the current MPM iteration
     """
 
     def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False, flip_cell_period=0, use_gravity=False): 
@@ -153,12 +159,21 @@ class DefineCallable():
         self.flip_cell_period = flip_cell_period
         self.flip_count = 0
         self.use_gravity = use_gravity
+        self.mpm_iter = 0
+        self.dstrain = np.zeros((3,3))
+        self.dstress = np.zeros((3,3))
 
     def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
         global sigma0
 
+        # Update mpm_iter attribute
+        self.mpm_iter = mpm_iteration
+
         # Use usual strain, not the engineering one computed by CB-Geo
         de_xy, de_yz, de_xz = .5*de_xy, .5*de_yz, .5*de_xz
+
+        # Set the dstrain attribute
+        self.dstrain = np.array([[de_xx, de_xy, de_xz], [de_xy, de_yy, de_xz], [de_xz, de_yz, de_zz]])
 
         # If this function is called for the first time
         if mpm_iteration==0:
@@ -211,6 +226,9 @@ class DefineCallable():
         else: new_stress = _getStress_gravity()
         dsigma = new_stress - sigma0
         sigma0 = new_stress
+
+        # Set the dstress attribute
+        self.dstress = np.array(dsigma)
 
         # Update state variables
         state_vars = [eval(var, self.svars_dic) for var in self.state_variables]

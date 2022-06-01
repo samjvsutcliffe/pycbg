@@ -417,15 +417,12 @@ def make_gif(figures, filename="video.gif", max_size=(1000, 1000), pil_save_kwar
     pil_save_kwargs: dict
         Keyword arguments passed to PIL's `Image.save` fuction, see `https://pillow.readthedocs.io/en/stable/handbook/image-file-formats.html#gif` for more details.
     """
-    def thumbnail_wrapper(im):
-        nonlocal max_size
-        im.thumbnail(max_size, Image.ANTIALIAS)
 
     # Turn figures into PIL images
     if n_cores>1:
         p = mp.get_context('fork').Pool(processes=n_cores)
         all_images = p.map(_convert_mpl_to_pil, figures)
-        p.map(thumbnail_wrapper, all_images)
+        p.starmap(_thumbnail_wrapper, [(im, max_size) for im in all_images])
     else: 
         all_images = list(map(_convert_mpl_to_pil, figures))
         map(thumbnail_wrapper, all_images)
@@ -442,3 +439,5 @@ def _convert_mpl_to_pil(fig):
     buf.seek(0)
     img = Image.open(buf)
     return img
+
+def _thumbnail_wrapper(im, max_size): im.thumbnail(max_size, Image.ANTIALIAS)

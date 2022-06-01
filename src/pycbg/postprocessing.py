@@ -265,13 +265,15 @@ class ResultsPlotter():
         numpy array of matplotlib.axes._subplots.AxesSubplot objects
             The axes of the matplotlib figure. The first element corresponds to the figure itself, the second corresponds to the colorbar if any.
         """
+        if not _attr_are_glob: self._set_attr_to_global()
+
         # Useful variables
         plot_colorbar = (type(colored_by) == str) or (type(color_label) == str) or ("cmap" in colorbar_args)
         height_ratios = [10,1] if plot_colorbar else [1]
         ix, iy = plane
-        x_ss, y_ss = self.pos_ss[ix], self.pos_ss[iy]
-        lcx, lcy = self.lcs[ix], self.lcs[iy]
-        mesh_cells, mesh_nodes = self.sim.mesh.cells, self.sim.mesh.nodes
+        x_ss, y_ss = pos_ss[ix], pos_ss[iy]
+        lcx, lcy = lcs[ix], lcs[iy]
+        mesh_cells, mesh_nodes = sim.mesh.cells, sim.mesh.nodes
 
         # If colored_by is a string
         if type(colored_by)==str: 
@@ -279,15 +281,15 @@ class ResultsPlotter():
             if color_label is None: color_label=colored_by
 
             # Get colors
-            values = self.results.raw_data[step_index][colored_by].values
+            values = results.raw_data[step_index][colored_by].values
             cmap = mpl.cm.get_cmap(**get_cmap_args)
             norm = self._get_norm(values, color_scale)
             if not "cmap" in colorbar_args: colorbar_args["cmap"] = cmap
             if not "norm" in colorbar_args: colorbar_args["norm"] = norm
-            colored_by = [cmap(norm(values[mp_id])) for mp_id in range(self.n_mp)]
+            colored_by = [cmap(norm(values[mp_id])) for mp_id in range(n_mp)]
         
         # Each material point is black by default
-        elif colored_by is None: colored_by = ["black" for mp_id in range(self.n_mp)]
+        elif colored_by is None: colored_by = ["black" for mp_id in range(n_mp)]
 
         # Create figure object
         fig, axes = plt.subplots(nrows=2 if plot_colorbar else 1, ncols=1, figsize=(17,10), gridspec_kw={"height_ratios": height_ratios})
@@ -297,7 +299,7 @@ class ResultsPlotter():
 
         # Color cells depending on how much material points are inside
         cells = []
-        for cell_id in self.cell_ids[step_index]:
+        for cell_id in cell_ids[step_index]:
             if np.isnan(cell_id): continue
             x,y = np.array([(mesh_nodes[i][ix], mesh_nodes[i][iy]) for i in mesh_cells[cell_id]]).min(0)
             cells.append(mpl.patches.Rectangle((x,y), lcx, lcy))
@@ -305,7 +307,7 @@ class ResultsPlotter():
         axes[0].add_collection(pc)
 
         # Plot material points
-        for mp_id in range(self.n_mp): axes[0].scatter(x_ss[mp_id][step_index], y_ss[mp_id][step_index], color=colored_by[mp_id])
+        for mp_id in range(n_mp): axes[0].scatter(x_ss[mp_id][step_index], y_ss[mp_id][step_index], color=colored_by[mp_id])
 
         # Plot colorbar if necessary
         if plot_colorbar:
@@ -320,8 +322,8 @@ class ResultsPlotter():
         axes[0].set_ylabel(y_label)
 
             # Limits
-        axes[0].set_xlim(self.mesh_lims[ix])
-        axes[0].set_ylim(self.mesh_lims[iy])
+        axes[0].set_xlim(mesh_lims[ix])
+        axes[0].set_ylim(mesh_lims[iy])
 
             # Aspect ratio
         axes[0].set_aspect("equal")
@@ -376,6 +378,10 @@ class ResultsPlotter():
             
         args = [((i, plane, colored_by), plot_positions_kwarg) for i, colored_by in enumerate(colored_by_s)]
 
+        # Set attributes as global, faster for multiprocessing
+        self._set_attr_to_global()
+
+        # Plot figures
         if n_cores>1:
             p = mp.get_context('fork').Pool(processes=n_cores)
             figs_and_axes = p.map(self._plot_positions_expend_args, args)
@@ -401,7 +407,12 @@ class ResultsPlotter():
         norm = normalizer(vmin=vmin, vmax=vmax)
 
         return norm
-
+    
+    def _set_attr_to_global(self):
+        global _attr_are_glob
+        att2add = {"results":self.results, "n_mp":self.n_mp, "n_saved_steps":self.n_saved_steps, "sim":self.sim, "lcs":self.lcs, "mesh_lims":self.mesh_lims, "cell_ids":self.cell_ids, "pos_ss":self.pos_ss}
+        globals().update(att2add)
+        _attr_are_glob = True
 
 def make_gif(figures, filename="video.gif", max_size=(1000, 1000), pil_save_kwargs={"quality":95, "duration":.1, "optimize":True, "loop":0, "save_all":True}):
     """Make a gif from all figures in `figures` in the specified order.
@@ -430,3 +441,5 @@ def _convert_mpl_to_pil(fig):
     buf.seek(0)
     img = Image.open(buf)
     return img
+
+_attr_are_glob = False

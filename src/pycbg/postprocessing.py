@@ -208,7 +208,7 @@ def load_batch_results(directory, fail_flag=True):
         sims.append((dic, results))
     return sims
 
-class ResultsPlotter():
+def load_results(sim_results):
     """Manage basic plotting of results, mostly material points' positions during all simulation.
 
     Parameters
@@ -216,203 +216,192 @@ class ResultsPlotter():
     results: :class:`~pycbg.postprocessing.ResultsReader` object
             Results to plot graphs of.
     """
+    global results, n_mp, n_saved_steps, sim, lcs, mesh_lims, cell_ids, pos_ss
+    results = sim_results
+    n_mp = results.ppositions[0].shape[0]
+    n_saved_steps = len(results.ppositions)
+    sim = results.load_simulation()
+    lcs = [l/nc for l,nc in zip([sim.mesh.l0, sim.mesh.l1, sim.mesh.l2], [sim.mesh.nc0, sim.mesh.nc1, sim.mesh.nc2])]
+    mesh_lims = [(o, o+l) for o,l in zip(sim.mesh.origin, [sim.mesh.l0, sim.mesh.l1, sim.mesh.l2])]
+    cell_ids = [[] for i_step in range(len(results.steps))]
 
-    def __init__(self, results):
-        self.results = results
-        self.n_mp = results.ppositions[0].shape[0]
-        self.n_saved_steps = len(results.ppositions)
-        self.sim = results.load_simulation()
-        self.lcs = [l/nc for l,nc in zip([self.sim.mesh.l0, self.sim.mesh.l1, self.sim.mesh.l2], [self.sim.mesh.nc0, self.sim.mesh.nc1, self.sim.mesh.nc2])]
-        self.mesh_lims = [(o, o+l) for o,l in zip(self.sim.mesh.origin, [self.sim.mesh.l0, self.sim.mesh.l1, self.sim.mesh.l2])]
-        self.cell_ids = [[] for i_step in range(len(results.steps))]
+    pos_ss = [[[] for i_p in range(n_mp)], [[] for i_p in range(n_mp)], [[] for i_p in range(n_mp)]]
+    for i_p in range(n_mp):
+        for poss in results.ppositions: 
+            pos_ss[0][i_p].append(poss[i_p, 0])
+            pos_ss[1][i_p].append(poss[i_p, 1])
+            pos_ss[2][i_p].append(poss[i_p, 2])
 
-        self.pos_ss = [[[] for i_p in range(self.n_mp)], [[] for i_p in range(self.n_mp)], [[] for i_p in range(self.n_mp)]]
-        for i_p in range(self.n_mp):
-            for poss in results.ppositions: 
-                self.pos_ss[0][i_p].append(poss[i_p, 0])
-                self.pos_ss[1][i_p].append(poss[i_p, 1])
-                self.pos_ss[2][i_p].append(poss[i_p, 2])
+    for istep, data in enumerate(results.raw_data): 
+        for i_p in range(n_mp): cell_ids[istep].append(data["cell_id"].values[i_p])
 
-        for istep, data in enumerate(results.raw_data): 
-            for i_p in range(self.n_mp): self.cell_ids[istep].append(data["cell_id"].values[i_p])
 
-    def plot_positions(self, step_index, plane, colored_by=None, color_label=None, color_scale="linear", patch_kwargs={"facecolor":"grey", "alpha":.1, "edgecolor":"grey"}, get_cmap_args={"name":"autumn_r", "lut":1e3}, colorbar_args={"orientation":"horizontal"}):
-        """Plot material points' projection of their positions on the plane defined by `plane`. Material points can be colored by all variables saved in the csv file. Additional matplotlib commands can be executed through the `tweak_plt` function.
+def plot_positions(step_index, plane, colored_by=None, color_label=None, color_scale="linear", patch_kwargs={"facecolor":"grey", "alpha":.1, "edgecolor":"grey"}, get_cmap_args={"name":"autumn_r", "lut":1e3}, colorbar_args={"orientation":"horizontal"}):
+    """Plot material points' projection of their positions on the plane defined by `plane`. Material points can be colored by all variables saved in the csv file. Additional matplotlib commands can be executed through the `tweak_plt` function.
 
-        Parameters
-        ----------
-        step_index: int
-            Index of the step to plot.
-        plane: tuple of ints
-            Projection axes' indexes. For instance `plane=(0,1)` means that the horizontal axis will be the axis `0` and the vertical axis will be the axis `1`.
-        colored_by: str, list of matplotlib colors or None
-            Color of all material points. If a string is given, the color will represent the variable in the csv files whose header is this string (e.g. `displacement_x`, `stress_yy`, `svars_5`, ...). If a list of matplotlib colors is given, it should contain as much elements as material points and the index of each color corresponds to the material point's ID. If `None` is given, all material points are black.
-        color_label: str or None
-            Label for the colorbar. If None is given and `colored_by` is a string, `color_label` is set to `colored_by`. If None is given and `colored_by` is a list, no colorbar is plotted. 
-        color_scale: {"linear", "log"}
-            Scale to use for colors.
-        patch_kwargs: dict
-            Keyword arguments for matplotlib.collections.PatchCollection, can be used to change how mesh's cells are displayed on the graph (for instance, if there is many material point per cell one might want to set a low "alpha").
-        get_cmap_args: dict
-            Arguments for matplotlib's get_cmap function (i.e. `name` and `lut`). 
-        colorbar_args: dict
-            Arguments for matplotlib.colorbar.ColorbarBase, can be used to set a specific colormap range for several graphs.
+    Parameters
+    ----------
+    step_index: int
+        Index of the step to plot.
+    plane: tuple of ints
+        Projection axes' indexes. For instance `plane=(0,1)` means that the horizontal axis will be the axis `0` and the vertical axis will be the axis `1`.
+    colored_by: str, list of matplotlib colors or None
+        Color of all material points. If a string is given, the color will represent the variable in the csv files whose header is this string (e.g. `displacement_x`, `stress_yy`, `svars_5`, ...). If a list of matplotlib colors is given, it should contain as much elements as material points and the index of each color corresponds to the material point's ID. If `None` is given, all material points are black.
+    color_label: str or None
+        Label for the colorbar. If None is given and `colored_by` is a string, `color_label` is set to `colored_by`. If None is given and `colored_by` is a list, no colorbar is plotted. 
+    color_scale: {"linear", "log"}
+        Scale to use for colors.
+    patch_kwargs: dict
+        Keyword arguments for matplotlib.collections.PatchCollection, can be used to change how mesh's cells are displayed on the graph (for instance, if there is many material point per cell one might want to set a low "alpha").
+    get_cmap_args: dict
+        Arguments for matplotlib's get_cmap function (i.e. `name` and `lut`). 
+    colorbar_args: dict
+        Arguments for matplotlib.colorbar.ColorbarBase, can be used to set a specific colormap range for several graphs.
 
-        Returns
-        -------
-        matplotlib.figure.Figure object
-            The matplotlib figure object.
-        numpy array of matplotlib.axes._subplots.AxesSubplot objects
-            The axes of the matplotlib figure. The first element corresponds to the figure itself, the second corresponds to the colorbar if any.
-        """
-        if not _attr_are_glob: self._set_attr_to_global()
+    Returns
+    -------
+    matplotlib.figure.Figure object
+        The matplotlib figure object.
+    numpy array of matplotlib.axes._subplots.AxesSubplot objects
+        The axes of the matplotlib figure. The first element corresponds to the figure itself, the second corresponds to the colorbar if any.
+    """
+    # Useful variables
+    plot_colorbar = (type(colored_by) == str) or (type(color_label) == str) or ("cmap" in colorbar_args)
+    height_ratios = [10,1] if plot_colorbar else [1]
+    ix, iy = plane
+    x_ss, y_ss = pos_ss[ix], pos_ss[iy]
+    lcx, lcy = lcs[ix], lcs[iy]
+    mesh_cells, mesh_nodes = sim.mesh.cells, sim.mesh.nodes
 
-        # Useful variables
-        plot_colorbar = (type(colored_by) == str) or (type(color_label) == str) or ("cmap" in colorbar_args)
-        height_ratios = [10,1] if plot_colorbar else [1]
-        ix, iy = plane
-        x_ss, y_ss = pos_ss[ix], pos_ss[iy]
-        lcx, lcy = lcs[ix], lcs[iy]
-        mesh_cells, mesh_nodes = sim.mesh.cells, sim.mesh.nodes
+    # If colored_by is a string
+    if type(colored_by)==str: 
+        # Check color_label value
+        if color_label is None: color_label=colored_by
 
-        # If colored_by is a string
-        if type(colored_by)==str: 
-            # Check color_label value
-            if color_label is None: color_label=colored_by
+        # Get colors
+        values = results.raw_data[step_index][colored_by].values
+        cmap = mpl.cm.get_cmap(**get_cmap_args)
+        norm = _get_norm(values, color_scale)
+        if not "cmap" in colorbar_args: colorbar_args["cmap"] = cmap
+        if not "norm" in colorbar_args: colorbar_args["norm"] = norm
+        colored_by = [cmap(norm(values[mp_id])) for mp_id in range(n_mp)]
+    
+    # Each material point is black by default
+    elif colored_by is None: colored_by = ["black" for mp_id in range(n_mp)]
 
-            # Get colors
-            values = results.raw_data[step_index][colored_by].values
-            cmap = mpl.cm.get_cmap(**get_cmap_args)
-            norm = self._get_norm(values, color_scale)
-            if not "cmap" in colorbar_args: colorbar_args["cmap"] = cmap
-            if not "norm" in colorbar_args: colorbar_args["norm"] = norm
-            colored_by = [cmap(norm(values[mp_id])) for mp_id in range(n_mp)]
-        
-        # Each material point is black by default
-        elif colored_by is None: colored_by = ["black" for mp_id in range(n_mp)]
+    # Create figure object
+    fig, axes = plt.subplots(nrows=2 if plot_colorbar else 1, ncols=1, figsize=(17,10), gridspec_kw={"height_ratios": height_ratios})
 
-        # Create figure object
-        fig, axes = plt.subplots(nrows=2 if plot_colorbar else 1, ncols=1, figsize=(17,10), gridspec_kw={"height_ratios": height_ratios})
+    # If there is no colorbar, reformat axes variable
+    if not plot_colorbar: axes = np.array([axes])
 
-        # If there is no colorbar, reformat axes variable
-        if not plot_colorbar: axes = np.array([axes])
+    # Color cells depending on how much material points are inside
+    cells = []
+    for cell_id in cell_ids[step_index]:
+        if np.isnan(cell_id): continue
+        x,y = np.array([(mesh_nodes[i][ix], mesh_nodes[i][iy]) for i in mesh_cells[cell_id]]).min(0)
+        cells.append(mpl.patches.Rectangle((x,y), lcx, lcy))
+    pc = mpl.collections.PatchCollection(cells, **patch_kwargs)
+    axes[0].add_collection(pc)
 
-        # Color cells depending on how much material points are inside
-        cells = []
-        for cell_id in cell_ids[step_index]:
-            if np.isnan(cell_id): continue
-            x,y = np.array([(mesh_nodes[i][ix], mesh_nodes[i][iy]) for i in mesh_cells[cell_id]]).min(0)
-            cells.append(mpl.patches.Rectangle((x,y), lcx, lcy))
-        pc = mpl.collections.PatchCollection(cells, **patch_kwargs)
-        axes[0].add_collection(pc)
+    # Plot material points
+    for mp_id in range(n_mp): axes[0].scatter(x_ss[mp_id][step_index], y_ss[mp_id][step_index], color=colored_by[mp_id])
 
-        # Plot material points
-        for mp_id in range(n_mp): axes[0].scatter(x_ss[mp_id][step_index], y_ss[mp_id][step_index], color=colored_by[mp_id])
+    # Plot colorbar if necessary
+    if plot_colorbar:
+        cb = mpl.colorbar.ColorbarBase(axes[1], **colorbar_args)
+        cb.set_label(color_label)
 
-        # Plot colorbar if necessary
-        if plot_colorbar:
-            cb = mpl.colorbar.ColorbarBase(axes[1], **colorbar_args)
-            cb.set_label(color_label)
+    # Improve graph
+        # Labels
+    all_labels = [r"$x$ (m)", r"$y$ (m)", r"$z$ (m)"]
+    x_label, y_label = all_labels[ix], all_labels[iy]
+    axes[0].set_xlabel(x_label)
+    axes[0].set_ylabel(y_label)
 
-        # Improve graph
-            # Labels
-        all_labels = [r"$x$ (m)", r"$y$ (m)", r"$z$ (m)"]
-        x_label, y_label = all_labels[ix], all_labels[iy]
-        axes[0].set_xlabel(x_label)
-        axes[0].set_ylabel(y_label)
+        # Limits
+    axes[0].set_xlim(mesh_lims[ix])
+    axes[0].set_ylim(mesh_lims[iy])
 
-            # Limits
-        axes[0].set_xlim(mesh_lims[ix])
-        axes[0].set_ylim(mesh_lims[iy])
+        # Aspect ratio
+    axes[0].set_aspect("equal")
 
-            # Aspect ratio
-        axes[0].set_aspect("equal")
+    return fig, axes
 
-        return fig, axes
+def plot_all_positions(plane, colored_by=None, n_cores=1, **plot_positions_kwarg):
+    """Plot material points' projection of their positions on the plane defined by `plane` for all time steps. Takes as keyword argument all arguments of the `plot_positions` method.
 
-    def plot_all_positions(self, plane, colored_by=None, n_cores=1, **plot_positions_kwarg):
-        """Plot material points' projection of their positions on the plane defined by `plane` for all time steps. Takes as keyword argument all arguments of the `plot_positions` method.
+    Parameters
+    ----------
+    plane: tuple of ints
+        Projection axes' indexes. For instance `plane=(0,1)` means that the horizontal axis will be the axis `0` and the vertical axis will be the axis `1`.
+    colored_by: list of list, or str, or list, or None
+        If `colored_by` is a list of list, each of its element are passed to `plot_positions` as the `colored_by` argument. If it is a simple list, a string, or `None`, it is directly passed to `plot_positions` as the `colored_by` argument.
+    n_cores: int
+        Number of cores to use for parallel plotting.
+    **plot_positions_kwarg: `plot_positions` keyword arguments
+        Arguments to be passed to `plot_positions`.
 
-        Parameters
-        ----------
-        plane: tuple of ints
-            Projection axes' indexes. For instance `plane=(0,1)` means that the horizontal axis will be the axis `0` and the vertical axis will be the axis `1`.
-        colored_by: list of list, or str, or list, or None
-            If `colored_by` is a list of list, each of its element are passed to `plot_positions` as the `colored_by` argument. If it is a simple list, a string, or `None`, it is directly passed to `plot_positions` as the `colored_by` argument.
-        n_cores: int
-            Number of cores to use for parallel plotting.
-        **plot_positions_kwarg: `plot_positions` keyword arguments
-            Arguments to be passed to `plot_positions`.
+    Returns
+    -------
+    list of tuples
+        Each element is a couple of figure and axes, as returned by the `plot_positions` method.
+    """
+    # Manage colored_by input
+    if colored_by is None: set_colors = False
+    elif type(colored_by)==str or type(colored_by[0])==list: set_colors = True
+    else: set_colors = False
+    if not set_colors: colored_by_s = [colored_by for i in range(n_saved_steps)]
+    else: 
+        # Set color_scale if user didn't
+        if not "color_scale" in plot_positions_kwarg: plot_positions_kwarg["color_scale"] = "linear"
 
-        Returns
-        -------
-        list of tuples
-            Each element is a couple of figure and axes, as returned by the `plot_positions` method.
-        """
-        # Manage colored_by input
-        if colored_by is None: set_colors = False
-        elif type(colored_by)==str or type(colored_by[0])==list: set_colors = True
-        else: set_colors = False
-        if not set_colors: colored_by_s = [colored_by for i in range(self.n_saved_steps)]
-        else: 
-            # Set color_scale if user didn't
-            if not "color_scale" in plot_positions_kwarg: plot_positions_kwarg["color_scale"] = "linear"
+        # Set get_cmap_args if user didn't
+        if not "get_cmap_args" in plot_positions_kwarg: plot_positions_kwarg["get_cmap_args"] = {"name":"autumn_r", "lut":1e3}
 
-            # Set get_cmap_args if user didn't
-            if not "get_cmap_args" in plot_positions_kwarg: plot_positions_kwarg["get_cmap_args"] = {"name":"autumn_r", "lut":1e3}
-
-            # Get values
-            if type(colored_by)==str: values = np.array([self.results.raw_data[i][colored_by].values for i in range(self.n_saved_steps)])
-            else: values = np.array([colored_by[i] for i in range(self.n_saved_steps)])
-            
-            # Get colors
-            cmap = mpl.cm.get_cmap(**plot_positions_kwarg["get_cmap_args"])
-            norm = self._get_norm(values, plot_positions_kwarg["color_scale"])
-            colored_by_s = [[cmap(norm(values[i, mp_id])) for mp_id in range(self.n_mp)] for i in range(self.n_saved_steps)]
-
-            # Manage colorbar_args argument
-            if not "colorbar_args" in plot_positions_kwarg: plot_positions_kwarg["colorbar_args"] = {"cmap":cmap, "norm":norm, "orientation":"horizontal"}
-            else:
-                if "cmap" not in plot_positions_kwarg["colorbar_args"]: plot_positions_kwarg["colorbar_args"]["cmap"] = cmap
-                if "norm" not in plot_positions_kwarg["colorbar_args"]: plot_positions_kwarg["colorbar_args"]["norm"] = norm
-            
-        args = [((i, plane, colored_by), plot_positions_kwarg) for i, colored_by in enumerate(colored_by_s)]
-
-        # Set attributes as global, faster for multiprocessing
-        self._set_attr_to_global()
-
-        # Plot figures
-        if n_cores>1:
-            p = mp.get_context('fork').Pool(processes=n_cores)
-            figs_and_axes = p.map(self._plot_positions_expend_args, args)
-        else: figs_and_axes = list(map(self._plot_positions_expend_args, args))
-
-        return figs_and_axes
-
-    def _plot_positions_expend_args(self, args):
-        f_args, f_kwargs = args
-        return self.plot_positions(*f_args, **f_kwargs)
-
-    def _get_norm(self, values, color_scale="linear"):
-        # Check color_scale value
-        if color_scale=="log": normalizer = mpl.colors.LogNorm
-        elif color_scale=="linear": normalizer = mpl.colors.Normalize
-        else: raise RuntimeError("color_scale must be set to 'linear' or 'log'")
+        # Get values
+        if type(colored_by)==str: values = np.array([results.raw_data[i][colored_by].values for i in range(n_saved_steps)])
+        else: values = np.array([colored_by[i] for i in range(n_saved_steps)])
         
         # Get colors
-        vmin, vmax = values.min(), values.max()
-        if vmin==vmax: 
-            vmax *= 1.01
-            vmin *= .99
-        norm = normalizer(vmin=vmin, vmax=vmax)
+        cmap = mpl.cm.get_cmap(**plot_positions_kwarg["get_cmap_args"])
+        norm = _get_norm(values, plot_positions_kwarg["color_scale"])
+        colored_by_s = [[cmap(norm(values[i, mp_id])) for mp_id in range(n_mp)] for i in range(n_saved_steps)]
 
-        return norm
+        # Manage colorbar_args argument
+        if not "colorbar_args" in plot_positions_kwarg: plot_positions_kwarg["colorbar_args"] = {"cmap":cmap, "norm":norm, "orientation":"horizontal"}
+        else:
+            if "cmap" not in plot_positions_kwarg["colorbar_args"]: plot_positions_kwarg["colorbar_args"]["cmap"] = cmap
+            if "norm" not in plot_positions_kwarg["colorbar_args"]: plot_positions_kwarg["colorbar_args"]["norm"] = norm
+        
+    args = [((i, plane, colored_by), plot_positions_kwarg) for i, colored_by in enumerate(colored_by_s)]
+
+    # Plot figures
+    if n_cores>1:
+        p = mp.get_context('fork').Pool(processes=n_cores)
+        figs_and_axes = p.map(_plot_positions_expend_args, args)
+    else: figs_and_axes = list(map(_plot_positions_expend_args, args))
+
+    return figs_and_axes
+
+def _plot_positions_expend_args(args):
+    f_args, f_kwargs = args
+    return plot_positions(*f_args, **f_kwargs)
+
+def _get_norm(values, color_scale="linear"):
+    # Check color_scale value
+    if color_scale=="log": normalizer = mpl.colors.LogNorm
+    elif color_scale=="linear": normalizer = mpl.colors.Normalize
+    else: raise RuntimeError("color_scale must be set to 'linear' or 'log'")
     
-    def _set_attr_to_global(self):
-        global _attr_are_glob
-        att2add = {"results":self.results, "n_mp":self.n_mp, "n_saved_steps":self.n_saved_steps, "sim":self.sim, "lcs":self.lcs, "mesh_lims":self.mesh_lims, "cell_ids":self.cell_ids, "pos_ss":self.pos_ss}
-        globals().update(att2add)
-        _attr_are_glob = True
+    # Get colors
+    vmin, vmax = values.min(), values.max()
+    if vmin==vmax: 
+        vmax *= 1.01
+        vmin *= .99
+    norm = normalizer(vmin=vmin, vmax=vmax)
+
+    return norm
 
 def make_gif(figures, filename="video.gif", max_size=(1000, 1000), pil_save_kwargs={"quality":95, "duration":.1, "optimize":True, "loop":0, "save_all":True}):
     """Make a gif from all figures in `figures` in the specified order.
@@ -441,5 +430,3 @@ def _convert_mpl_to_pil(fig):
     buf.seek(0)
     img = Image.open(buf)
     return img
-
-_attr_are_glob = False

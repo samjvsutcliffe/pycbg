@@ -50,22 +50,46 @@ While PyCBG is essentially a Python module, installation also provides a new Pyt
 ## Complete description
 ```console
 $ pycbg -h
-usage: pycbg [-h] [-v] [-i] [-n] [-d [BUILD_DIR]] [PYCBG_SCRIPT]
+usage: pycbg [-h] [-v] [-p] [-i] [-n] [-d [BUILD_DIR]] [PYCBG_SCRIPT]
 
-Manage CG-Geo MPM simulations using PyCBG Python module
+Manage CB-Geo MPM simulations using PyCBG Python module
 
 positional arguments:
-  PYCBG_SCRIPT          pycbg script to be run. By default, the following import lines are added at the top of the file: `from pycbg.preprocessing import *`, `from pycbg.postprocessing import *`. To
-                        deactivate this behaviour, use the -n (or --no-import) option
+  PYCBG_SCRIPT          pycbg script to be run. By default, the following import lines are added at the top of the file: `from pycbg.preprocessing import *`, `from pycbg.postprocessing import *` and
+                        `from pycbg.MPMxDEM import *`. To deactivate this behaviour, use the -n (or --no-import) option
 
 optional arguments:
   -h, --help            show this help message and exit
   -v, --version         print pycbg version
+  -p, --pip-show        alias for `pip show pycbg`
   -i, --interactive     run in an interactive IPython session. Using both the -i and -n options simply creates a IPython interactive session
-  -n, --no-import       deactivates automatic import of pycbg when running PYCBG_SCRIPT
+  -n, --no-import       deactivates automatic import of pycbg
   -d [BUILD_DIR], --build-doc [BUILD_DIR]
-                        build pycbg's documentation in BUILD_DIR, its path being relative to the current working directory. If the directory already exists, it is removed without prompt before building
-                        the doc. If BUILD_DIR isn't specified, it will be set to `${PWD}/pycbg_doc`. If -d and PYCBG_SCRIPT are specified, the documentation is build before running the script
+                        build pycbg's documentation in BUILD_DIR, its path being relative to the current working directory. If BUILD_DIR isn't specified, it will be set to `${PWD}/pycbg_doc`. If
+                        BUILD_DIR is `..`, it is set to `../pycbg_doc`. If -d and PYCBG_SCRIPT are specified, the documentation is build before running the script
+
+$ pycbg-gif -h
+usage: pycbg-gif [-h] [-c [COLOR_VAR]] [-l [COLOR_LABEL]] [-o [OUTPUT_FILE]] [-j [N_JOBS]] [SIMULATION_DIR] [PROJECTION_PLANE]
+
+Make a gif of material points' positions for the given simulation
+
+positional arguments:
+  SIMULATION_DIR        Path to the simulation's directory to be plotted
+  PROJECTION_PLANE      Plane on which to project material points' positions. For instance, `1,2` will project positions on the (y,z) plane.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -c [COLOR_VAR], --colored-by [COLOR_VAR]
+                        Variable to use for material points' coloring. All variables in the csv results files are available, their name being their column's header. Can be a comma-separated list of
+                        several variables. If not provided, all material points are black.
+  -l [COLOR_LABEL], --color-label [COLOR_LABEL]
+                        Label for colorbar, can be a latex expression. If a list of variables was specified with the c option, then it should be a comma-separated list of labels. Default to variables'
+                        names.
+  -o [OUTPUT_FILE], --output-file [OUTPUT_FILE]
+                        Path of the output file, without the '.gif' extension. If a list of variables was specified with the -c option, all file are suffixed with the name of the coloring variable.
+                        Default is 'video'.
+  -j [N_JOBS], --parallel-jobs [N_JOBS]
+                        Number of cores to use. Default to 1.
 ```
 
 ## Usage
@@ -90,6 +114,13 @@ To get the installed version of PyCBG, simply run:
 $ pycbg -v
 v1.0.2+107.g3997bd9
 ```
+
+## Make GIFs of material point's positions
+A GIF of the material points' positions can be made using the `pycbg-gif` command. Each material point can be colored by any variable in the csv files. For instance:
+```console
+$ pycbg-gif sims_dir 0,2 -c stress_zz,volume -l '$\sigma_{zz}$',V
+```
+Note that latex strings should be escaped.
 
 Documentation
 =============

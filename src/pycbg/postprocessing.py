@@ -425,7 +425,7 @@ def make_gif(figures, filename="video.gif", max_size=(1000, 1000), pil_save_kwar
         p.starmap(_thumbnail_wrapper, [(im, max_size) for im in all_images])
     else: 
         all_images = list(map(_convert_mpl_to_pil, figures))
-        map(thumbnail_wrapper, all_images)
+        map(_thumbnail_wrapper, all_images)
     
     all_images = [_convert_mpl_to_pil(fig) for fig in figures]
     for im in all_images: im.thumbnail(max_size, Image.ANTIALIAS)

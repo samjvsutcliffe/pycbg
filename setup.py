@@ -37,7 +37,8 @@ setuptools.setup(
     packages=setuptools.find_packages(where="src"),
     entry_points ={
             'console_scripts': [
-                'pycbg = pycbg.command_line_script:main'
+                'pycbg = pycbg.command_line_script:main',
+                'pycbg-gif = pycbg.command_line_script_plot:main'
             ]
         }
 )

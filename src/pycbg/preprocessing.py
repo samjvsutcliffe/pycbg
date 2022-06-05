@@ -610,6 +610,96 @@ class Materials():
                                "residual_dilation": residual_dilation,
                                "residual_cohesion": residual_cohesion,
                                "residual_pdstrain": residual_pdstrain})
+    
+    def create_NorSand(self, pset_id=0, density=2e3,
+                                        poisson_ratio=.17,
+                                        reference_pressure=1e5,
+                                        friction_cs=27.,
+                                        N=.3,
+                                        lmbda=.3,
+                                        kappa=.08,
+                                        gamma=1.,
+                                        chi=3.5,
+                                        hardening_modulus=2e2,
+                                        void_ratio_initial=.38,
+                                        p_image_initial=3e6,
+                                        bond_model=False,
+                                        p_cohesion_initial=1.2e4,
+                                        p_dilation_initial=2.4e4,
+                                        m_cohesion=1e1,
+                                        m_dilation=1.,
+                                        m_modulus=1e2,
+                                        tolerance=None):
+        """Create a `NorSand material <https://mpm.cb-geo.com/#/theory/material/norsand>`_.
+
+        Parameters
+        ----------
+        pset_id : int or list of ints
+            Particle set id that will be made of this material
+        density : float
+            Initial density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
+        poisson_ratio : float
+            Poisson's ratio of the material. Default is 0.3 .
+        reference_pressure : float
+            Reference pressure (:math:`Pa`). Default is atmospheric pressure, 100 :math:`kPa`.
+        friction_cs : float
+            Critical state friction angle used to compute M (:math:`^\circ`). Default is 27 :math:`^\circ`.
+        N : float
+            Volumetric coupling (dilatancy) parameter. Default is 0.3 .
+        lmbda : float
+            Virgin compression index. Default is 0.3 .
+        kappa : bool
+            Swell/recompression index. Default to 0.08 .
+        chi : float
+            Dilatancy coefficient. Default is 3.5 .
+        hardening_modulus : float
+            (Minimun ?) hardening modulus (:math:`Pa`). Default is 200 :math:`Pa`.
+        void_ratio_initial : float
+            Initial void ratio. Default is 0.38 .
+        p_image_initial : float
+            Intersection between the yield surface and the critical state line (:math:`Pa`). Default is 3 :math:`GPa`.
+        bond_model : bool, optional
+            Enable bond model. Default is False.
+        p_cohesion_initial : float, optional
+            Initial cohesive pressure for the bond (:math:`Pa`). Default is 120 :math:`kPa`.
+        p_dilation_initial : float, optional
+            Initial dilation pressure for the bond (:math:`Pa`). Default is 200 :math:`kPa`.
+        m_cohesion : float, optional
+            Cohesive degradation. Default is 10 .
+        m_dilation : float, optional
+            Dilative degradation. Default is 1 .
+        m_modulus : float, optional
+            Bonded modulus effects of the cohesion and dilation. Default is 100 .
+        tolerance : float, optional
+            Optional tolerance value for computations such as yield condition, set default as machine epsilon .
+        """
+        self.pset_ids.append(pset_id)
+        self.materials.append({"id": len(self.materials),
+                               "type": "NorSand{:d}D".format(self.n_dims),
+                               "density": density,
+                               "reference_pressure": reference_pressure,
+                               "poisson_ratio": poisson_ratio,
+                               "friction_cs": friction_cs,
+                               "N": N,
+                               "lambda": lmbda,
+                               "kappa": kappa,
+                               "gamma": gamma,
+                               "chi": chi,
+                               "hardening_modulus": hardening_modulus,
+                               "void_ratio_initial": void_ratio_initial,
+                               "p_image_initial": p_image_initial,
+                               "bond_model": bond_model
+        })
+        if bond_model: self.materials[-1].update({
+                               "p_cohesion_initial": p_cohesion_initial,
+                               "p_dilation_initial": p_dilation_initial,
+                               "m_cohesion": m_cohesion,
+                               "m_dilation": m_dilation,
+                               "m_modulus": m_modulus,
+        })
+        if tolerance is not None: self.materials[-1].update({
+                               "tolerance": tolerance
+        })
 
     def create_LinearElastic(self, pset_id=0, density=1e3,
                                               youngs_modulus=5e7,

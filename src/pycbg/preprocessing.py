@@ -1018,7 +1018,7 @@ class Simulation():
                            "mpm_scheme": mpm_scheme,
                            "locate_particles": locate_particles,
                            "dt": dt,
-                           "damping": {"type": "Cundall", "damping_factor": damping},
+                           "damping": damping,
                            "velocity_update": velocity_update,
                            "nsteps": int(nsteps),
                            "verbosity": int(verbosity)}

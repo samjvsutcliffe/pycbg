@@ -190,7 +190,10 @@ def load_batch_results(directory, fail_flag=True):
     header = lines[0][:-1].split("\t")
     sims = []
     for line in lines[1:]:
-        sl = [float(i) for i in line.split("\t")]
+        sl = []
+        for i in line.split("\t"):
+            try: sl.append(float(i))
+            except ValueError: sl.append(i.strip("\n"))
         dic = {}
         for key, val in zip(header, sl) : dic[key] = val
         

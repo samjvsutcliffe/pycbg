@@ -1213,7 +1213,7 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
         if set_executable: 
             batch_launcher_file.write("""until [ "$n_sim_slot_available" -gt "0" ] \ndo\n\tsleep 0.1\n\t. /tmp/n_sim_slot_available.sh\ndone\n""")
             batch_launcher_file.write("""n_sim_slot_available=$((--n_sim_slot_available)); echo "n_sim_slot_available=$n_sim_slot_available" > /tmp/n_sim_slot_available.sh \n""")
-            batch_launcher_file.write("""( echo "$(date):\tStarting {:}\n"; {:}{:} -f "$(pwd)/" -i {:}input_file.json >> {:}cbgeo.log; echo "$(date):\tFinished {:}\n"; . /tmp/n_sim_slot_available.sh; n_sim_slot_available=$((++n_sim_slot_available)); echo "n_sim_slot_available=$n_sim_slot_available" > /tmp/n_sim_slot_available.sh ) &\n""".format(sim_title, cbgeo_executable, cores_str, sim_dir, sim_dir, sim_title))
+            batch_launcher_file.write("""( echo "$(date):\tStarting {:}"; {:}{:} -f "$(pwd)/" -i {:}input_file.json >> {:}cbgeo.log; echo "$(date):\tFinished {:}"; . /tmp/n_sim_slot_available.sh; n_sim_slot_available=$((++n_sim_slot_available)); echo "n_sim_slot_available=$n_sim_slot_available" > /tmp/n_sim_slot_available.sh ) &\n""".format(sim_title, cbgeo_executable, cores_str, sim_dir, sim_dir, sim_title))
 
     table_file.close()
     if set_executable: batch_launcher_file.close()

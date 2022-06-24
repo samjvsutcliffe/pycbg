@@ -3,6 +3,7 @@ import multiprocessing
 import numpy as np
 import itertools as it  
 import __main__ as main
+from pycbg import __version__ as pycbg_version
 
 class Mesh():
     """Create and write to a file a mesh using gmsh.
@@ -1187,7 +1188,8 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
         batch_launcher_file.write("#!/bin/bash\n\n")
         batch_launcher_file.write("""n_sim_slot_available="{:d}"\necho "n_sim_slot_available=$n_sim_slot_available" > /tmp/n_sim_slot_available.sh\n\n""".format(n_simultaneous_sim))
 
-        batch_launcher_file.write("""echo -e "\e[90m$(date +'[%Y-%m-%d %T.%N]')\e[0m\nStarting batch from directory {:}\n"\n\n""".format(directory))
+        batch_launcher_file.write("""echo -e "\e[90m$(date +'[%Y-%m-%d %T.%N]')\e[0m\tStarting batch from directory {:}"\n\n""".format(directory))
+        batch_launcher_file.write("""echo -e "\tPyCBG version: {:}\n\tNumber of CPUs to be used: {:d}\n\tNumber of CPUs per job: {:d}\n"\n\n""".format(pycbg_version, ncores, ncores_perjob))
         batch_launcher_file.write("""startT=$(date +%s)\n\n""")
 
     for sim_id, param_set in enumerate(param_sets):
@@ -1215,7 +1217,7 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
         if set_executable: 
             batch_launcher_file.write("""until [ "$n_sim_slot_available" -gt "0" ] \ndo\n\tsleep 0.1\n\t. /tmp/n_sim_slot_available.sh\ndone\n""")
             batch_launcher_file.write("""n_sim_slot_available=$((--n_sim_slot_available)); echo "n_sim_slot_available=$n_sim_slot_available" > /tmp/n_sim_slot_available.sh \n""")
-            batch_launcher_file.write("""( echo -e "\e[90m$(date +'[%Y-%m-%d %T.%N]')\e[0m\tStarting {:}"; {:}{:} -f "$(pwd)/" -i {:}input_file.json >> {:}cbgeo.log; echo -e "\e[90m$(date +'[%Y-%m-%d %T.%N]')\e[0m\tFinished {:}"; . /tmp/n_sim_slot_available.sh; n_sim_slot_available=$((++n_sim_slot_available)); echo "n_sim_slot_available=$n_sim_slot_available" > /tmp/n_sim_slot_available.sh ) &\n""".format(sim_title, cbgeo_executable, cores_str, sim_dir, sim_dir, sim_title))
+            batch_launcher_file.write("""( startT{:}=$(date +%s); echo -e "\e[90m$(date +'[%Y-%m-%d %T.%N]')\e[0m\tStarting {:};\tlog file: {:}"; {:}{:} -f "$(pwd)/" -i {:}input_file.json >> {:}cbgeo.log; echo -e "\e[90m$(date +'[%Y-%m-%d %T.%N]')\e[0m\tFinished {:};\tduration: $(date -u --date @$(( $(date +%s) - $startT{:} )) +%H:%M:%S)"; . /tmp/n_sim_slot_available.sh; n_sim_slot_available=$((++n_sim_slot_available)); echo "n_sim_slot_available=$n_sim_slot_available" > /tmp/n_sim_slot_available.sh ) &\n""".format(sim_title, sim_title, sim_dir+"cbgeo.log", cbgeo_executable, cores_str, sim_dir, sim_dir, sim_title, sim_title))
 
     table_file.close()
     if set_executable: 

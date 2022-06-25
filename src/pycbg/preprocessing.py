@@ -5,6 +5,15 @@ import itertools as it
 import __main__ as main
 from pycbg import __version__ as pycbg_version
 
+_ED2Q36BS_nodes = {
+            0 :(-2,-2), 1 :(-1,-2), 2 :(0,-2), 3 :(1,-2), 4 :(2,-2), 5 :(3,-2),
+            6 :(-2,-1), 7 :(-1,-1), 8 :(0,-1), 9 :(1,-1), 10:(2,-1), 11:(3,-1),
+            12:(-2, 0), 13:(-1, 0), 14:(0, 0), 15:(1, 0), 16:(2, 0), 17:(3, 0),
+            18:(-2, 1), 19:(-1, 1), 20:(0, 1), 21:(1, 1), 22:(2, 1), 23:(3, 1),
+            24:(-2, 2), 25:(-1, 2), 26:(0, 2), 27:(1, 2), 28:(2, 2), 29:(3, 2),
+            30:(-2, 3), 31:(-1, 3), 32:(0, 3), 33:(1, 3), 34:(2, 3), 35:(3, 3)
+        }
+
 class Mesh():
     """Create and write to a file a mesh using gmsh.
 
@@ -35,7 +44,7 @@ class Mesh():
         Dimensions of the mesh (``self.l0, self.l1, self.l2 = self.dimensions``).
     ncells : tuple of ints
         Number of cells in each direction.
-    nc1, nc2, nc3 : ints
+    nc0, nc1, nc2 : ints
         Number of cells in each direction (``self.nc0, self.nc1, self.nc2 = self.ncells``).
     origin : tuple of floats
         Origin of the mesh.
@@ -43,7 +52,7 @@ class Mesh():
         Directory in which the mesh file will be saved.
     check_duplicates : bool
         See CB-Geo documentation.
-    cell_type : {'ED3H8', 'ED3H20', 'ED3H64G', 'ED2Q4', 'ED2Q8', 'ED2Q9', 'ED2Q16G'}
+    cell_type : {'ED3H8', 'ED3H20', 'ED3H64G', 'ED2Q4', 'ED2Q8', 'ED2Q9', 'ED2Q16G', 'ED2Q36BS'}
         Type of cell. 
     n_dims : int
         Number of dimensions (2 for 2D and 3 for 3D), automatically determined from the cell type.
@@ -77,7 +86,8 @@ class Mesh():
         elif cell_type=='ED2Q8': self.nn_percell, self.n_dims = 8, 2
         elif cell_type=='ED2Q9': self.nn_percell, self.n_dims = 9, 2
         elif cell_type=='ED2Q16G': self.nn_percell, self.n_dims = 16, 2
-        else : raise ValueError("cell_type is set to '{:}' while it should be one of the following: 'ED3H8', 'ED3H20', 'ED3H64G', 'ED2Q4', 'ED2Q8', 'ED2Q9' or 'ED2Q16G'".format(cell_type))
+        elif cell_type=='ED2Q36BS': self.nn_percell, self.n_dims = 36, 2
+        else : raise ValueError("cell_type is set to '{:}' while it should be one of the following: 'ED3H8', 'ED3H20', 'ED3H64G', 'ED2Q4', 'ED2Q8', 'ED2Q9', 'ED2Q16G' or 'ED2Q36BS'".format(cell_type))
         
         self.set_parameters(dimensions, ncells, origin)
         if directory == '' : directory = './'
@@ -116,7 +126,7 @@ class Mesh():
         elif self.n_dims==3: 
             self.l0, self.l1, self.l2 = dimensions
             self.nc0, self.nc1, self.nc2 = ncells
-        else: raise RuntimeError("Number of dimensions coulnd't be detected, please check `cell_type` is correctly set.")
+        else: raise RuntimeError("Number of dimensions coulnd't be detected, please check if `cell_type` is correctly set.")
 
         self.origin = origin
 
@@ -134,7 +144,7 @@ class Mesh():
         
         if self.n_dims==2: origin = list(self.origin) + [0]
         elif self.n_dims==3: origin = list(self.origin)
-        else: raise RuntimeError("Number of dimensions coulnd't be detected, please check `cell_type` is correctly set.")
+        else: raise RuntimeError("Number of dimensions coulnd't be detected, please check if `cell_type` is correctly set.")
 
 
         p = gmsh.model.geo.addPoint(*origin)
@@ -198,10 +208,27 @@ class Mesh():
                 fil.write(out_line)
             for line in lines[start_ele:end_ele]: 
                 sl = line.split(' ')
-                self.cells.append([int(float(node)-1) for node in sl[-self.nn_percell:]])
+                if self.cell_type=="ED2Q36BS": 
+                    cell_nodes = [int(float(node)-1) for node in sl[-4:]]
+                    local_nodes = [-1]*36 # With CB-Geo's numbering
+                    
+                    steps = [self.l0/self.nc0, self.l1/self.nc1]
+                    ref_node = self.nodes[cell_nodes[0]]
+
+                    for iloc, nsteps in _ED2Q36BS_nodes.items():
+                        current_node = [round(x+n*step, 10) for x,n,step in zip(ref_node, nsteps, steps)]
+                        # print(current_node)
+                        if current_node in self.nodes: local_nodes[iloc] = self.nodes.index(current_node)
+                    
+                    self.cells.append(local_nodes)
+                    print(len(local_nodes))
+
+                else: self.cells.append([int(float(node)-1) for node in sl[-self.nn_percell:]])
+                
                 out_line = ""
-                for node in sl[-self.nn_percell:-1]: out_line += str(int(float(node)-1)) + " "
-                out_line += str(int(float(sl[-1])-1)) + "\n"
+                for node in self.cells[-1]: out_line += str(node) + " "
+                out_line = out_line[:-1] + "\n"
+                # print(out_line)
                 fil.write(out_line)
 
     def __reset_params(self):

@@ -7,11 +7,11 @@ from pycbg import __version__ as pycbg_version
 
 _ED2Q36BS_nodes = {
             0 :(-2,-2), 1 :(-1,-2), 2 :(0,-2), 3 :(1,-2), 4 :(2,-2), 5 :(3,-2),
-            6 :(-2,-1), 7 :(-1,-1), 8 :(0,-1), 9 :(1,-1), 10:(2,-1), 11:(3,-1),
+            11 :(-2,-1), 10 :(-1,-1), 9 :(0,-1), 8 :(1,-1), 7:(2,-1), 6:(3,-1),
             12:(-2, 0), 13:(-1, 0), 14:(0, 0), 15:(1, 0), 16:(2, 0), 17:(3, 0),
-            18:(-2, 1), 19:(-1, 1), 20:(0, 1), 21:(1, 1), 22:(2, 1), 23:(3, 1),
+            23:(-2, 1), 22:(-1, 1), 21:(0, 1), 20:(1, 1), 19:(2, 1), 18:(3, 1),
             24:(-2, 2), 25:(-1, 2), 26:(0, 2), 27:(1, 2), 28:(2, 2), 29:(3, 2),
-            30:(-2, 3), 31:(-1, 3), 32:(0, 3), 33:(1, 3), 34:(2, 3), 35:(3, 3)
+            35:(-2, 3), 34:(-1, 3), 33:(0, 3), 32:(1, 3), 31:(2, 3), 30:(3, 3)
         }
 
 class Mesh():
@@ -217,11 +217,9 @@ class Mesh():
 
                     for iloc, nsteps in _ED2Q36BS_nodes.items():
                         current_node = [round(x+n*step, 10) for x,n,step in zip(ref_node, nsteps, steps)]
-                        # print(current_node)
                         if current_node in self.nodes: local_nodes[iloc] = self.nodes.index(current_node)
                     
                     self.cells.append(local_nodes)
-                    print(len(local_nodes))
 
                 else: self.cells.append([int(float(node)-1) for node in sl[-self.nn_percell:]])
                 
@@ -339,7 +337,9 @@ class Particles():
         if automatic_generation == "pycbg":
             self.type = "file"
             for ie, e in enumerate(mesh.cells):
-                coors = np.array([mesh.nodes[i] for i in e])
+                if mesh.cell_type=="ED2Q36BS": cell_nodes = [e[i] for i in [14, 15, 20, 21]]
+                else: cell_nodes = e
+                coors = np.array([mesh.nodes[i] for i in cell_nodes])
                 mins, maxs = coors.min(axis=0), coors.max(axis=0)
                 step = (maxs-mins)/(npart_perdim_percell)
                 poss = [mins + step*(.5+i) for i in range(npart_perdim_percell)]

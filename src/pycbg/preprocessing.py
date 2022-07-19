@@ -1196,7 +1196,7 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
             else: script_b.append(line)
     if insert_flag: script_b, script_a = script_a, []
     
-    table_file = open(directory + "parameters_sets.table", "w")
+    table_file = open(directory + "parameters_set.table", "w")
     header = "sim_id"
     if type(params) == list : 
         for key in params[0].keys(): header += "\t" + key

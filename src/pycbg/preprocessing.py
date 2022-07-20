@@ -226,7 +226,6 @@ class Mesh():
                 out_line = ""
                 for node in self.cells[-1]: out_line += str(node) + " "
                 out_line = out_line[:-1] + "\n"
-                # print(out_line)
                 fil.write(out_line)
 
     def __reset_params(self):
@@ -1042,11 +1041,15 @@ class Simulation():
         """
         try: detected_type = 'MPMExplicit{:d}D'.format(self.mesh.n_dims)
         except: detected_type = type
+        if _type(damping) == float: damping_param = {"type": "Cundall", "damping_factor": damping}
+        elif _type(damping) == dict: damping_param = damping
+        else: raise ValueError("`damping` parameter wasn't correctly set, please check your script")
+
         self.analysis_params = {"type": detected_type,
                            "mpm_scheme": mpm_scheme,
                            "locate_particles": locate_particles,
                            "dt": dt,
-                           "damping": damping,
+                           "damping": damping_param,
                            "velocity_update": velocity_update,
                            "nsteps": int(nsteps),
                            "verbosity": int(verbosity)}
@@ -1252,3 +1255,5 @@ def setup_batch(script_path, params, directory='', cbgeo_executable=None, ncores
         batch_launcher_file.close()
     sys.exit()
 
+def _type(*args, **kwargs): # Just so the variable name "type" can be used as function argument, and still keep access to the "type" built-in function
+    return type(*args, **kwargs)

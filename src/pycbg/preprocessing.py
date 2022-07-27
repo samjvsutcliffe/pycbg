@@ -877,7 +877,7 @@ class Simulation():
         entity_set : int
             Id of the entity set on which the velocity is imposed.
         typ : {"node", "particle"}, optional
-            Type of set on which the velocity is imposed. Default is "particle".
+            Type of set on which the velocity is imposed. Default is "node".
         math_function_id : int, optional
             Id of the math function to use. Default value is `None` (the velocity is then constant).
         """
@@ -944,7 +944,7 @@ class Simulation():
         entity_set : int
             Id of the entity set on which the velocity is imposed.
         typ : {"node", "particle"}, optional
-            Type of set on which the velocity is imposed. Default is "particle".
+            Type of set on which the force is imposed. Default is "node".
         math_function_id : int, optional
             Id of the math function to use. Default value is `None` (the load is then static).
         """

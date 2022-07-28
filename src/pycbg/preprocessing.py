@@ -1041,7 +1041,7 @@ class Simulation():
         """
         try: detected_type = 'MPMExplicit{:d}D'.format(self.mesh.n_dims)
         except: detected_type = type
-        if _type(damping) == float: damping_param = {"type": "Cundall", "damping_factor": damping}
+        if _type(damping) == float or _type(damping) == int: damping_param = {"type": "Cundall", "damping_factor": damping}
         elif _type(damping) == dict: damping_param = damping
         else: raise ValueError("`damping` parameter wasn't correctly set, please check your script")
 

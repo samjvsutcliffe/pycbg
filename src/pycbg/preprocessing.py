@@ -877,7 +877,7 @@ class Simulation():
         entity_set : int
             Id of the entity set on which the velocity is imposed.
         typ : {"node", "particle"}, optional
-            Type of set on which the velocity is imposed. Default is "particle".
+            Type of set on which the velocity is imposed. Default is "node".
         math_function_id : int, optional
             Id of the math function to use. Default value is `None` (the velocity is then constant).
         """
@@ -944,7 +944,7 @@ class Simulation():
         entity_set : int
             Id of the entity set on which the velocity is imposed.
         typ : {"node", "particle"}, optional
-            Type of set on which the velocity is imposed. Default is "particle".
+            Type of set on which the force is imposed. Default is "node".
         math_function_id : int, optional
             Id of the math function to use. Default value is `None` (the load is then static).
         """
@@ -1024,7 +1024,7 @@ class Simulation():
         mpm_scheme : {'usf', 'usl', 'musl'}, optional
             MPM scheme for the stress update. The scheme can be "Update Stress First" ('usf'), "Update Stress Last" ('usl') or "Modified Update Stress Last" ('musl').
         damping : float, optional
-            Cundall's damping. Should verify : ``0 <= damping < 1``. Default is 0.05 .
+            Cundall's damping. Should verify : ``0. <= damping < 1``. Default is 0.05 .
         locate_particles : bool, optional
             Stops the simulation when particles go outside the mesh if `True`. Default is `False`.
         dt : float, optional
@@ -1043,7 +1043,7 @@ class Simulation():
         except: detected_type = type
         if _type(damping) == float or _type(damping) == int: damping_param = {"type": "Cundall", "damping_factor": damping}
         elif _type(damping) == dict: damping_param = damping
-        else: raise ValueError("`damping` parameter wasn't correctly set, please check your script")
+        else: raise ValueError("`damping` parameter wasn't correctly set: it has to be a float or a dictionnary, please check your script")
 
         self.analysis_params = {"type": detected_type,
                            "mpm_scheme": mpm_scheme,

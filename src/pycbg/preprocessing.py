@@ -996,10 +996,13 @@ class Simulation():
         init_volumes : numpy array
             Initial volumes for each particle. Noting `npart` the number of particles, it should have the shape ``(npart, 1)``.
         """
-        self.init_volumes = init_volumes
+        if len(init_volumes.shape)>1:
+            if len(init_volumes.shape)>2 or init_volumes.shape[1]>1: raise ValueError("Volumes should be a 1D array, please check your inputs")
+            else: self.init_volumes = init_volumes.reshape(init_volumes.shape[0]) 
+        else: self.init_volumes = init_volumes
 
         psfile = open(self.__init_volumes_filename, "w") 
-        for i, ps in enumerate(init_volumes): psfile.write("{:d}\t{:e}\n".format(i, ps)) 
+        for i, ps in enumerate(self.init_volumes): psfile.write("{:d}\t{:e}\n".format(i, ps)) 
 
     
     def set_gravity(self, gravity): 

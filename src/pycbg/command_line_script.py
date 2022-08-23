@@ -51,7 +51,9 @@ def main():
         print("Welcome to PyCBG \033[0;32m{:}\033[0m !".format(_version.get_versions()['version'])) 
         print("PyCBG's documentation can be accessed either locally by building it with the \033[0;35mpycbg -d\033[0m command, or at \033[0;36mhttps://pycbg.readthedocs.io/en/latest/\033[0m\n")
         from IPython.terminal.embed import InteractiveShellEmbed
+
         ipshell = InteractiveShellEmbed()
+        ipshell.enable_matplotlib()
 
         if not args.import_pycbg and not hasattr(args, "script"): 
             exec("from pycbg.preprocessing import *\nfrom pycbg.postprocessing import *\nfrom pycbg.MPMxDEM import *", globals())

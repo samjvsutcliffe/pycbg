@@ -755,7 +755,7 @@ class Simulation():
     init_velocities : numpy array
         Initial velocities for each particle. Noting `npart` the number of particles, its shape is ``(npart, 3)``.
     init_volumes : numpy array
-        Initial volume for each particle. Noting `npart` the number of particles, its shape is ``(npart, 1)``.
+        Initial volume for each particle. Noting `npart` the number of particles, its shape is ``(npart,)``.
     input_filename : str
         Path to the CB-Geo MPM json input file to create, the extension '.json' is automatically added.. If `directory='.'`, the title of the simulation is automatically added before the user-specified filename. Default is 'input_file' in `directory`.
     gravity : list of floats
@@ -994,10 +994,10 @@ class Simulation():
         Parameters
         ----------
         init_volumes : numpy array
-            Initial volumes for each particle. Noting `npart` the number of particles, it should have the shape ``(npart, 1)``.
+            Initial volumes for each particle. Noting `npart` the number of particles, it should have a ``(npart, 1)`` or ``(npart,)`` shape.
         """
         if len(init_volumes.shape)>1:
-            if len(init_volumes.shape)>2 or init_volumes.shape[1]>1: raise ValueError("Volumes should be a 1D array, please check your inputs")
+            if len(init_volumes.shape)>2 or init_volumes.shape[1]>1: raise ValueError("Incorrect shape for given volumes array, please check your inputs with respect to documentation")
             else: self.init_volumes = init_volumes.reshape(init_volumes.shape[0]) 
         else: self.init_volumes = init_volumes
 

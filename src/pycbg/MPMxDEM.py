@@ -1,4 +1,4 @@
-import sys, os, warnings
+import sys, os, warnings, inspect
 import glob as gb, pickle, numpy as np, itertools as it
 from matplotlib import use
 import pycbg
@@ -6,6 +6,9 @@ import pycbg
 ## Beware, anything defined globally in this module (except variable whose names are in the no_auto_import list) is also imported in the main script (the one importing this module) upon calling __update_imports (which is called by several functions of this module)
 
 no_auto_import = ["glob", "rve_directory", "pycbg_sim", "yade_sha1"]
+
+#script_dir = os.path.dirname(os.path.realpath(__file__))
+os.chdir(inspect.stack()[-1].filename.rsplit("/", 1)[0]) # not sure about portability to other systemsz
 
 # Initialise glob dictionary
 glob = set(globals())
@@ -124,7 +127,7 @@ class DefineCallable():
     save_final_state : bool
         Wether or not to save the RVE final state in a ".{SHA1}yade.bz2" file, where "{SHA1}" is git's last commit SHA1 of YADE. Default is `False`.
     rve_id : int
-        The 'particle_id' of the current RVE, as numbered by CB-Geo. Before the first call of the object by CB-Geo, `rve_id=nan`, it is set to the actual particle id right before callin `run_on_setup`.
+        The 'particle_id' of the current RVE, as numbered by CB-Geo. Before the first call of the object by CB-Geo, `rve_id=nan`, it is set to the actual particle id right before calling `run_on_setup`.
     rve_directory : str
         Path to the directory containing all RVEs data (samples, vtk files, ...), which is a subdirectory of PyCBG's simulation directory.
     pycbg_sim : :class:`~pycbg.preprocessing.Simulation` object

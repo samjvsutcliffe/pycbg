@@ -8,7 +8,7 @@ import pycbg
 no_auto_import = ["glob", "rve_directory", "pycbg_sim", "yade_sha1"]
 
 #script_dir = os.path.dirname(os.path.realpath(__file__))
-os.chdir(inspect.stack()[-1].filename.rsplit("/", 1)[0]) # not sure about portability to other systemsz
+#os.chdir(inspect.stack()[-1].filename.rsplit("/", 1)[0]) # not sure about portability to other systemsz
 
 # Initialise glob dictionary
 glob = set(globals())

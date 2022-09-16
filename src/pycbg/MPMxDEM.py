@@ -223,7 +223,8 @@ class DefineCallable():
         for i in range(int(n_dem_iter)): 
             if self.flip_cell_period>0: 
                 if O.iter % self.flip_cell_period == 0:
-                    if flipCell()!=Matrix3(0,0,0, 0,0,0, 0,0,0): self.flip_count += 1
+                    O.cell.flipCell()
+                    self.flip_count += 1
             O.step()
         
         # Finnish the MPM iteration

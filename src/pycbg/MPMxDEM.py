@@ -205,7 +205,7 @@ class DefineCallable():
             if self.vtk_period!=0: O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=self.vtk_period)]
 
             ## Measure initial stress
-            if not self.use_gravity: sigma0 = getStress(*self._get_getStress_args(self.inertial))
+            if not self.use_gravity: sigma0 = getStress(*_get_getStress_args(self.inertial))
             else:
                 ### If gravity is used, the sample global stress has to be computed manually, a list of particles and walls are thus
                 _get_bodies_walls()
@@ -247,7 +247,7 @@ class DefineCallable():
         
         # Finnish the MPM iteration
         mpm_iteration += 1
-        if not self.use_gravity: new_stress = getStress(*self._get_getStress_args(self.inertial))
+        if not self.use_gravity: new_stress = getStress(*_get_getStress_args(self.inertial))
         else: new_stress = _getStress_gravity()
         dsigma = new_stress - sigma0
         sigma0 = new_stress

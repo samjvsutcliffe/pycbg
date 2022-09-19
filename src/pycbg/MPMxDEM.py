@@ -100,7 +100,7 @@ class DefineCallable():
     dem_strain_rate : float or None
         Strain rate applied to the RVE. If `None`, the MPM strain rate is used.
     inertial : bool
-        Wether or not to account for inertial effects when computing the stress tensor global to the RVE. This feature was introduced in a custom YADE version (6c1164b2b), use false if your version doesn't support it. 
+        Wether or not to account for inertial effects when computing the stress tensor global to the RVE. This feature was introduced in a custom YADE version (6c1164b2b), use false if your version doesn't support it. Default is False.
     run_on_setup : callable or None
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
     vtk_period : int
@@ -156,7 +156,7 @@ class DefineCallable():
         The time during which the deformation increment has been applied to the RVE. It is initialized at np.nan and is updated as soon as it is computed (right before using it).  
     """
 
-    def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False, flip_cell_period=0, use_gravity=False): 
+    def __init__(self, dem_strain_rate, inertial=False, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False, flip_cell_period=0, use_gravity=False): 
         self.dem_strain_rate = dem_strain_rate
         self.run_on_setup = run_on_setup
         self.vtk_period = vtk_period
@@ -176,6 +176,7 @@ class DefineCallable():
         self.dstrain = np.zeros((3,3))
         self.dstress = np.zeros((3,3))
         self.deformation_time = np.nan
+        self.inertial = inertial
 
     def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
         global sigma0

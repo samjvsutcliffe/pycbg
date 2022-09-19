@@ -7,7 +7,6 @@ import pycbg
 
 no_auto_import = ["glob", "rve_directory", "pycbg_sim", "yade_sha1"]
 
-tmp_quasistat = True
 #script_dir = os.path.dirname(os.path.realpath(__file__))
 #os.chdir(inspect.stack()[-1].filename.rsplit("/", 1)[0]) # not sure about portability to other systemsz
 
@@ -100,6 +99,8 @@ class DefineCallable():
     ----------
     dem_strain_rate : float or None
         Strain rate applied to the RVE. If `None`, the MPM strain rate is used.
+    inertial : bool
+        Wether or not to account for inertial effects when computing the stress tensor global to the RVE. This feature was introduced in a custom YADE version (6c1164b2b), use false if your version doesn't support it. 
     run_on_setup : callable or None
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
     vtk_period : int
@@ -143,12 +144,16 @@ class DefineCallable():
         Wether or not to compute the DEM cell's global stress considering gravity
     mpm_dt : float
         The MPM time step for the current simulation
+    dem_dt : float
+        The initial DEM time step, the one stored in in `O.dt` when the current object (`DefineCallable`) was created. It is required in the background in the eventuality where the RVE deformation time is lower than the initial DEM time step.
     mpm_iter : int
         The current MPM iteration
     dstrain : numpy array of shape (3,3)
         Strain increment for the current MPM iteration
     dstress : numpy array of shape (3,3)
         Stress increment for the current MPM iteration
+    deformation_time : float
+        The time during which the deformation increment has been applied to the RVE. It is initialized at np.nan and is updated as soon as it is computed (right before using it).  
     """
 
     def __init__(self, dem_strain_rate, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False, flip_cell_period=0, use_gravity=False): 
@@ -170,6 +175,7 @@ class DefineCallable():
         self.dem_dt = O.dt
         self.dstrain = np.zeros((3,3))
         self.dstress = np.zeros((3,3))
+        self.deformation_time = np.nan
 
     def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
         global sigma0
@@ -199,7 +205,7 @@ class DefineCallable():
             if self.vtk_period!=0: O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=self.vtk_period)]
 
             ## Measure initial stress
-            if not self.use_gravity: sigma0 = getStress(O.cell.volume, tmp_quasistat)
+            if not self.use_gravity: sigma0 = getStress(*self._get_getStress_args(self.inertial))
             else:
                 ### If gravity is used, the sample global stress has to be computed manually, a list of particles and walls are thus
                 _get_bodies_walls()
@@ -226,6 +232,7 @@ class DefineCallable():
         #n_dem_iter = -(-deformation_time//O.dt) if deformation_time>O.dt else 1
         deformation_time = n_dem_iter * O.dt # increase a little deformation_time so the number of iteration is exactly an integer
 #        print("Deformation time: ", deformation_time, flush=True)
+        self.deformation_time = deformation_time
 
         # Compute the velocity gradient, assuming no rotation
         O.cell.velGrad = dstrain_matrix / deformation_time
@@ -240,7 +247,7 @@ class DefineCallable():
         
         # Finnish the MPM iteration
         mpm_iteration += 1
-        if not self.use_gravity: new_stress = getStress(O.cell.volume, tmp_quasistat)
+        if not self.use_gravity: new_stress = getStress(*self._get_getStress_args(self.inertial))
         else: new_stress = _getStress_gravity()
         dsigma = new_stress - sigma0
         sigma0 = new_stress
@@ -293,3 +300,5 @@ def _getStress_gravity():
             for j, xj in enumerate(x): sigma_b[i,j] += m*gi*xj/volume
 
     return sigma_a + sigma_b
+
+def _get_getStress_args(inertial): return (O.cell.volume, inertial) if inertial else (O.cell.volume)

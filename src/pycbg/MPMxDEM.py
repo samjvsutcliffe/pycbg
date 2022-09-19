@@ -302,4 +302,4 @@ def _getStress_gravity():
 
     return sigma_a + sigma_b
 
-def _get_getStress_args(inertial): return tuple(O.cell.volume, inertial) if inertial else tuple(O.cell.volume)
+def _get_getStress_args(inertial): return tuple((O.cell.volume, inertial)) if inertial else tuple((O.cell.volume))

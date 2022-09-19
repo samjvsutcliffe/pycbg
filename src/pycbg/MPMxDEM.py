@@ -7,6 +7,7 @@ import pycbg
 
 no_auto_import = ["glob", "rve_directory", "pycbg_sim", "yade_sha1"]
 
+tmp_quasistat = True
 #script_dir = os.path.dirname(os.path.realpath(__file__))
 #os.chdir(inspect.stack()[-1].filename.rsplit("/", 1)[0]) # not sure about portability to other systemsz
 
@@ -166,6 +167,7 @@ class DefineCallable():
         self.use_gravity = use_gravity
         self.mpm_iter = 0
         self.mpm_dt = pycbg_sim.analysis_params["dt"]
+        self.dem_dt = O.dt
         self.dstrain = np.zeros((3,3))
         self.dstress = np.zeros((3,3))
         self.sigma0 = np.zeros((3,3))
@@ -197,8 +199,8 @@ class DefineCallable():
             if self.vtk_period!=0: O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=self.vtk_period)]
 
             ## Measure initial stress
-            if not self.use_gravity: self.sigma0 = getStress(O.cell.volume)
-            else: 
+            if not self.use_gravity: self.sigma0 = getStress(O.cell.volume, tmp_quasistat)
+            else:
                 ### If gravity is used, the sample global stress has to be computed manually, a list of particles and walls are thus
                 _get_bodies_walls()
                 self.sigma0 = _getStress_gravity()
@@ -211,10 +213,19 @@ class DefineCallable():
         # Compute the DEM deformation time to keep the simulation quasistatic 
         max_deps = max([abs(i) for i in [de_xx, de_yy, de_zz, de_xy, de_yz, de_xz]])
         deformation_time = max_deps / self.dem_strain_rate if self.dem_strain_rate is not None else self.mpm_dt
+#        print("Deformation time: ", deformation_time, flush=True)
 
         # Compute the number of DEM iterations
-        n_dem_iter = -(-deformation_time//O.dt)
+        sev_dt = deformation_time>=O.dt
+#        print("Deformation time: ", deformation_time, "\tO.dt: ", O.dt, "\tdstrain_matrix", dstrain_matrix, flush=True)
+        if sev_dt: n_dem_iter = -(-deformation_time//O.dt)
+        else: 
+            if deformation_time>0: n_dem_iter, O.dt = 1, deformation_time
+            else: n_dem_iter = 0
+
+        #n_dem_iter = -(-deformation_time//O.dt) if deformation_time>O.dt else 1
         deformation_time = n_dem_iter * O.dt # increase a little deformation_time so the number of iteration is exactly an integer
+#        print("Deformation time: ", deformation_time, flush=True)
 
         # Compute the velocity gradient, assuming no rotation
         O.cell.velGrad = dstrain_matrix / deformation_time
@@ -229,7 +240,7 @@ class DefineCallable():
         
         # Finnish the MPM iteration
         mpm_iteration += 1
-        if not self.use_gravity: new_stress = getStress(O.cell.volume)
+        if not self.use_gravity: new_stress = getStress(O.cell.volume, tmp_quasistat)
         else: new_stress = _getStress_gravity()
         dsigma = new_stress - self.sigma0
         self.sigma0 = new_stress
@@ -239,6 +250,9 @@ class DefineCallable():
 
         # Update state variables
         state_vars = [eval(var, self.svars_dic) for var in self.state_variables]
+
+        # Put back original dt
+        O.dt = self.dem_dt
 
         # Save final state
         if mpm_iteration == pycbg_sim.analysis_params["nsteps"] and self.save_final_state:

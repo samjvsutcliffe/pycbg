@@ -247,7 +247,7 @@ class DefineCallable():
         
         # Finnish the MPM iteration
         mpm_iteration += 1
-        if not self.use_gravity: new_stress = getStress(*self._get_getStress_args(self.inertial))
+        if not self.use_gravity: new_stress = getStress(*_get_getStress_args(self.inertial))
         else: new_stress = _getStress_gravity()
         dsigma = new_stress - self.sigma0
         self.sigma0 = new_stress

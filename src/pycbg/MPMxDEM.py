@@ -145,7 +145,7 @@ class DefineCallable():
     mpm_dt : float
         The MPM time step for the current simulation
     dem_dt : float
-        The initial DEM time step, the one stored in in `O.dt` when the current object (`DefineCallable`) was created. It is required in the background in the eventuality where the RVE deformation time is lower than the initial DEM time step.
+        The DEM time step. It is required in the background in the eventuality where the RVE deformation time is lower than the initial DEM time step.
     mpm_iter : int
         The current MPM iteration
     dstrain : numpy array of shape (3,3)
@@ -253,6 +253,7 @@ class DefineCallable():
     def run_dem_steps(self, deformation_time):
         # Compute the number of DEM iterations
         time_ratio = deformation_time/O.dt
+        self.dem_dt = O.dt # Store original dt
 
         if time_ratio==0 : return # If MPM ask no deformation, do nothing
         

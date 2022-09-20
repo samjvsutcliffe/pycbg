@@ -222,31 +222,13 @@ class DefineCallable():
         deformation_time = max_deps / self.dem_strain_rate if self.dem_strain_rate is not None else self.mpm_dt
 #        print("Deformation time: ", deformation_time, flush=True)
 
-        # Compute the number of DEM iterations
-        sev_dt = deformation_time>=O.dt
-#        print("Deformation time: ", deformation_time, "\tO.dt: ", O.dt, "\tdstrain_matrix", dstrain_matrix, flush=True)
-        if sev_dt: n_dem_iter = -(-deformation_time//O.dt)
-        else: 
-            if deformation_time>0: n_dem_iter, O.dt = 1, deformation_time
-            else: n_dem_iter = 0
-
-        #n_dem_iter = -(-deformation_time//O.dt) if deformation_time>O.dt else 1
-        deformation_time = n_dem_iter * O.dt # increase a little deformation_time so the number of iteration is exactly an integer
-#        print("Deformation time: ", deformation_time, flush=True)
-        self.deformation_time = deformation_time
-
         # Compute the velocity gradient, assuming no rotation
         O.cell.velGrad = dstrain_matrix / deformation_time
 
         # Run DEM steps
-        for i in range(int(n_dem_iter)): 
-            if self.flip_cell_period>0: 
-                if O.iter % self.flip_cell_period == 0:
-                    O.cell.flipCell()
-                    self.flip_count += 1
-            O.step()
+        self.run_dem_steps(deformation_time)
         
-        # Finnish the MPM iteration
+        # Complete the MPM iteration
         mpm_iteration += 1
         if not self.use_gravity: new_stress = getStress(*_get_getStress_args(self.inertial))
         else: new_stress = _getStress_gravity()
@@ -267,6 +249,29 @@ class DefineCallable():
             O.save(rve_directory + "RVE_{:}/".format(self.rve_id) + "rve{:d}_final_state.{:}yade.bz2".format(self.rve_id, self.yade_sha1))
 
         return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration) + tuple(state_vars)
+    
+    def run_dem_steps(self, deformation_time):
+        # Compute the number of DEM iterations
+        time_ratio = deformation_time/O.dt
+
+        if time_ratio < 1: # If the deformation time is lower than the original dem time step
+            O.dt = deformation_time # Set the deformation time as time step
+            
+        else: # If the deformation time is higher than the original dem time step
+            for step in range(int(time_ratio)): self._run_dem_step() # Run steps until the remaining deformation time is lower than the original dt
+            O.dt = deformation_time - O.dt*int(time_ratio) # Set the remaining deformation as time step
+
+        self._run_dem_step()
+        O.dt = self.dem_dt # Set back the original dt
+
+    def _run_dem_step(self):
+        O.step()
+        if self.flip_cell_period>0: 
+                if O.iter % self.flip_cell_period == 0:
+                    O.cell.flipCell()
+                    self.flip_count += 1
+        
+
 
 def _get_bodies_walls():
     global bodies_id, walls_id

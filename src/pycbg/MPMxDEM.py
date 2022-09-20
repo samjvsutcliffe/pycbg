@@ -254,7 +254,9 @@ class DefineCallable():
         # Compute the number of DEM iterations
         time_ratio = deformation_time/O.dt
 
-        if time_ratio < 1: # If the deformation time is lower than the original dem time step
+        if time_ratio==0 : return # If MPM ask no deformation, do nothing
+        
+        elif time_ratio < 1: # If the deformation time is lower than the original dem time step
             O.dt = deformation_time # Set the deformation time as time step
             
         else: # If the deformation time is higher than the original dem time step

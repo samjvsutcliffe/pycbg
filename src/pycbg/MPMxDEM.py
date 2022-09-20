@@ -220,7 +220,7 @@ class DefineCallable():
         # Compute the DEM deformation time to keep the simulation quasistatic 
         max_deps = max([abs(i) for i in [de_xx, de_yy, de_zz, de_xy, de_yz, de_xz]])
         deformation_time = max_deps / self.dem_strain_rate if self.dem_strain_rate is not None else self.mpm_dt
-#        print("Deformation time: ", deformation_time, flush=True)
+        self.deformation_time = deformation_time
 
         # Compute the velocity gradient, assuming no rotation
         O.cell.velGrad = dstrain_matrix / deformation_time

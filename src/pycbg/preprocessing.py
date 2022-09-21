@@ -89,6 +89,7 @@ class Mesh():
         elif cell_type=='ED2Q36BS': self.nn_percell, self.n_dims = 36, 2
         else : raise ValueError("cell_type is set to '{:}' while it should be one of the following: 'ED3H8', 'ED3H20', 'ED3H64G', 'ED2Q4', 'ED2Q8', 'ED2Q9', 'ED2Q16G' or 'ED2Q36BS'".format(cell_type))
         
+        if self.n_dims == 2 and origin == (0.,0.,0.): origin = (0.,0.)
         self.set_parameters(dimensions, ncells, origin)
         if directory == '' : directory = './'
         if directory[-1] != '/' : directory += '/'
@@ -102,7 +103,7 @@ class Mesh():
         self._node_type = "N{:d}D".format(self.n_dims) # Shouldn't have to be set to another value
         self.round_decimal = round_decimal
 
-        self._dimensions, self._ncells = dimensions, ncells
+        self.dimensions, self.ncells = dimensions, ncells
         self.__reset_params()
 
         self.write_file()
@@ -229,7 +230,7 @@ class Mesh():
                 fil.write(out_line)
 
     def __reset_params(self):
-        self.params = {"dimensions": self._dimensions, "ncells": self._ncells, "origin": self.origin, "check_duplicates": self.check_duplicates, "cell_type": self.cell_type, "round_decimal": self.round_decimal}
+        self.params = {"dimensions": self.dimensions, "ncells": self.ncells, "origin": self.origin, "check_duplicates": self.check_duplicates, "cell_type": self.cell_type, "round_decimal": self.round_decimal}
 
         
 
@@ -437,7 +438,7 @@ class EntitySets():
         Parameters
         ----------
         condition_function : function
-            Select particles or nodes using their positions. The inputs should be at least 3 parameters `x`, `y` and `z` that correspond to the position of a node or particle, additional keyword parameters can be passed through `kwargs`. Should return `True` if the node or particle belongs to the set, `False` otherwise.
+            Function to select particles or nodes using their positions. It should take as inputs at least 3 parameters `x`, `y` and `z` (2 parameters `x` and `y` for 2D analyses) that correspond to the position of a node or particle, additional keyword parameters can be passed through `kwargs`. It should return `True` if the node or particle belongs to the set, `False` otherwise.
         typ : {"node", "particle"}, optional
             Type of set to be created. Default is "particle".
         kwargs : dictionary

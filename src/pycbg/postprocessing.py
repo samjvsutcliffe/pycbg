@@ -30,6 +30,8 @@ class ResultsReader():
         Particles' masses for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of ``pmasses[i]`` is ``(npart,)``.
     pvolumes : list of numpy arrays
         Particles' volumes for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of ``pvolumes[i]`` is ``(npart,)``.
+    pcell_ids: list of numpy arrays
+        Ids of mesh cells hosting the particles for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of ``pcell_ids[i]`` is ``(npart,)``.
     pmaterials : list of numpy arrays
         Particles' material's id for every saved steps. Noting npart the number of particles in the simulations at the ith step, the shape of ``pmaterials[i]`` is ``(npart,)``.
     raw_data : list of pandas dataframes
@@ -80,6 +82,7 @@ class ResultsReader():
         self.ppositions, self.pvelocities = [], []
         self.pstresses, self.pstrains, self.ppressures = [], [], []
         self.pmasses, self.pvolumes, self.pmaterials = [], [], []
+        self.pcell_ids = []
         n_mp_init = len(self.raw_data[0]["id"])
         for df in self.raw_data :
             ids = list(df["id"])
@@ -107,6 +110,9 @@ class ResultsReader():
             peps_df = np.array([df[key] for key in ["strain_xx", "strain_yy", "strain_zz", "gamma_xy", "gamma_yz", "gamma_xz"]]).T
             for i, p_id in enumerate(ids): peps[p_id,:] = peps_df[i, :]
             self.pstrains.append(peps)
+
+            # Cell ids
+            self.pcell_ids.append(df['cell_id'].to_numpy())
 
             # Pressures
             ppre = np.full([n_mp_init], np.nan)

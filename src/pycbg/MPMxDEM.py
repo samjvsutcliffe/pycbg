@@ -295,7 +295,8 @@ class DefineCallable():
 
         if time_ratio==0 : return # If MPM ask no deformation, do nothing
         
-        elif time_ratio % O.dt != 0: # If the deformation time is not 0 and not a multiple of the DEM time step (most probable scenario)
+        elif time_ratio % O.dt == 0: n_dem_iter = int(time_ratio) # If the deformation time is a multiple of the DEM time step (very unlikely)
+        else: # If the deformation time is not 0 and not a multiple of the DEM time step (most probable scenario)
             # Round the number of DEM iteration to the next multiple of the DEM time step
             n_dem_iter = int(time_ratio) + 1 
             
@@ -304,7 +305,7 @@ class DefineCallable():
             O.cell.velGrad = O.cell.velGrad * base_deformation_time/self.deformation_time # Velocity gradient
 
         # Run the number of DEM steps necessary to reach the required deformation with a strain rate topped by the one specified
-        for step in range(int(time_ratio)): self._run_dem_step() 
+        for step in range(n_dem_iter): self._run_dem_step() 
 
     def _run_dem_step(self):
         O.step()

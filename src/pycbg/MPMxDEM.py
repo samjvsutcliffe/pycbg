@@ -99,6 +99,10 @@ class DefineCallable():
     ----------
     dem_strain_rate : float or None
         Strain rate applied to the RVE. If `None`, the MPM strain rate is used.
+    fixed_strain_rate : bool
+        Wether to fix the strain rate or the DEM time step to reach exactly the required deformation. If the strain rate is fixed, the DEM time step will be adjusted for the last (possibly the only) DEM iteration. If the DEM time step is fixed, the deformation time is increased to the next multiple of the DEM time step, decreasing the strain rate. If strain_rate is `None`, this parameter is not relevant. Default is `True`.
+    coef_dem_dt: float or None
+        Safety coefficient for the automatically computed DEM time step, with YADE's `utils.PWaveTimeStep` function. If a float a given, the time step is computed for the whole MPM iteration (which might require several DEM iterations) as `coef_dem_dt*utils.PWaveTimeStep()`, `coef_dem_dt` should thus lie in the interval `]0,1]`. If `None` is given, the initial DEM time step is kept throughout all MPM iterations. Default is None.  
     inertial : bool
         Wether or not to account for inertial effects when computing the stress tensor global to the RVE. This feature was introduced in a custom YADE version (6c1164b2b), use false if your version doesn't support it. Default is False.
     run_on_setup : callable or None
@@ -120,6 +124,10 @@ class DefineCallable():
     ----------
     dem_strain_rate : float
         Strain rate applied to the RVE.
+    fixed_strain_rate : bool
+        Wether to fix the strain rate or the DEM time step to reach exactly the required deformation.
+    coef_dem_dt: float or None
+        Safety coefficient for the automatically computed DEM time step, with YADE's `utils.PWaveTimeStep` function.
     run_on_setup : callable or None
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
     vtk_period : int
@@ -156,8 +164,10 @@ class DefineCallable():
         The time during which the deformation increment has been applied to the RVE. It is initialized at np.nan and is updated as soon as it is computed (right before using it).  
     """
 
-    def __init__(self, dem_strain_rate, inertial=False, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False, flip_cell_period=0, use_gravity=False): 
+    def __init__(self, dem_strain_rate, fixed_strain_rate=True, coef_dem_dt=None, inertial=False, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False, flip_cell_period=0, use_gravity=False): 
         self.dem_strain_rate = dem_strain_rate
+        self.fixed_strain_rate = fixed_strain_rate
+        self.coef_dem_dt = coef_dem_dt
         self.run_on_setup = run_on_setup
         self.vtk_period = vtk_period
         self.state_variables = state_vars
@@ -178,6 +188,9 @@ class DefineCallable():
         self.sigma0 = np.zeros((3,3))
         self.deformation_time = np.nan
         self.inertial = inertial
+
+        # Kill GlobalStiffnessTimeStepper if it is in the engine list and alive
+        self._detect_gsts()
 
     def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
 
@@ -226,7 +239,9 @@ class DefineCallable():
         O.cell.velGrad = dstrain_matrix / deformation_time
 
         # Run DEM steps
-        self.run_dem_steps(deformation_time)
+            # Kill GlobalStiffnessTimeStepper
+        if self.fixed_strain_rate: self.run_dem_steps_fsr(deformation_time) # adjust dem_dt to reach required deformation
+        else: self.run_dem_steps_fdt(deformation_time)
         
         # Complete the MPM iteration
         mpm_iteration += 1
@@ -250,12 +265,15 @@ class DefineCallable():
 
         return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration) + tuple(state_vars)
     
-    def run_dem_steps(self, deformation_time):
-        # Compute the number of DEM iterations
-        time_ratio = deformation_time/O.dt
-        self.dem_dt = O.dt # Store original dt
+    def run_dem_steps_fsr(self, deformation_time):
+        # Set time step for the current MPM iteration
+        self._set_demdt()
+        self.dem_dt = O.dt # Store the DEM dt of the current MPM iteration
 
-        if time_ratio==0 : return # If MPM ask no deformation, do nothing
+        # Compare the deformation time with the DEM time step
+        time_ratio = deformation_time/O.dt
+        
+        if time_ratio==0 : return # If MPM asks no deformation, do nothing
         
         elif time_ratio < 1: # If the deformation time is lower than the original dem time step
             O.dt = deformation_time # Set the deformation time as time step
@@ -265,7 +283,28 @@ class DefineCallable():
             O.dt = deformation_time - O.dt*int(time_ratio) # Set the remaining deformation as time step
 
         self._run_dem_step()
-        O.dt = self.dem_dt # Set back the original dt
+        O.dt = self.dem_dt # Set back the DEM dt of the current MPM iteration
+
+    def run_dem_steps_fdt(self, base_deformation_time):
+        # Set time step for the current MPM iteration
+        self._set_demdt()
+        self.dem_dt = O.dt # Store the DEM dt of the current MPM iteration
+
+        # Compare the deformation time with the DEM time step
+        time_ratio = base_deformation_time/O.dt
+
+        if time_ratio==0 : return # If MPM ask no deformation, do nothing
+        
+        elif time_ratio % O.dt != 0: # If the deformation time is not 0 and not a multiple of the DEM time step (most probable scenario)
+            # Round the number of DEM iteration to the next multiple of the DEM time step
+            n_dem_iter = int(time_ratio) + 1 
+            
+            # Compute adjusted values
+            self.deformation_time = n_dem_iter * O.dt # Deformation time
+            O.cell.velGrad = O.cell.velGrad * base_deformation_time/self.deformation_time # Velocity gradient
+
+        # Run the number of DEM steps necessary to reach the required deformation with a strain rate topped by the one specified
+        for step in range(int(time_ratio)): self._run_dem_step() 
 
     def _run_dem_step(self):
         O.step()
@@ -273,6 +312,18 @@ class DefineCallable():
                 if O.iter % self.flip_cell_period == 0:
                     O.cell.flipCell()
                     self.flip_count += 1
+    
+    def _detect_gsts(self):
+        for i, e in enumerate(O.engines):
+            if type(e)==GlobalStiffnessTimeStepper: 
+                if e.dead: return
+                else: 
+                    e.dead = True
+                    warnings.warn("A `GlobalStiffnessTimeStepper` instance was found alive in the engine list, it has been killed. Use instead `DefineCallable.coef_dem_dt` to automatically compute the DEM time step.")
+    
+    def _set_demdt(self): 
+        if self.coef_dem_dt is not None: O.dt = self.coef_dem_dt*PWaveTimeStep()
+
         
 
 

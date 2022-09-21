@@ -93,7 +93,7 @@ def setup_yade(yade_exec="/usr/bin/yade"):
     __update_imports(loc)
 
 class DefineCallable():
-    """Callable object to be called at each MPM step, with CB-Geo's required signature. The YADE periodic simulation defined in the script creating this callable object will be deformed at each MPM iteration using `O.cell.velGrad`. The velocity gradient is computed using the strain increment provided by CB-Geo and the `dem_strain_rate` parameter provided by the user: `O.cell.velGrad = strain_increment_matrix / max(strain_increment_matrix) * dem_strain_rate`.
+    """Callable object to be called at each MPM step, with CB-Geo's required signature. The YADE periodic simulation defined in the script creating this callable object will be deformed at each MPM iteration using `O.cell.velGrad`. The velocity gradient is computed using the strain increment provided by CB-Geo and the `dem_strain_rate` parameter provided by the user: `O.cell.velGrad = strain_increment_matrix / max(strain_increment_matrix) * dem_strain_rate` (TODO: this last formula is wrong in general and with respect to actual implementation).
 
     Parameters
     ----------
@@ -201,7 +201,7 @@ class DefineCallable():
         de_xy, de_yz, de_xz = .5*de_xy, .5*de_yz, .5*de_xz
 
         # Set the dstrain attribute
-        self.dstrain = np.array([[de_xx, de_xy, de_xz], [de_xy, de_yy, de_xz], [de_xz, de_yz, de_zz]])
+        self.dstrain = np.array([[de_xx, de_xy, de_xz], [de_xy, de_yy, de_yz], [de_xz, de_yz, de_zz]])
 
         # If this function is called for the first time
         if mpm_iteration==0:
@@ -276,7 +276,7 @@ class DefineCallable():
         if time_ratio==0 : return # If MPM asks no deformation, do nothing
         
         elif time_ratio < 1: # If the deformation time is lower than the original dem time step
-            O.dt = deformation_time # Set the deformation time as time step
+            O.dt = deformation_time # Use the deformation time as time step
             
         else: # If the deformation time is higher than the original dem time step
             for step in range(int(time_ratio)): self._run_dem_step() # Run steps until the remaining deformation time is lower than the original dt

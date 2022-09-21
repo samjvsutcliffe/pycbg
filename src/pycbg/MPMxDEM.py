@@ -188,7 +188,7 @@ class DefineCallable():
         de_xy, de_yz, de_xz = .5*de_xy, .5*de_yz, .5*de_xz
 
         # Set the dstrain attribute
-        self.dstrain = np.array([[de_xx, de_xy, de_xz], [de_xy, de_yy, de_xz], [de_xz, de_yz, de_zz]])
+        self.dstrain = np.array([[de_xx, de_xy, de_xz], [de_xy, de_yy, de_yz], [de_xz, de_yz, de_zz]])
 
         # If this function is called for the first time
         if mpm_iteration==0:

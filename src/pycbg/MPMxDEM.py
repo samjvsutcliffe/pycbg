@@ -239,7 +239,10 @@ class DefineCallable():
         O.cell.velGrad = dstrain_matrix / deformation_time
 
         # Run DEM steps
-            # Kill GlobalStiffnessTimeStepper
+            # Set time step for the current MPM iteration
+        self._set_demdt()
+        self.dem_dt = O.dt # Store the DEM dt of the current MPM iteration
+
         if self.fixed_strain_rate: self.run_dem_steps_fsr(deformation_time) # adjust dem_dt to reach required deformation
         else: self.run_dem_steps_fdt(deformation_time)
         
@@ -266,10 +269,6 @@ class DefineCallable():
         return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration) + tuple(state_vars)
     
     def run_dem_steps_fsr(self, deformation_time):
-        # Set time step for the current MPM iteration
-        self._set_demdt()
-        self.dem_dt = O.dt # Store the DEM dt of the current MPM iteration
-
         # Compare the deformation time with the DEM time step
         time_ratio = deformation_time/O.dt
         
@@ -286,16 +285,12 @@ class DefineCallable():
         O.dt = self.dem_dt # Set back the DEM dt of the current MPM iteration
 
     def run_dem_steps_fdt(self, base_deformation_time):
-        # Set time step for the current MPM iteration
-        self._set_demdt()
-        self.dem_dt = O.dt # Store the DEM dt of the current MPM iteration
-
         # Compare the deformation time with the DEM time step
         time_ratio = base_deformation_time/O.dt
 
         if time_ratio==0 : return # If MPM ask no deformation, do nothing
         
-        elif time_ratio % O.dt == 0: n_dem_iter = int(time_ratio) # If the deformation time is a multiple of the DEM time step (very unlikely)
+        elif base_deformation_time % O.dt == 0: n_dem_iter = int(time_ratio) # If the deformation time is a multiple of the DEM time step (very unlikely)
         else: # If the deformation time is not 0 and not a multiple of the DEM time step (most probable scenario)
             # Round the number of DEM iteration to the next multiple of the DEM time step
             n_dem_iter = int(time_ratio) + 1 

@@ -229,9 +229,14 @@ class DefineCallable():
         dstrain_matrix = Matrix3((de_xx, de_xy, de_xz,
                                     de_xy, de_yy, de_yz,
                                     de_xz, de_yz, de_zz))
+
+        # Get the maximum eigen value of the strain increment matrix
+        try: max_deps = max([abs(i) for i in np.linalg.eig(dstrain_matrix)[0]])
+        except np.linalg.LinAlgError: # Shouldn't happen as dstrain_matrix is symetric
+            warnings.warn("The strain increment matrix could not be diagonalised, using the maximum absolute coefficient instead of the maximum eigen value.")
+            max_deps = max([abs(i) for i in [de_xx, de_yy, de_zz, de_xy, de_yz, de_xz]])
         
         # Compute the DEM deformation time to keep the simulation quasistatic 
-        max_deps = max([abs(i) for i in [de_xx, de_yy, de_zz, de_xy, de_yz, de_xz]])
         deformation_time = max_deps / self.dem_strain_rate if self.dem_strain_rate is not None else self.mpm_dt
         self.deformation_time = deformation_time
 

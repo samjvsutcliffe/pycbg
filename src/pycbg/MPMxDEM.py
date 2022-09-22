@@ -287,7 +287,7 @@ class DefineCallable():
 
         if time_ratio==0 : return # If MPM ask no deformation, do nothing
         
-        elif base_deformation_time % O.dt == 0: n_dem_iter = int(time_ratio) # If the deformation time is a multiple of the DEM time step (very unlikely)
+        elif divmod(time_ratio, 1)[1] == 0: n_dem_iter = int(time_ratio) # If the deformation time is a multiple of the DEM time step (very unlikely)
         else: # If the deformation time is not 0 and not a multiple of the DEM time step (most probable scenario)
             # Round the number of DEM iteration to the next multiple of the DEM time step
             n_dem_iter = int(time_ratio) + 1 

@@ -244,7 +244,7 @@ class DefineCallable():
         self.dem_dt = O.dt # Store the DEM dt of the current MPM iteration
 
         if self.fixed_strain_rate: self.run_dem_steps_fsr(deformation_time) # adjust dem_dt to reach required deformation
-        else: self.run_dem_steps_fdt(deformation_time)
+        else: self.run_dem_steps_fdt(deformation_time) # adjust the deformation time to reach required deformation
         
         # Complete the MPM iteration
         mpm_iteration += 1
@@ -258,9 +258,6 @@ class DefineCallable():
 
         # Update state variables
         state_vars = [eval(var, self.svars_dic) for var in self.state_variables]
-
-        # Put back original dt
-        O.dt = self.dem_dt
 
         # Save final state
         if mpm_iteration == pycbg_sim.analysis_params["nsteps"] and self.save_final_state:

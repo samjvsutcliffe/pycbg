@@ -289,7 +289,7 @@ class DefineCallable():
 
     def run_dem_steps_fdt(self, max_deps,dstrain_matrix):
         '''Executes the appropriate number of DEM iterations without touching on the DEM time step during this process'''
-        n_dem_iter = np.ceil(max_deps/(self.dem_strain_rate*O.dt))
+        n_dem_iter = int(np.ceil(max_deps/(self.dem_strain_rate*O.dt)))
         O.cell.velGrad = dstrain_matrix / (n_dem_iter*O.dt)
         for step in range(n_dem_iter): self._run_dem_step() 
 

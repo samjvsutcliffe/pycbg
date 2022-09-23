@@ -168,9 +168,9 @@ class DefineCallable():
         self.mpm_dt = pycbg_sim.analysis_params["dt"]
         self.dstrain = np.zeros((3,3))
         self.dstress = np.zeros((3,3))
+        self.sigma0 = np.zeros((3,3))
 
     def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
-        global sigma0
 
         # Update mpm_iter attribute
         self.mpm_iter = mpm_iteration
@@ -197,11 +197,11 @@ class DefineCallable():
             if self.vtk_period!=0: O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=self.vtk_period)]
 
             ## Measure initial stress
-            if not self.use_gravity: sigma0 = getStress(O.cell.volume)
+            if not self.use_gravity: self.sigma0 = getStress(O.cell.volume)
             else: 
                 ### If gravity is used, the sample global stress has to be computed manually, a list of particles and walls are thus
                 _get_bodies_walls()
-                sigma0 = _getStress_gravity()
+                self.sigma0 = _getStress_gravity()
 
         # Shaping dstrain increment matrix
         dstrain_matrix = Matrix3((de_xx, de_xy, de_xz,
@@ -231,8 +231,8 @@ class DefineCallable():
         mpm_iteration += 1
         if not self.use_gravity: new_stress = getStress(O.cell.volume)
         else: new_stress = _getStress_gravity()
-        dsigma = new_stress - sigma0
-        sigma0 = new_stress
+        dsigma = new_stress - self.sigma0
+        self.sigma0 = new_stress
 
         # Set the dstress attribute
         self.dstress = np.array(dsigma)

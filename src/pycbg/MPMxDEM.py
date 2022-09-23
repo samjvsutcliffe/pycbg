@@ -250,7 +250,7 @@ class DefineCallable():
         self.dem_dt = O.dt # Store the DEM dt of the current MPM iteration
 
         if self.fixed_strain_rate: self.run_dem_steps_fsr(deformation_time) # adjust dem_dt to reach required deformation
-        else: self.run_dem_steps_fdt(deformation_time) # adjust the deformation time to reach required deformation
+        else: self.run_dem_steps_fdt(max_deps,dstrain_matrix) # reach required deformation without touching dem_dt
         
         # Complete the MPM iteration
         mpm_iteration += 1
@@ -287,22 +287,10 @@ class DefineCallable():
         self._run_dem_step()
         O.dt = self.dem_dt # Set back the DEM dt of the current MPM iteration
 
-    def run_dem_steps_fdt(self, base_deformation_time):
+    def run_dem_steps_fdt(self, max_deps,dstrain_matrix):
         '''Executes the appropriate number of DEM iterations without touching on the DEM time step during this process'''
-        time_ratio = base_deformation_time/O.dt
-
-        if time_ratio==0 : return # If MPM ask no deformation, do nothing
-        
-        elif Decimal(str(time_ratio)) % Decimal("1") == 0: n_dem_iter = int(time_ratio) # If the deformation time is a multiple of the DEM time step (very unlikely)
-        else: # If the deformation time is not 0 and not a multiple of the DEM time step (most probable scenario)
-            # Round the number of DEM iteration to the next multiple of the DEM time step
-            n_dem_iter = int(time_ratio) + 1 
-            
-            # Compute adjusted values
-            self.deformation_time = n_dem_iter * O.dt # Deformation time
-            O.cell.velGrad = O.cell.velGrad * base_deformation_time/self.deformation_time # Velocity gradient
-
-        # Run the number of DEM steps necessary to reach the required deformation with a strain rate topped by the one specified
+        n_dem_iter = np.ceil(max_deps/(dem_strain_rate*O.dt))
+        O.cell.velGrad = dstrain_matrix / (n_dem_iter*O.dt)
         for step in range(n_dem_iter): self._run_dem_step() 
 
     def _run_dem_step(self):

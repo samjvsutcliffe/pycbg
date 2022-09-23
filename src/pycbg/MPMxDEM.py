@@ -267,7 +267,7 @@ class DefineCallable():
         return (dsigma[0,0], dsigma[1,1], dsigma[2,2], dsigma[0,1], dsigma[1,2], dsigma[0,2], mpm_iteration) + tuple(state_vars)
     
     def run_dem_steps_fsr(self, deformation_time):
-        # Compare the deformation time with the DEM time step
+        '''Executes the appropriate number of DEM iterations through adjusting the DEM time step'''
         time_ratio = deformation_time/O.dt
         
         if time_ratio==0 : return # If MPM asks no deformation, do nothing
@@ -283,7 +283,7 @@ class DefineCallable():
         O.dt = self.dem_dt # Set back the DEM dt of the current MPM iteration
 
     def run_dem_steps_fdt(self, base_deformation_time):
-        # Compare the deformation time with the DEM time step
+        '''Executes the appropriate number of DEM iterations without touching on the DEM time step during this process'''
         time_ratio = base_deformation_time/O.dt
 
         if time_ratio==0 : return # If MPM ask no deformation, do nothing

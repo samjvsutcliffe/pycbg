@@ -104,8 +104,6 @@ class DefineCallable():
         Wether to fix the strain rate or the DEM time step to reach exactly the required deformation. If the strain rate is fixed, the DEM time step will be adjusted for the last (possibly the only) DEM iteration. If the DEM time step is fixed, the deformation time is increased to the next multiple of the DEM time step, decreasing the strain rate. If strain_rate is `None`, this parameter is not relevant. Default is `True`.
     inertial : bool
         Wether or not to account for inertial effects when computing the stress tensor global to the RVE. This feature was introduced in a custom YADE version (6c1164b2b), use false if your version doesn't support it. Default is False.
-    coef_dem_dt: float or None
-        Safety coefficient for the automatically computed DEM time step, with YADE's `utils.PWaveTimeStep` function. If a float a given, the time step is computed for the whole MPM iteration (which might require several DEM iterations) as `coef_dem_dt*utils.PWaveTimeStep()`, `coef_dem_dt` should thus lie in the interval `]0,1]`. If `None` is given, the initial DEM time step is kept throughout all MPM iterations. Default is None.  
     run_on_setup : callable or None
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
     vtk_period : int
@@ -127,8 +125,6 @@ class DefineCallable():
         Strain rate applied to the RVE.
     fixed_strain_rate : bool
         Wether to fix the strain rate or the DEM time step to reach exactly the required deformation.
-    coef_dem_dt: float or None
-        Safety coefficient for the automatically computed DEM time step, with YADE's `utils.PWaveTimeStep` function.
     run_on_setup : callable or None
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
     vtk_period : int
@@ -165,10 +161,9 @@ class DefineCallable():
         The time during which the deformation increment has been applied to the RVE. It is initialized at np.nan and is updated as soon as it is computed (right before using it).  
     """
 
-    def __init__(self, dem_strain_rate, fixed_strain_rate=True, inertial=False, coef_dem_dt=None, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False, flip_cell_period=0, use_gravity=False): 
+    def __init__(self, dem_strain_rate, fixed_strain_rate=True, inertial=False, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False, flip_cell_period=0, use_gravity=False): 
         self.dem_strain_rate = dem_strain_rate
         self.fixed_strain_rate = fixed_strain_rate
-        self.coef_dem_dt = coef_dem_dt
         self.run_on_setup = run_on_setup
         self.vtk_period = vtk_period
         self.state_variables = state_vars
@@ -301,16 +296,26 @@ class DefineCallable():
                     self.flip_count += 1
     
     def _detect_gsts(self):
-        '''Programmer function killing GlobalStiffnessTimeStepper if present and alive in O.engines'''
+        '''Programmer function returning the index of GlobalStiffnessTimeStepper in O.engines (if present, None otherwise)'''
         for i, e in enumerate(O.engines):
             if type(e)==GlobalStiffnessTimeStepper: 
-                if e.dead: return
-                else: 
-                    e.dead = True
-                    warnings.warn("A `GlobalStiffnessTimeStepper` instance was found alive in the engine list, it has been killed. Use instead `DefineCallable.coef_dem_dt` to automatically compute the DEM time step.")
+                e.timeStepUpdateInterval = 1 # Make sure O.dt will be updated
+                return i
+        return None
     
     def _set_demdt(self): 
-        if self.coef_dem_dt is not None: O.dt = self.coef_dem_dt*PWaveTimeStep()
+        if self._gsts_index  is not None: 
+            # Resurect GSTS
+            O.engines[self._gsts_index].dead = False
+
+            # Run a DEM iteration only to make GSTS compute the time step
+            tmp_engines = O.engines
+            O.engines = [O.engines[self._gsts_index]]
+            O.step()
+            O.engines = tmp_engines
+
+            # Kill GSTS
+            O.engines[self._gsts_index].dead = True
 
 
 def _get_bodies_walls():

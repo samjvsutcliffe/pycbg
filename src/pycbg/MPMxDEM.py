@@ -308,6 +308,7 @@ class DefineCallable():
                     self.flip_count += 1
     
     def _detect_gsts(self):
+        '''Programmer function returning the index of GlobalStiffnessTimeStepper in O.engines (if present, None otherwise)'''
         for i, e in enumerate(O.engines):
             if type(e)==GlobalStiffnessTimeStepper: 
                 return i

@@ -186,7 +186,7 @@ class DefineCallable():
         self.inertial = inertial
 
         # Detect and kill GlobalStiffnessTimeStepper
-        self._detect_gsts()
+        self._gsts_index = self._detect_gsts()
 
     def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
 

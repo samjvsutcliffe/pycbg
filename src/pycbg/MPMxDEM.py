@@ -215,7 +215,7 @@ class DefineCallable():
             if self.vtk_period!=0: O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=self.vtk_period)]
 
             ## Measure initial stress
-            if not self.use_gravity: self.sigma0 = getStress(*self._get_getStress_args(self.inertial))
+            if not self.use_gravity: self.sigma0 = getStress(*_get_getStress_args(self.inertial))
             else:
                 ### If gravity is used, the sample global stress has to be computed manually, a list of particles and walls are thus
                 _get_bodies_walls()
@@ -311,6 +311,7 @@ class DefineCallable():
         '''Programmer function returning the index of GlobalStiffnessTimeStepper in O.engines (if present, None otherwise)'''
         for i, e in enumerate(O.engines):
             if type(e)==GlobalStiffnessTimeStepper: 
+                e.timeStepUpdateInterval = 1 # Make sure O.dt will be updated
                 return i
         return None
     

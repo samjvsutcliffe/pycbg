@@ -245,7 +245,9 @@ class DefineCallable():
             max_deps = max([abs(i) for i in [de_xx, de_yy, de_zz, de_xy, de_yz, de_xz]])
 
         # If user chose to set an adaptative strain rate, computes its value
-        if self._adaptative_sr: self.dem_strain_rate = self._get_sr()
+        if self._adaptative_sr: 
+            self.dem_strain_rate = self._get_sr()
+            if self.dem_strain_rate==0: warnings.warn("The value of `dem_strain_rate` is zero, simulation wil certainly fail. Please check your `dem_strain_rate` callable definition.")
         
         # Compute the DEM deformation time to keep the simulation quasistatic 
         deformation_time = max_deps / self.dem_strain_rate if self.dem_strain_rate is not None else self.mpm_dt

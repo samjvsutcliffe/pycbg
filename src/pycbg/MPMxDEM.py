@@ -286,9 +286,18 @@ class DefineCallable():
         '''Executes the appropriate number of DEM iterations without touching on the DEM time step during this process'''
         n_dem_iter = int(np.ceil(max_deps/(self.dem_strain_rate*O.dt)))
         O.cell.velGrad = dstrain_matrix / (n_dem_iter*O.dt)
-        print("Iteration {:d}:\n\tdstrain_matrix: ".format(int(self.mpm_iter)), dstrain_matrix, "\n\tndem_iter: ", n_dem_iter, "\n\tO.dt: ", O.dt, "\n\tO.cell.velGrad (manual): ", dstrain_matrix / (n_dem_iter*O.dt), "\n\tO.cell.velGrad   (yade): ", O.cell.velGrad, flush=True)
+        print("Iteration {:d}:\n\tdstrain_matrix: ".format(int(self.mpm_iter)), dstrain_matrix, flush=True) 
+        print("\tndem_iter: ", n_dem_iter, flush=True)
+        print("\tO.dt: ", O.dt, flush=True)
+        print("\tO.cell.velGrad (manual): ", dstrain_matrix / (n_dem_iter*O.dt), flush=True)
+        print("\tO.cell.velGrad   (yade): ", O.cell.velGrad, flush=True)
+        t0, h0 = O.time, O.cell.hSize[1,1]
         for step in range(n_dem_iter): self._run_dem_step() 
-        print("\tO.cell.velGrad (end it): ", O.cell.velGrad, "\n", flush=True)
+        print("\tO.cell.velGrad (end it): ", O.cell.velGrad, flush=True)
+        h = O.cell.hSize[1,1]
+        print("\tVertical deformation increment: ", np.log(1+(h-h0)/h0), flush=True)
+        print("\tTime increment: ", O.time-t0, flush=True)
+        print("\tTime increment - O.dt: ", O.time-t0-O.dt, "\n", flush=True)
 
     def _run_dem_step(self):
         O.step()

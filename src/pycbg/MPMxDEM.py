@@ -98,8 +98,8 @@ class DefineCallable():
 
     Parameters
     ----------
-    dem_strain_rate : float or None
-        Strain rate applied to the RVE. If `None`, the MPM strain rate is used.
+    dem_strain_rate : float, callable or None
+        Strain rate applied to the RVE. If a callable is specified, the strain rate will be set to the return value of this callable. If `None`, the MPM strain rate is used.
     fixed_strain_rate : bool
         Wether to fix the strain rate or the DEM time step to reach exactly the required deformation. If the strain rate is fixed, the DEM time step will be adjusted for the last (possibly the only) DEM iteration. If the DEM time step is fixed, the deformation time is increased to the next multiple of the DEM time step, decreasing the strain rate. If strain_rate is `None`, this parameter is not relevant. Default is `True`.
     inertial : bool
@@ -166,7 +166,14 @@ class DefineCallable():
     """
 
     def __init__(self, dem_strain_rate, fixed_strain_rate=True, inertial=False, coef_dem_dt=None, run_on_setup=None, vtk_period=0, state_vars=["O.iter, O.time, O.dt"], svars_dic={}, save_final_state=False, flip_cell_period=0, use_gravity=False): 
-        self.dem_strain_rate = dem_strain_rate
+        if not callable(dem_strain_rate): 
+            self.dem_strain_rate = dem_strain_rate
+            self._adaptative_sr = False
+        else: 
+            self.dem_strain_rate = np.nan
+            self._get_sr = dem_strain_rate
+            self._adaptative_sr = True
+
         self.fixed_strain_rate = fixed_strain_rate
         self.coef_dem_dt = coef_dem_dt
         self.run_on_setup = run_on_setup
@@ -236,6 +243,9 @@ class DefineCallable():
         except np.linalg.LinAlgError: # Shouldn't happen as dstrain_matrix is symetric
             warnings.warn("The strain increment matrix could not be diagonalised, using the maximum absolute coefficient instead of the maximum eigen value.")
             max_deps = max([abs(i) for i in [de_xx, de_yy, de_zz, de_xy, de_yz, de_xz]])
+
+        # If user chose to set an adaptative strain rate, computes its value
+        if self._adaptative_sr: self.dem_strain_rate = self._get_sr()
         
         # Compute the DEM deformation time to keep the simulation quasistatic 
         deformation_time = max_deps / self.dem_strain_rate if self.dem_strain_rate is not None else self.mpm_dt

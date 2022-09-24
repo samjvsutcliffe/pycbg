@@ -286,7 +286,9 @@ class DefineCallable():
         '''Executes the appropriate number of DEM iterations without touching on the DEM time step during this process'''
         n_dem_iter = int(np.ceil(max_deps/(self.dem_strain_rate*O.dt)))
         O.cell.velGrad = dstrain_matrix / (n_dem_iter*O.dt)
+        print("Iteration {:d}:\n\tdstrain_matrix: ".format(int(self.mpm_iter)), dstrain_matrix, "\n\tndem_iter: ", n_dem_iter, "\n\tO.dt: ", O.dt, "\n\tO.cell.velGrad (manual): ", dstrain_matrix / (n_dem_iter*O.dt), "\n\tO.cell.velGrad   (yade): ", O.cell.velGrad, flush=True)
         for step in range(n_dem_iter): self._run_dem_step() 
+        print("\tO.cell.velGrad (end it): ", O.cell.velGrad, "\n", flush=True)
 
     def _run_dem_step(self):
         O.step()

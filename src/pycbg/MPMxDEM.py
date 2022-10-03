@@ -109,7 +109,7 @@ class DefineCallable():
     run_on_setup : callable or None
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
     vtk_period : int
-        `iterPeriod` for YADE's `VTKRecorder` engine. Default is 0 (no VTK file is saved).
+        Period at which VTK files are saved. If positive, `vtk_period` is the period in terms of DEM iterations (it is passed to YADE's `VTKRecorder` engine as `iterPeriod`). If negative, `-vtk_period` is the period in terms of MPM iterations (the number of MPM iterations between two VTK files). Default is 0 (no VTK file is saved).
     state_vars : list of str
         List of python expressions that should return a scalar, to be save as state variable in the CB-Geo simulation. `state_vars` should have at most 19 elements, the first element being called `svars_1` in CB-Geo, the second `svars_2`, ... . Default to `["O.iter, O.time, O.dt"]`.
     svars_dic : dict
@@ -132,7 +132,7 @@ class DefineCallable():
     run_on_setup : callable or None
         Name of the function to be run on RVE setup, if not None. This function is called after `rve_id` is defined, `run_on_setup` can thus refer to it.
     vtk_period : int
-        `iterPeriod` for YADE's `VTKRecorder` engine. Default is 0 (no VTK file is saved).
+        Period at which VTK files are saved.
     state_variables : list of str
         List of python expressions that should return a scalar, to be save as state variable in the CB-Geo simulation. `state_vars` should have at most 19 elements, the first element being called `svars_1` in CB-Geo, the second `svars_2`, ... . Default to `["O.iter, O.time, O.dt"]`.
     save_final_state : bool
@@ -200,6 +200,8 @@ class DefineCallable():
         # Detect and kill GlobalStiffnessTimeStepper
         self._detect_gsts()
 
+        self._vtkRec_ind = np.nan
+
     def __call__(self, rid, de_xx, de_yy, de_zz, de_xy, de_yz, de_xz, mpm_iteration, *state_vars):
 
         # Update mpm_iter attribute
@@ -224,7 +226,9 @@ class DefineCallable():
             if not os.path.isdir(vtk_dir): os.mkdir(vtk_dir)
 
             ## Add VTKRecorder to engines
-            if self.vtk_period!=0: O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=self.vtk_period)]
+            self._vtkRec_ind = len(O.engines) # VTKRecorder will be added to the end of the engine list
+            if self.vtk_period>0: O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=self.vtk_period)]
+            elif self.vtk_period<0: O.engines += [VTKRecorder(fileName=vtk_dir, recorders=["all"], iterPeriod=1, dead=True)]
 
             ## Measure initial stress
             if not self.use_gravity: self.sigma0 = getStress(*_get_getStress_args(self.inertial))
@@ -277,6 +281,9 @@ class DefineCallable():
         # Update state variables
         state_vars = [eval(var, self.svars_dic) for var in self.state_variables]
 
+        # If VTK files are saved depending on the MPM iterations
+        if self.vtk_period<0 and self.mpm_iter%-self.vtk_period==0: self._save_vtk()
+
         # Save final state
         if mpm_iteration == pycbg_sim.analysis_params["nsteps"] and self.save_final_state:
             O.save(rve_directory + "RVE_{:}/".format(self.rve_id) + "rve{:d}_final_state.{:}yade.bz2".format(self.rve_id, self.yade_sha1))
@@ -303,7 +310,7 @@ class DefineCallable():
         '''Executes the appropriate number of DEM iterations without touching on the DEM time step during this process'''
         n_dem_iter = int(np.ceil(max_deps/(self.dem_strain_rate*O.dt)))
         O.cell.velGrad = dstrain_matrix / (n_dem_iter*O.dt)
-        for step in range(n_dem_iter): self._run_dem_step() 
+        for step in range(n_dem_iter): self._run_dem_step()
 
     def _run_dem_step(self):
         O.step()
@@ -323,6 +330,14 @@ class DefineCallable():
     
     def _set_demdt(self): 
         if self.coef_dem_dt is not None: O.dt = self.coef_dem_dt*PWaveTimeStep()
+
+    def _save_vtk(self):
+        O.engines[self._vtkRec_ind].dead = False
+        tmp_engines = O.engines
+        O.engines = [O.engines[self._vtkRec_ind]]
+        O.step()
+        O.engines = tmp_engines
+        O.engines[self._vtkRec_ind].dead = True
 
 
 def _get_bodies_walls():

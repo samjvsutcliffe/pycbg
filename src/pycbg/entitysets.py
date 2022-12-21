@@ -57,7 +57,7 @@ class EntitySets():
         if not os.path.isdir(directory): os.mkdir(directory)
         self.directory = directory
 
-        self.psets, self.nsets = [], []
+        self.psets, self.nsets, self.csets = [], [], []
         self.__reset_params()
     
     def create_set(self, condition_function, typ="particle", kwargs={}):
@@ -90,6 +90,7 @@ class EntitySets():
         """
         if typ=="particle": points, set_list = self.particles.positions, self.psets
         elif typ=="node": points, set_list = self.mesh.nodes, self.nsets
+        elif typ=="cell": points, set_list = self.mesh.cells, self.csets
         else: raise ValueError("`typ` parameter should be 'particle' or 'node'")
         
         ids = []
@@ -109,7 +110,7 @@ class EntitySets():
         """
         self._filename = self.directory + filename + '.json'
         main_dic = {}
-        for typ, sets_tmp in zip(("particle_sets", "node_sets"), (self.psets, self.nsets)):
+        for typ, sets_tmp in zip(("particle_sets", "node_sets", "cell_sets"), (self.psets, self.nsets,self.csets)):
             if len(sets_tmp)==0: continue
             sets = []
             for i, current_set in enumerate(sets_tmp): 

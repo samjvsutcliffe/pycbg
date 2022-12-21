@@ -374,6 +374,17 @@ class Simulation():
                                             "particle_type": self.particles._particle_type,
                                             "material_id": 0,
                                             "type": self.particles.type}}]
+        elif self.particles.type == "inject":
+            particles_list = [{"generator": {"check_duplicates": self.particles.check_duplicates,
+                                            "pset_id": 0,
+                                            "cset_id": self.particles.cset_id, 
+                                            "nparticles_per_dir": self.particles.nparticles_per_dir,
+                                            "particle_type": self.particles._particle_type,
+                                            "velocity" : self.particles._particle_velocity,
+                                            "duration" : self.particles._particle_duration,
+                                            "material_id": 0,
+                                            "type": self.particles.type}}]
+
 
         material_sets_list = [] 
         for m_id, ps_id in enumerate(self.materials.pset_ids):

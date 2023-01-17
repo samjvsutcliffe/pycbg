@@ -71,7 +71,7 @@ class Particles():
     Note that a mesh has to be specified even if it isn't used.
     """
     ## TODO: Make the empty initialisation of Particles object possible (without specifying a mesh)
-    def __init__(self, mesh, npart_perdim_percell=1, positions=None, directory="", check_duplicates=True, automatic_generation="pycbg"):
+    def __init__(self, mesh, npart_perdim_percell=1, positions=None, directory="", check_duplicates=True, automatic_generation="pycbg",particle_type=""):
         if directory == '' : directory = '/'
         if directory[-1] != '/' : directory += '/'
         if not os.path.isdir(directory): os.mkdir(directory)
@@ -85,7 +85,7 @@ class Particles():
         self.check_duplicates = check_duplicates
         self.n_dims = mesh.n_dims
         self._io_type = "Ascii{:d}D".format(mesh.n_dims) # Shouldn't have to be set to another value
-        self._particle_type = "P{:d}D".format(mesh.n_dims) # Shouldn't have to be set to another value
+        self._particle_type = "P{:d}D{}".format(mesh.n_dims,particle_type) # Shouldn't have to be set to another value
 
         self.mesh, self.npart_perdim_percell = mesh, npart_perdim_percell
 

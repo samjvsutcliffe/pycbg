@@ -4,10 +4,730 @@ import numpy as np
 import itertools as it  
 import __main__ as main
 from pycbg import __version__ as pycbg_version
-from pycbg.mesh import Mesh
-from pycbg.materials import Materials 
-from pycbg.particles import Particles
-from pycbg.entitysets import EntitySets 
+
+_ED2Q36BS_nodes = {
+            0 :(-2,-2), 1 :(-1,-2), 2 :(0,-2), 3 :(1,-2), 4 :(2,-2), 5 :(3,-2),
+            11 :(-2,-1), 10 :(-1,-1), 9 :(0,-1), 8 :(1,-1), 7:(2,-1), 6:(3,-1),
+            12:(-2, 0), 13:(-1, 0), 14:(0, 0), 15:(1, 0), 16:(2, 0), 17:(3, 0),
+            23:(-2, 1), 22:(-1, 1), 21:(0, 1), 20:(1, 1), 19:(2, 1), 18:(3, 1),
+            24:(-2, 2), 25:(-1, 2), 26:(0, 2), 27:(1, 2), 28:(2, 2), 29:(3, 2),
+            35:(-2, 3), 34:(-1, 3), 33:(0, 3), 32:(1, 3), 31:(2, 3), 30:(3, 3)
+        }
+
+class Mesh():
+    """Create and write to a file a mesh using gmsh.
+
+    Parameters
+    ----------
+    dimensions : tuple of floats
+        Dimensions of the mesh. Its length should be 3, with `dimensions[n]` the dimension of the mesh on the axis `n`.
+    ncells : tuple of ints
+        Number of cells in each direction. Its length should be 3, with `ncells[n]` the number of cells on the axis `n`.
+    origin : tuple of floats
+        Origin of the mesh. Default is `(0.,0.,0.)`.
+    directory : str, optional
+        Directory in which the mesh file will be saved. If the directory doesn't already exist, it will be created. It is set by default to the current working directory.
+    check_duplicates : bool, optional  
+        See CB-Geo documentation for informations on this parameter. Default is `True`.
+    cell_type : {'ED3H8', 'ED3H20', 'ED3H64G'}, optional
+        Type of cell. Only 3D Hexahedrons are supported. The number of nodes can be 8, 20 or 64. Default is 'ED3H8'.
+
+    Attributes
+    ----------
+    nodes : numpy array
+        Positions of all nodes in the mesh. The id of a node is the index of its line in this array. Noting `nnodes` the number of nodes, the shape of `nodes` is ``(nnodes,3)``.
+    cells : numpy array
+        Connections between cells and nodes. Each line corresponds to a cell, its index is the cell's id. The columns correspond to the ids of the nodes composing a cell. Noting `nnode_pcell` the number of nodes per cell (8, 20 or 64), the shape of `cells` is ``(ncells,nnode_pcell)``.
+    dimensions : tuple of floats
+        Dimensions of the mesh.
+    l0, l1, l2 : floats
+        Dimensions of the mesh (``self.l0, self.l1, self.l2 = self.dimensions``).
+    ncells : tuple of ints
+        Number of cells in each direction.
+    nc0, nc1, nc2 : ints
+        Number of cells in each direction (``self.nc0, self.nc1, self.nc2 = self.ncells``).
+    origin : tuple of floats
+        Origin of the mesh.
+    directory : str
+        Directory in which the mesh file will be saved.
+    check_duplicates : bool
+        See CB-Geo documentation.
+    cell_type : {'ED3H8', 'ED3H20', 'ED3H64G', 'ED2Q4', 'ED2Q8', 'ED2Q9', 'ED2Q16G', 'ED2Q36BS'}
+        Type of cell. 
+    n_dims : int
+        Number of dimensions (2 for 2D and 3 for 3D), automatically determined from the cell type.
+    round_decimal : int or None
+        Rounds nodes coordinates to the specified decimal (`round_decimal` is directly passed to the built-in function `round`). This is useful when using `ED3H64G` or 'ED2Q16G'. Default to None. 
+    params : dict
+        Dictionary containing all necessary parameters (except the `directory` parameter) to create a copy of this `Mesh` object. For instance, one can do: `mesh_copy = Mesh(**existing_mesh.params)`.
+
+    Notes
+    -----
+     - The mesh file is written upon creating the object.
+     
+    Examples
+    --------
+    Creating a cubic mesh of 1000 cells : 
+
+    >>> mesh = Mesh((1.,1.,1.), (10,10,10))
+    >>> mesh.nc0 * mesh.nc1 * mesh.nc2
+    1000
+    """
+    ## TODO: - Test 'ED3H20' and 'ED3H64G'
+    ##       - Avoid having to write the mesh file from gmsh for rewritting it again
+    ##       - Make crete_mesh usable by the user 
+
+    def __init__(self, dimensions, ncells, origin=(0.,0.,0.), directory="", check_duplicates=True, cell_type="ED3H8", round_decimal=None):
+        self.cell_type = cell_type
+        if cell_type=='ED3H8': self.nn_percell, self.n_dims = 8, 3
+        elif cell_type=='ED3H20': self.nn_percell, self.n_dims = 20, 3
+        elif cell_type=='ED3H64G': self.nn_percell, self.n_dims = 64, 3
+        elif cell_type=='ED2Q4': self.nn_percell, self.n_dims = 4, 2
+        elif cell_type=='ED2Q8': self.nn_percell, self.n_dims = 8, 2
+        elif cell_type=='ED2Q9': self.nn_percell, self.n_dims = 9, 2
+        elif cell_type=='ED2Q16G': self.nn_percell, self.n_dims = 16, 2
+        elif cell_type=='ED2Q36BS': self.nn_percell, self.n_dims = 36, 2
+        else : raise ValueError("cell_type is set to '{:}' while it should be one of the following: 'ED3H8', 'ED3H20', 'ED3H64G', 'ED2Q4', 'ED2Q8', 'ED2Q9', 'ED2Q16G' or 'ED2Q36BS'".format(cell_type))
+        
+        if self.n_dims == 2 and origin == (0.,0.,0.): origin = (0.,0.)
+        self.set_parameters(dimensions, ncells, origin)
+        if directory == '' : directory = './'
+        if directory[-1] != '/' : directory += '/'
+        if not os.path.isdir(directory): os.mkdir(directory)
+        self.directory = directory
+
+        self.check_duplicates = check_duplicates
+
+        self._isoparametric = False # Shouldn't have to be set to another value
+        self._io_type = "Ascii{:d}D".format(self.n_dims) # Shouldn't have to be set to another value
+        self._node_type = "N{:d}D".format(self.n_dims) # Shouldn't have to be set to another value
+        self.round_decimal = round_decimal
+
+        self.dimensions, self.ncells = dimensions, ncells
+        self.__reset_params()
+
+        self.write_file()
+        self.cells, self.nodes = np.array(self.cells), np.array(self.nodes)
+
+    def set_parameters(self, dimensions, ncells, origin):
+        """Set the dimensions and number of cells of the mesh.
+
+        Parameters
+        ----------
+        dimensions : tuple of floats
+            Dimensions of the mesh. Its length should be 3, with `dimensions[n]` the dimension of the mesh on the axis `n`.
+        ncells : tuple of ints
+            Number of cells in each direction. Its length should be 3, with `ncells[n]` the number of cells on the axis `n`.
+        origin : tuple of floats
+            Origin of the mesh. Default is `(0.,0.,0.)`.
+        """
+        if self.n_dims==2: 
+            self.l0, self.l1 = dimensions
+            self.nc0, self.nc1 = ncells
+        elif self.n_dims==3: 
+            self.l0, self.l1, self.l2 = dimensions
+            self.nc0, self.nc1, self.nc2 = ncells
+        else: raise RuntimeError("Number of dimensions coulnd't be detected, please check if `cell_type` is correctly set.")
+
+        self.origin = origin
+
+    def create_mesh(self):
+        """Create the mesh in gmsh.
+
+        Notes
+        -----
+         - This method calls `gmsh.initialize` but doesn't call `gmsh.finalize``
+         - `cells` and `nodes` attributes are not created by this method
+         - User shouldn't have to use this method as it is called by `write_file`
+        """
+        gmsh.initialize()
+        gmsh.option.setNumber("Mesh.MshFileVersion", 2.1)
+        
+        if self.n_dims==2: origin = list(self.origin) + [0]
+        elif self.n_dims==3: origin = list(self.origin)
+        else: raise RuntimeError("Number of dimensions coulnd't be detected, please check if `cell_type` is correctly set.")
+
+
+        p = gmsh.model.geo.addPoint(*origin)
+        l = gmsh.model.geo.extrude([(0, p)], self.l0, 0, 0, [self.nc0], [1])
+        s = gmsh.model.geo.extrude([l[1]], 0, self.l1, 0, [self.nc1], [1], recombine=True)
+        if self.n_dims==3:
+            v = gmsh.model.geo.extrude([s[1]], 0, 0, self.l2, [self.nc2], [1], recombine=True)
+            group = v[1][1]
+        elif self.n_dims==2: group = s[1][1]
+        gmsh.model.geo.synchronize()
+        gmsh.model.addPhysicalGroup(self.n_dims, [group])
+        gmsh.model.mesh.generate(self.n_dims)
+        if self.cell_type in ['ED3H20', 'ED2Q8', 'ED2Q9']: 
+            if self.cell_type!='ED2Q9': gmsh.option.setNumber("Mesh.SecondOrderIncomplete", 1)
+            gmsh.model.mesh.setOrder(2)
+        elif self.cell_type in ['ED3H64G', 'ED2Q16G']: 
+            gmsh.model.mesh.setOrder(3)
+
+    def write_file(self, filename="mesh"):
+        """
+        Write the mesh file formated for CB-Geo MPM.
+        
+        Parameters
+        ----------
+        filename : str, optional
+            Name of the mesh file, the extension '.txt' is automatically added. Default is 'mesh'.
+        """
+        self._gmsh_filename = self.directory + filename + ".msh"
+        self._filename = self.directory + filename + ".txt"
+        self.create_mesh()
+        
+        gmsh.write(self._gmsh_filename)
+        gmsh.finalize()
+        
+        self.__reformat_from_gmsh()
+        self.__reset_params()
+    
+    def __reformat_from_gmsh(self): # Not meant for the user
+        """Reads the mesh file generated by gmsh and reformats it for CB-
+        Geo."""
+        with open(self._gmsh_filename, 'r') as fil: lines = fil.readlines()
+        os.remove(self._gmsh_filename)
+        for i, line in enumerate(lines):
+            if "$Nodes" in line : nn, start_nodes = int(float(lines[i+1])), i+2
+            elif "$EndNodes" in line : end_nodes = i
+            elif "$Elements" in line : ne, start_ele = int(float(lines[i+1])), i+2
+            elif "$EndElements" in line : end_ele = i
+        
+        self.cells, self.nodes = [], []
+        with open(self._filename, 'w') as fil:
+            fil.write("{:d}\t{:d}\n".format(nn, ne))
+            for line in lines[start_nodes:end_nodes]: 
+                sl = line.split(' ')
+                def wrapped_round(x): return round(x, self.round_decimal) if self.round_decimal is not None else x
+                node = [wrapped_round(float(c)) for c in sl[-3:][:self.n_dims]]
+                self.nodes.append(node)
+
+                out_line = ""
+                for coord in node: out_line += str(coord) + " "
+                out_line += "\n" #sl[-1]
+                fil.write(out_line)
+            for line in lines[start_ele:end_ele]: 
+                sl = line.split(' ')
+                if self.cell_type=="ED2Q36BS": 
+                    cell_nodes = [int(float(node)-1) for node in sl[-4:]]
+                    local_nodes = [-1]*36 # With CB-Geo's numbering
+                    
+                    steps = [self.l0/self.nc0, self.l1/self.nc1]
+                    ref_node = self.nodes[cell_nodes[0]]
+
+                    for iloc, nsteps in _ED2Q36BS_nodes.items():
+                        current_node = [round(x+n*step, 10) for x,n,step in zip(ref_node, nsteps, steps)]
+                        if current_node in self.nodes: local_nodes[iloc] = self.nodes.index(current_node)
+                    
+                    self.cells.append(local_nodes)
+
+                else: self.cells.append([int(float(node)-1) for node in sl[-self.nn_percell:]])
+                
+                out_line = ""
+                for node in self.cells[-1]: out_line += str(node) + " "
+                out_line = out_line[:-1] + "\n"
+                fil.write(out_line)
+
+    def __reset_params(self):
+        self.params = {"dimensions": self.dimensions, "ncells": self.ncells, "origin": self.origin, "check_duplicates": self.check_duplicates, "cell_type": self.cell_type, "round_decimal": self.round_decimal}
+
+        
+
+class Particles():
+    """For defining particles on a :class:`~pycbg.preprocessing.Mesh` and ultimately generate the particles file expected by CB-Geo MPM .
+
+    Parameters
+    ----------
+    mesh : :class:`~pycbg.preprocessing.Mesh` object
+        Mesh in which the particles will be generated.
+    npart_perdim_percell : int, optional
+        Number of particles along each dimension in a cell. All cells will thus contain ``npart_perdim_percell**3`` equally spaced particles (note that particles are equally spaced within a cell, but not between cells). Default is 1. It is possible to subsequently override the default behavior, manually tuning particles number and locations, see below.
+    positions : numpy array, optional
+        Particles initial positions, if specified. If `positions=None` (default value), particles are automatically generated using `automatic_generation` and `npart_perdim_percell`. 
+    directory : str, optional
+        Directory in which the particles file will be saved. If the directory doesn't already exist, it will be created. It is set by default to the current working directory.
+    check_duplicates : bool, optional  
+        See CB-Geo documentation for informations on this parameter. Default is `True`.
+    automatic_generation : {'pycbg', 'cbgeo'}, optional
+        Use PyCBG or CB-Geo for automatic material points' generation. CB-Geo will generate the materials points at the Gauss' points of the cells. Default is `'pycbg'`.
+
+    Attributes
+    ----------
+    positions : numpy array
+        Positions of all particles written into the particles file. The id of a particle is the index of its line in this array. Noting `npart` the number of particles, the shape of `positions` is ``(npart,3)``.
+    npart_perdim_percell : int
+        Number of particles for each dimensions in one cell.
+    mesh : :class:`~pycbg.preprocessing.Mesh` object
+        Mesh used to generate particles (i.e. the one passed to the constructor).
+    directory : str
+        Directory in which the particles file will be saved.
+    check_duplicates : bool 
+        See CB-Geo documentation.
+    automatic_generation : str
+        Use PyCBG or CB-Geo for automatic material points' generation. CB-Geo will generate the materials points at the Gauss' points of the cells.
+    params : dict
+        Dictionary containing all necessary parameters (except the `directory` parameter) to create a copy of this `Particles` object. For instance, one can do: `particles_copy = Particles(**existing_particles.params)`.
+
+
+    Notes
+    -----
+     - One can manually define the particles (number and positions) by direct modification of the `positions` attribute, after object instantiation.
+
+    Examples
+    --------
+    Generating automatically 8 particles in a one cell mesh :
+
+    >>> mesh = Mesh((1.,1.,1.), (1,1,1))
+    >>> particles = Particles(mesh, 2)
+    >>> particles.positions
+    array([[0.33333333, 0.33333333, 0.33333333],
+           [0.33333333, 0.33333333, 0.66666667],
+           [0.33333333, 0.66666667, 0.33333333],
+           [0.33333333, 0.66666667, 0.66666667],
+           [0.66666667, 0.33333333, 0.33333333],
+           [0.66666667, 0.33333333, 0.66666667],
+           [0.66666667, 0.66666667, 0.33333333],
+           [0.66666667, 0.66666667, 0.66666667]])
+
+    Manually generating four particles :
+
+    >>> mesh = Mesh((1.,1.,1.), (1,1,1))
+    >>> particles = Particles(mesh)
+    >>> particles.positions = np.array([[.02, .02, .02],
+    ...                                 [.05, .02, .02],
+    ...                                 [.02, .05, .02],
+    ...                                 [.02, .02, .05]])
+
+    Note that a mesh has to be specified even if it isn't used.
+    """
+    ## TODO: Make the empty initialisation of Particles object possible (without specifying a mesh)
+    def __init__(self, mesh, npart_perdim_percell=1, positions=None, directory="", check_duplicates=True, automatic_generation="pycbg"):
+        if directory == '' : directory = '/'
+        if directory[-1] != '/' : directory += '/'
+        if not os.path.isdir(directory): os.mkdir(directory)
+        self.directory = directory
+        
+        self.positions = positions if positions is not None else []
+        self.automatic_generation = automatic_generation
+        if positions is None: self.create_particles(mesh, npart_perdim_percell, automatic_generation)
+        else: self.type = "file"
+        
+        self.check_duplicates = check_duplicates
+        self.n_dims = mesh.n_dims
+        self._io_type = "Ascii{:d}D".format(mesh.n_dims) # Shouldn't have to be set to another value
+        self._particle_type = "P{:d}D".format(mesh.n_dims) # Shouldn't have to be set to another value
+
+        self.mesh, self.npart_perdim_percell = mesh, npart_perdim_percell
+
+        self.__reset_params()
+
+    def create_particles(self, mesh, npart_perdim_percell=1, automatic_generation="pycbg"):
+        """Create the particles using the given mesh.
+
+        Parameters
+        ----------
+        mesh : :class:`~pycbg.preprocessing.Mesh` object
+            Mesh in which the particles will be generated.
+        npart_perdim_percell : int, optional
+            Number of particles for each dimensions in one cell. All cells will contain ``npart_perdim_percell**3`` equally spaced particles. Note that particles are equally spaced within a cell, not between cells. Default is 1 .
+        automatic_generation : {'pycbg', 'cbgeo'}, optional
+            Use PyCBG or CB-Geo for automatic material points' generation. CB-Geo will generate the materials points at the Gauss' points of the cells. Default is `'pycbg'`.
+        """
+        if automatic_generation == "pycbg":
+            self.type = "file"
+            for ie, e in enumerate(mesh.cells):
+                if mesh.cell_type=="ED2Q36BS": cell_nodes = [e[i] for i in [14, 15, 20, 21]]
+                else: cell_nodes = e
+                coors = np.array([mesh.nodes[i] for i in cell_nodes])
+                mins, maxs = coors.min(axis=0), coors.max(axis=0)
+                step = (maxs-mins)/(npart_perdim_percell)
+                poss = [mins + step*(.5+i) for i in range(npart_perdim_percell)]
+                coor_ss = []
+                for i in range(mesh.n_dims): 
+                    coor_ss.append([p[i] for p in poss])
+                self.positions += list(it.product(*coor_ss))
+            self.positions = np.array(self.positions)
+        elif automatic_generation == "cbgeo":
+            self.type = "gauss"
+            self.cset_id = -1
+            self.nparticles_per_dir = npart_perdim_percell
+        else: raise ValueError("automatic_generation is set to '{:}' while it should be 'pycbg' or 'cbgeo'".format(automatic_generation))
+
+
+    def write_file(self, filename="particles"):
+        """
+        Write the particles file formatted for CB-Geo MPM.
+        
+        Parameters
+        ----------
+        filename : str, optional
+            Name of the particles file, the extension '.txt' is automatically added. Default is 'particles'.
+        """
+        self._filename = self.directory + filename + '.txt'
+        pfile = open(self._filename, "w") 
+        pfile.write("{:d}\n".format(len(self.positions)))   
+        for p in self.positions: pfile.write("\t".join(["{:e}"]*self.n_dims).format(*p)+"\n")
+        self.__reset_params()
+
+    def __reset_params(self):
+        self.params = {"mesh": self.mesh, "npart_perdim_percell": self.npart_perdim_percell, "check_duplicates": self.check_duplicates, "automatic_generation": self.automatic_generation}
+
+
+class EntitySets():
+    """Create and write to a file entity sets for nodes and particles.
+
+    Parameters
+    ----------
+    mesh : :class:`~pycbg.preprocessing.Mesh` object
+        Simulation's mesh. Has to be specified even if only particles sets are defined.
+    particles : :class:`~pycbg.preprocessing.Particles` object
+        Simulation's particles. Has to be specified even if only nodes sets are defined.
+    directory : str, optional
+        Directory in which the entity sets file will be saved. If the directory doesn't already exist, it will be created. It is set by default to the current working directory.
+
+    Attributes
+    ----------
+    nsets : list of lists of ints
+        Each element is a list of nodes' ids belonging to the same set. Its index is the id of the node set.
+    psets : list of lists of ints
+        Each element is a list of particles' ids belonging to the same set. Its index is the id of the particle set.
+    mesh : :class:`~pycbg.preprocessing.Mesh` object
+        Simulation's mesh.
+    particles : :class:`~pycbg.preprocessing.Particles` object
+        Simulation's particles.
+    params : dict
+        Dictionary containing all necessary parameters (except the `directory` parameter) to create a copy of this `EntitySets` object. For instance, one can do: `eset_copy = EntitySets(**existing_eset.params)`.
+
+    
+    Notes
+    -----
+     - The entity sets file is not written upon creating the object. It is thus necessary to run the `write_file` method once all entity sets are created.
+     - The user has to define a function for each entity set that indicates which particle or node should be included. See `create_set` method's documention for more informations.
+
+    Examples
+    --------
+    Creating a node and a particle set in a one cell mesh :
+
+    >>> mesh = Mesh((1.,1.,1.), (1,1,1))
+    >>> particles = Particles(mesh, 2)
+    >>> entity_sets = EntitySets(mesh, particles)
+    >>> node_set_id = entity_sets.create_set(lambda x,y,z: x==0, typ="node")
+    >>> particle_set_id = entity_sets.create_set(lambda x,y,z: x<.5, typ="particle")
+
+    Note that this example uses lambda functions to create sets with only one line. One could also use : 
+
+    >>> def x_wall(x, y, z): return x==0
+    >>> node_set_id = entity_sets.create_set(x_wall, typ="node")
+    """
+    def __init__(self, mesh, particles, directory=""):
+        self.mesh = mesh
+        self.particles = particles
+        if directory == '' : directory = '/'
+        if directory[-1] != '/' : directory += '/'
+        if not os.path.isdir(directory): os.mkdir(directory)
+        self.directory = directory
+
+        self.psets, self.nsets = [], []
+        self.__reset_params()
+    
+    def create_set(self, condition_function, typ="particle", kwargs={}):
+        """Create a set of nodes or particles and add it to the corresponding
+        list. Nodes and particles are selected using `condition_function`.
+
+        Parameters
+        ----------
+        condition_function : function
+            Function to select particles or nodes using their positions. It should take as inputs at least 3 parameters `x`, `y` and `z` (2 parameters `x` and `y` for 2D analyses) that correspond to the position of a node or particle, additional keyword parameters can be passed through `kwargs`. It should return `True` if the node or particle belongs to the set, `False` otherwise.
+        typ : {"node", "particle"}, optional
+            Type of set to be created. Default is "particle".
+        kwargs : dictionary
+            Contains the keyword arguments to be passed to `condition_function`
+        
+        Returns
+        -------
+        int
+            Id of the set just appended.
+
+        Examples
+        --------
+        Creating a node set using a mesh `mesh` and the particles `particles` previously defined :
+        
+        >>> mesh = Mesh((1.,1.,1.), (1,1,1))
+        >>> particles = Particles(mesh, 2)
+        >>> entity_sets = EntitySets(mesh, particles)
+        >>> node_set_id = entity_sets.create_set(lambda x,y,z: x==0, typ="node")
+        >>> particle_set_id = entity_sets.create_set(lambda x,y,z: x<.5, typ="particle")
+        """
+        if typ=="particle": points, set_list = self.particles.positions, self.psets
+        elif typ=="node": points, set_list = self.mesh.nodes, self.nsets
+        else: raise ValueError("`typ` parameter should be 'particle' or 'node'")
+        
+        ids = []
+        for i, p in enumerate(points): 
+            if condition_function(*p, **kwargs): ids.append(i)
+        set_list.append(ids)
+        return len(set_list)-1 if typ=="node" else len(set_list)
+    
+    def write_file(self, filename="entity_sets"):
+        """
+        Write the entity sets file formatted for CB-Geo MPM.
+        
+        Parameters
+        ----------
+        filename : str, optional
+            Name of the entity set file, the extension '.json' is automatically added. Default is 'entity_sets'.
+        """
+        self._filename = self.directory + filename + '.json'
+        main_dic = {}
+        for typ, sets_tmp in zip(("particle_sets", "node_sets"), (self.psets, self.nsets)):
+            if len(sets_tmp)==0: continue
+            sets = []
+            for i, current_set in enumerate(sets_tmp): 
+                set_id = i if typ=="node_sets" else i+1
+                sets.append({"id":set_id, "set":str(current_set)})
+            main_dic[typ] = sets
+        with open(self._filename, 'w') as fil: json.dump(main_dic, fil, sort_keys=False, indent=4)
+        ## Read and rewrite the file, to erase the double quotes around the list in "set" lines (definitely ugly)
+        with open(self._filename, 'r') as fil: lines = fil.readlines()
+        with open(self._filename, 'w') as fil:
+            for line in lines:
+                if '"set"' in line: line = line[:18] + line[18:].replace('"', '')
+                fil.write(line)
+    
+    def __reset_params(self):
+        self.params = {"mesh": self.mesh, "particles": self.particles}
+
+
+class Materials():
+    """Create materials for particle sets.
+
+    Parameters
+    ----------
+    n_dims : int, optional
+        Number of dimensions in the simulation (2 for 2D, 3 for 3D). Default to 3.
+
+    Attributes
+    ----------
+    materials : list of dict
+        Each element is a dictionnary containing a material's parameters. The index of a material is his id.
+    pset_ids : list of (ints or list of ints)
+        The element i of this list is the id (or list of ids) of the particle set made of the material defined in ``materials[i]``.
+    n_dims : int
+        Number of dimensions in the simulation (2 for 2D, 3 for 3D).
+    
+    Notes
+    -----
+    Due to (probably) a bug in CB-Geo, materials should be created in the same order than the corresponding particle sets (so particle sets and materials have the same id). 
+    
+    Examples
+    --------
+    Creating two materials for two particle sets :
+
+    >>> mesh = Mesh((1.,1.,1.), (1,1,1))
+    >>> particles = Particles(mesh, 2)
+    >>> entity_sets = EntitySets(mesh, particles)
+    >>> lower_particles = entity_sets.create_set(lambda x,y,z: x<.5, typ="particle")
+    >>> upper_particles = entity_sets.create_set(lambda x,y,z: x>=.5, typ="particle")
+    >>> materials = Materials()
+    >>> materials.create_MohrCoulomb(pset_id=lower_particles, density=750,
+    ...                                                       youngs_modulus=5.26e7,
+    ...                                                       poisson_ratio=.3,
+    ...                                                       friction=36.,
+    ...                                                       dilation=0.,
+    ...                                                       cohesion=1.,
+    ...                                                       tension_cutoff=1.,
+    ...                                                       softening=False)
+    >>> materials.create_Newtonian(pset_id=upper_particles, density=1.225, 
+    ...                                                     bulk_modulus=1.42e5, 
+    ...                                                     dynamic_viscosity=1.81e3)
+    >>> materials.pset_ids
+    [0, 1]
+    """
+    def __init__(self, n_dims=3): 
+        self.materials = []
+        self.pset_ids = []
+        self.n_dims = n_dims
+
+    def create_Newtonian(self, pset_id=0, density=1.225, 
+                                          bulk_modulus=1.42e5, 
+                                          dynamic_viscosity=1.81e-5):
+        """Create a `Newtonian material <https://mpm.cb-geo.com/#/theory/material/newtonian>`_.
+
+        Parameters
+        ----------
+        pset_id : int or list of ints
+            Particle set ids that will be made of this material
+        density : float, optional
+            Initial density of the material (:math:`kg/m^3`). Default is 1.225 :math:`kg/m^3`.
+        bulk_modulus : float, optional
+            Bulk modulus of the material (:math:`Pa`). Default is 142 :math:`kPa`.
+        dynamic_viscosity : float, otpional
+            Dynamic viscosity of the material (:math:`Pa.s`). Default is 18.1 :math:`\mu Pa.s`
+
+        Notes
+        -----
+        Defaults correspond to air's properties.
+        """
+        self.pset_ids.append(pset_id)
+        self.materials.append({"id": len(self.materials),
+                               "type": "Newtonian{:d}D".format(self.n_dims),
+                               "density": density,
+                               "bulk_modulus": bulk_modulus,
+                               "dynamic_viscosity": dynamic_viscosity})
+    
+    def create_MohrCoulomb(self, pset_id=0, density=1e3,
+                                            youngs_modulus=5e7,
+                                            poisson_ratio=.3,
+                                            friction=36.,
+                                            dilation=0.,
+                                            cohesion=0.,
+                                            tension_cutoff=0.,
+                                            softening=False,
+                                            peak_pdstrain=0.,
+                                            residual_pdstrain=0.,
+                                            residual_friction=13.,
+                                            residual_dilation=0.,
+                                            residual_cohesion=0.):
+        """Create a `MohrCoulomb material <https://mpm.cb-geo.com/#/theory/material/mohr-coulomb>`_.
+
+        Parameters
+        ----------
+        pset_id : int or list of ints
+            Particle set id that will be made of this material
+        density : float
+            Initial density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
+        young_modulus : float
+            Young's modulus of the material (:math:`Pa`). Default is 50 :math:`MPa`.
+        poisson_ratio : float
+            Poisson's ratio of the material. Default is 0.3 .
+        friction : float
+            Friction angle of the material (:math:`^\circ`). Default is 36 :math:`^\circ`.
+        dilation : float
+            Dilation angle of the material (:math:`^\circ`). Default is 0 :math:`^\circ`.
+        cohesion : float
+            Cohesion in the material (:math:`Pa`). Default is 0 :math:`Pa`.
+        tension_cutoff : float
+            Tension strength of the material (:math:`Pa`). Default is 0 :math:`Pa`.
+        softening : bool, optional
+            Enable softening option. If `True`, one has to set `peak_pdstrain`, `residual_pdstrain`, `residual_friction`, `residual_dilation` and `residual_cohesion`. Default is `False`.
+        peak_pdstrain : float, optional
+            Start point of strain softening. Default is 0.
+        residual_pdstrain : float, optional
+            End point of strain softening. Default is 0.
+        residual_friction : float, optional
+            Residual friction angle (:math:`^\circ`). Default is 13 :math:`^\circ`.
+        residual_dilation : float, optional
+            Residual dilation angle (:math:`^\circ`). Default is 0 :math:`^\circ`.
+        residual_cohesion : float, optional
+            Residual cohesion (:math:`Pa`). Default is 0 :math:`Pa`.
+        """
+        self.pset_ids.append(pset_id)
+        self.materials.append({"id": len(self.materials),
+                               "type": "MohrCoulomb{:d}D".format(self.n_dims),
+                               "density": density,
+                               "youngs_modulus": youngs_modulus,
+                               "poisson_ratio": poisson_ratio,
+                               "friction": friction,
+                               "dilation": dilation,
+                               "cohesion": cohesion,
+                               "tension_cutoff": tension_cutoff,
+                               "softening": softening,
+                               "peak_pdstrain": peak_pdstrain,
+                               "residual_friction": residual_friction,
+                               "residual_dilation": residual_dilation,
+                               "residual_cohesion": residual_cohesion,
+                               "residual_pdstrain": residual_pdstrain})
+
+    def create_LinearElastic(self, pset_id=0, density=1e3,
+                                              youngs_modulus=5e7,
+                                              poisson_ratio=.3):
+        """Create a `LinearElastic material <https://mpm.cb-geo.com/#/theory/material/linear-elastic>`_.
+
+        Parameters
+        ----------
+        pset_id : int or list of ints
+            Particle set id that will be made of this material
+        density : float
+            Initial density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
+        young_modulus : float
+            Young's modulus of the material (:math:`Pa`). Default is 50 :math:`MPa`.
+        poisson_ratio : float
+            Poisson's ratio of the material. Default is 0.3 .
+        """
+        self.pset_ids.append(pset_id)
+        self.materials.append({"id": len(self.materials),
+                               "type": "LinearElastic{:d}D".format(self.n_dims),
+                               "density": density,
+                               "youngs_modulus": youngs_modulus,
+                               "poisson_ratio": poisson_ratio})
+
+    def create_CustomLaw(self, pset_id=0, density=1e3,
+                                          init_state_variables=[],
+                                          script_path="custom_law",
+                                          function_name="custom_law",
+                                          particles_ids=""
+                                            ):
+        """Create CustomLaw3D material. The behaviour of the material is
+        computed using a user-defined python script.
+
+        Parameters
+        ----------
+        pset_id : int or list of ints
+            Particle set id that will be made of this material.
+        density : float
+            Initial density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
+        init_state_variables : list of floats
+            Contains the initial values of the states variables. The order in which they are given is their numbering among states variables : the first one is named "svars_0", the second is named "svars_1", ... Default is an empty list, for no state variables.
+        script_path : str
+            Path to the user-defined script that compute the material's behaviour. Note that the exentsion `.py` shouldn't be specified. Default is 'custom_law'.
+        function_name : str
+            Name of the function in `script_path` that compute the stress increment from the strain increment. It should take as input `6 + n_state_vars` arguments. The first 6 are the components of the engineering strain increment (in the directions `xx`, `yy`, `zz`, `xy`, `yz` and `xz` respectively), the others are the state variables. The order of the state variables in the function parameter gives their numbering in the output files (`'svars_0'`, `'svars_1'`, ...).
+        """
+        self.pset_ids.append(pset_id)
+        material_dict = {"id": len(self.materials),
+                         "type": "CustomLaw3D",
+                         "density": density,
+                         "script_path": script_path,
+                         "function_name": function_name}
+        for i, init_val in enumerate(init_state_variables): material_dict["svars_"+str(i)] = init_val
+        self.materials.append(material_dict) 
+
+    def create_PythonModel(self, pset_id=0, density=1e3,
+                                            init_state_variables=[],
+                                            script_path="custom_law",
+                                            function_name="custom_law",
+                                            particles_ids=""
+                                            ):
+        """Create PythonModel3D material. This material is identical to CustomLaw3D except that it is able to run in parallel. For sequential simulations, CustomLaw3D is more efficient than PythonModel3D. 
+
+        Parameters
+        ----------
+        pset_id : int or list of ints
+            Particle set id that will be made of this material.
+        density : float
+            Initial density of the material (:math:`kg/m^3`). Default is 1000 :math:`kg/m^3`.
+        init_state_variables : list of floats
+            Contains the initial values of the states variables. The order in which they are given is their numbering among states variables : the first one is named "svars_0", the second is named "svars_1", ... Default is an empty list, for no state variables.
+        script_path : str
+            Path to the user-defined script that compute the material's behaviour. Note that the exentsion `.py` shouldn't be specified. This script will be copied into pycbg's simulation directory and executed there. Default is 'custom_law'.
+        function_name : str
+            Name of the function in `script_path` that compute the stress increment from the strain increment. It should take as input `6 + n_state_vars` arguments. The first 6 are the components of the engineering strain increment (in the directions `xx`, `yy`, `zz`, `xy`, `yz` and `xz` respectively), the others are the state variables. The order of the state variables in the function parameter gives their numbering in the output files (`'svars_0'`, `'svars_1'`, ...).
+        """
+        self.pset_ids.append(pset_id)
+        material_dict = {"id": len(self.materials),
+                         "type": "PythonModel3D",
+                         "density": density,
+                         "script_path": script_path,
+                         "function_name": function_name}
+        for i, init_val in enumerate(init_state_variables): material_dict["svars_"+str(i)] = init_val
+        self.materials.append(material_dict) 
+
+    def _set_n_dims(self, n_dims): 
+        self.n_dims = n_dims
+        for mat in self.materials:
+            mat["type"] = mat["type"][:-2] + "{:d}D".format(self.n_dims)
+
 
 class Simulation():
     """Create a simulation.
@@ -374,17 +1094,6 @@ class Simulation():
                                             "particle_type": self.particles._particle_type,
                                             "material_id": 0,
                                             "type": self.particles.type}}]
-        elif self.particles.type == "inject":
-            particles_list = [{"generator": {"check_duplicates": self.particles.check_duplicates,
-                                            "pset_id": 0,
-                                            "cset_id": self.particles.cset_id, 
-                                            "nparticles_per_dir": self.particles.nparticles_per_dir,
-                                            "particle_type": self.particles._particle_type,
-                                            "velocity" : self.particles._particle_velocity,
-                                            "duration" : self.particles._particle_duration,
-                                            "material_id": 0,
-                                            "type": self.particles.type}}]
-
 
         material_sets_list = [] 
         for m_id, ps_id in enumerate(self.materials.pset_ids):

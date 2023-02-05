@@ -189,7 +189,7 @@ class Mesh():
         self.cells, self.nodes = np.array(self.cells), np.array(self.nodes)
         if self.cell_type == 'ED2GIMP':
             print("Creating GIMP mesh")
-            print("outputdir:{}".format(self.directory))
+            #print("outputdir:{}".format(self.directory))
             gen_gimp_mesh(self.dimensions,self.ncells,self.directory,self)
     
     def __reformat_from_gmsh(self): # Not meant for the user
@@ -266,11 +266,11 @@ gimp_order = [
         [-1, 2 ]
         ]
 def gen_gimp_mesh(length,cells,outdir="consol",mesh=None):
-    print(length)
-    print(cells)
+    #print(length)
+    #print(cells)
     nd = 2
     length = np.array(length)
-    cells = np.array(cells)
+    cells = np.array(cells,dtype=int)
     cellvs = cells+1
     resolution = length/(cells)
     verts = np.zeros((cellvs[0]*cellvs[1],2))
@@ -292,8 +292,8 @@ def gen_gimp_mesh(length,cells,outdir="consol",mesh=None):
                     elements[ei,ni] = id_from_pos(e_x+dx,e_y+dy,cells)
                 else:
                     elements[ei,ni] = -1
-    print(verts)
-    print(elements)
+    #print(verts)
+    #print(elements)
     if outdir != None:
         with open("{}/mesh.txt".format(outdir),"w") as f:
             f.write("{}   {}\n".format(len(verts),len(elements)))

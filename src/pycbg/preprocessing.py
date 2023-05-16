@@ -96,6 +96,7 @@ class Simulation():
 
         self.__boundary_conditions = {"velocity_constraints": [],
                                       "friction_constraints": [],
+                                      "nonconforming_traction_constraints": [],
                                       "particles_velocity_constraints": []}
         self.gravity = [0,0,0]
         self.__nodal_forces = []
@@ -191,6 +192,19 @@ class Simulation():
                                                                    "dir": dir,
                                                                    "sign_n": sgn_n,
                                                                    "friction": frict_value})
+        
+    def add_buoyancy_condition(self, datum, density,bounding_box):
+        """Add a friction condition on a node set.
+
+        Parameters
+        ----------
+        datum : hydrostatic datum, above which no fluid is present
+        """
+        self.__boundary_conditions["nonconforming_traction_constraints"].append({
+            "hydrostatic":True,
+            "datum":datum,
+            "fluid_density":density,
+            "bounding_box":bounding_box })
     
     def add_math_function(self, times, values):
         """Add a math function to the simulation. The function can only be
